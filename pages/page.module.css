@@ -47,21 +47,44 @@
 }
 
 .card {
-  padding: 1rem 1.2rem;
-  border-radius: var(--border-radius);
-  background: rgba(var(--card-rgb), 0);
-  border: 1px solid rgba(var(--card-border-rgb), 0);
-  transition: background 200ms, border 200ms;
+  margin: 1rem;
+  flex-basis: 45%;
+  padding: 1.5rem;
+  text-align: left;
+  color: #313131;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
 
-.card span {
+.eventcard {
+  margin: 1rem;
+  flex-basis: 45%;
+  padding: 1.5rem;
+  text-align: left;
+  color: #c2c5c2;
+  background-color: #034c3b;
+  text-decoration: none;
+  border: 1px solid #09700b;
+  border-radius: 5px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.eventcard span {
   display: inline-block;
   transition: transform 200ms;
 }
 
-.card h2 {
+.eventcard h2 {
   font-weight: 600;
   margin-bottom: 0.7rem;
+}
+
+.eventcard:hover,
+.eventcard:focus,
+.eventcard:active {
+  color: #abafab;
+  background-color: #2b762b;
 }
 
 .card p {
@@ -108,7 +131,7 @@
   position: relative;
 }
 /* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
+/* @media (hover: hover) and (pointer: fine) {
   .card:hover {
     background: rgba(var(--card-rgb), 0.1);
     border: 1px solid rgba(var(--card-border-rgb), 0.15);
@@ -117,7 +140,7 @@
   .card:hover span {
     transform: translateX(4px);
   }
-}
+} */
 
 @media (prefers-reduced-motion) {
   .card:hover span {
