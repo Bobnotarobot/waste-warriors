@@ -4,17 +4,17 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 export default function Organise() {
-    function click() {
-      // TODO
-    }
-    return (
-      <div className={styles.container}>
-        <Head>
-          <title>Organise event</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
+  function click() {
+    // TODO
+  }
+  return (
+    <div className={styles.container}>
+      <Head>
+        <title>Organise event</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-        <main>
+      <main>
         <h1>Organise event</h1>
         <div className={styles.card}>
           <label form='Location'>Location: </label>
@@ -33,8 +33,8 @@ export default function Organise() {
           <Link href="/">back</Link>
         </div>
 
-        </main>
-      </div>
-      
-    );
-  }
+      </main>
+    </div>
+
+  );
+}
