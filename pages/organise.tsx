@@ -25,7 +25,7 @@ export default function Organise() {
       </Head>
 
       <main>
-        <h1>Organise an event</h1>
+        <h1>Organise event</h1>
 
         <form className="flex flex-col" onSubmit={saveEvent}>
           <div className={styles.card}>
