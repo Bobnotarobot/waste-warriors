@@ -6,7 +6,8 @@ import prisma from '../../lib/prisma';
 
 export default function Organise() {
 
-  async function saveEvent({ event }: any) {
+  async function saveEvent(event: any) {
+    console.log("got here");
     const location = event.target.Location.value;
     const date = event.target.Time.value;
     const response = await fetch('/api/event', { method: 'POST', body: JSON.stringify({ location: location, date: date }), });
