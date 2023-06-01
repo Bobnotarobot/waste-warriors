@@ -21,7 +21,6 @@ interface event {
 }
 
 export default function Home({ events }: any) {
-  // const data = [{ location: "Your house", time: "In 3 minutes" }, { location: "The Moon", time: "2078" }, { location: "Third example", time: "idk Tuesday" }]
   return (
     <div className={styles.container}>
       <Head>
