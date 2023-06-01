@@ -25,17 +25,17 @@ export default function Home({ events }: any) {
   return (
     <div className={styles.container}>
       <Head>
-        <title>List view</title>
+        <title>Litter picking</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
-        <p>Click <Link href="/test/test">here</Link> to organise an event!</p>
+        <p>Click <Link href="/organise">here</Link> to organise an event!</p>
 
         <h3>Upcoming events:</h3>
 
         <div className={styles.grid}>
-          {events.map((event: event) =>
+          {events?.map((event: event) =>
             <div key={event.id}>
               <div className={styles.eventcard}>
                 <h4>{event.location}</h4>

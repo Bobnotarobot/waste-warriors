@@ -1,8 +1,7 @@
-import styles from '../page.module.css'
+import styles from './page.module.css'
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import prisma from '../../lib/prisma';
 
 export default function Organise() {
 
