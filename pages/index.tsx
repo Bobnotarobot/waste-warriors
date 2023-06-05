@@ -35,14 +35,14 @@ export default function Home({ events }: any) {
 
         <div className={styles.grid}>
           {events?.map((event: event) =>
-            <Link href={`/events/${encodeURIComponent(event.id)}`}>
-              <div key={event.id}>
+            <div key={event.id}>
+              <Link href={`/events/${encodeURIComponent(event.id)}`}>
                 <div className={styles.eventcard}>
                   <h4>{event.location}</h4>
                   <p>{event.date}</p>
                 </div>  
-              </div>
-            </Link>
+              </Link>
+            </div>
           )}
         </div>
       </main>
