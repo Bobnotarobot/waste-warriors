@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import prisma from '../../lib/prisma';
 
-export async function getServerSideProps(context: { query: { id: Int; }; }) {
+export async function getServerSideProps(context: { query: { id: any; }; }) {
     const {id} = context.query;
     const event = await prisma.event.findUnique({
         where: {
