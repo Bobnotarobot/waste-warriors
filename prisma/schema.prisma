@@ -13,7 +13,7 @@ datasource db {
 model Event {
   id                Int       @id @default(autoincrement())
   location          String
-  date              DateTime
+  date              String
   duration          Int?
   creationDate      DateTime?
   description       String?
