@@ -6,9 +6,16 @@ import Link from 'next/link';
 export default function Organise() {
 
   async function saveEvent(event: any) {
-    const location = event.target.Location.value;
+    const postcode = event.target.Postcode.value;
     const date = event.target.Date.value;
-    const response = await fetch('/api/event', { method: 'POST', body: JSON.stringify({ location: location, date: date }), });
+    const duration = event.target.Duration.value;
+    const description = event.target.Description.value;
+    const social = event.target.Social.value;
+    const socialdescription = event.target.SocialDescription.value;
+    const jsdate = new Date();
+    const creationdate = jsdate.getFullYear() + '-' + (jsdate.getMonth() + 1) + '-' + jsdate.getDate() + ' ' + jsdate.getHours() + ':' + jsdate.getMinutes();
+    const body = {location: postcode, date: date, duration: duration, creationDate: creationdate, description: description, social: social, socialDescription: socialdescription}
+    const response = await fetch('/api/event', { method: 'POST', body: JSON.stringify(body), });
 
     if (!response.ok) {
       throw new Error(response.statusText);
@@ -29,12 +36,32 @@ export default function Organise() {
 
         <form className="flex flex-col" onSubmit={saveEvent}>
           <div className={styles.card}>
-            <label form='Location'>Location: </label>
-            <input name='Location' id='Location'></input>
+            <label form='Image'>Image: </label>
+            <input type="file" name='Image' id='Image' accept="image/png, image/jpeg" required></input>
+          </div>
+          <div className={styles.card}>
+            <label form='Postcode'>Postcode: </label>
+            <input name='Postcode' id='Postcode' required></input>
           </div>
           <div className={styles.card}>
             <label form='Date'>Date and time: </label>
-            <input name='Date' id='Date'></input>
+            <input type="datetime-local" name='Date' id='Date' required></input>
+          </div>
+          <div className={styles.card}>
+            <label form='Duration'>Duration (hours): </label>
+            <input name='Duration' id='Duration' required></input>
+          </div>
+          <div className={styles.card}>
+            <label form='Description'>Description: </label>
+            <input name='Description' id='Description' style={{width: "400px"}}></input>
+          </div>
+          <div className={styles.card}>
+            <label form='Social'>Social: </label> {/*add checkbox*/}
+            <input type="Checkbox" name='Social' id='Social'></input>
+          </div>
+          <div className={styles.card}>
+            <label form='Social Description'>Social Description: </label>
+            <input name='SocialDescription' id='SocialDescription'></input>
           </div>
           <button type="submit">
             Submit
