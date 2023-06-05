@@ -18,6 +18,11 @@ interface event {
   id: number;
   location: string;
   date: string;
+  duration: number;
+  creationDate: string;
+  description: string;
+  social: boolean;
+  socialDescription: string;
 }
 
 export default function Home({ events }: any) {

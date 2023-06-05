@@ -11,10 +11,10 @@ export default function Organise() {
     const duration = event.target.Duration.value;
     const description = event.target.Description.value;
     const social = event.target.Social.value;
-    const socialdescription = event.target.SocialDescription.value;
+    const socialDescription = event.target.SocialDescription.value;
     const jsdate = new Date();
-    const creationdate = jsdate.getFullYear() + '-' + (jsdate.getMonth() + 1) + '-' + jsdate.getDate() + ' ' + jsdate.getHours() + ':' + jsdate.getMinutes();
-    const body = {location: postcode, date: date, duration: duration, creationDate: creationdate, description: description, social: social, socialDescription: socialdescription}
+    const creationDate = jsdate.getFullYear() + '-' + (jsdate.getMonth() + 1) + '-' + jsdate.getDate() + 'T' + jsdate.getHours() + ':' + jsdate.getMinutes();
+    const body = {location: postcode, date: date, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription}
     const response = await fetch('/api/event', { method: 'POST', body: JSON.stringify(body), });
 
     if (!response.ok) {
