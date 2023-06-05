@@ -5,11 +5,23 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import prisma from '../../lib/prisma';
 
+// interface Event {
+//   id: number;
+//   location: string;
+//   date: string;
+//   duration: number;
+//   creationDate: string;
+//   description: string;
+//   interested: number;
+//   social: boolean;
+//   socialDescription: string;
+// }
+
 export async function getServerSideProps(context: { query: { id: any; }; }) {
     const {id} = context.query;
     const event = await prisma.event.findUnique({
         where: {
-            id:  parseInt(id)
+            id: parseInt(id)
         },
     })
     return {
@@ -18,18 +30,25 @@ export async function getServerSideProps(context: { query: { id: any; }; }) {
   }
 
 export default function View({ event }: any) {
-    const [interested, setInterested] = React.useState(0);
-    var interestGiven = false;
-    function interestedButton() {
-        if (interestGiven) {
-            interestGiven = false;
-            setInterested(interested - 1);
-        }
-        else {
-            interestGiven = true;
-            setInterested(interested + 1); 
-        }
+    const [interested, setInterested] = React.useState(event.interested);
+    const [interestGiven, setInterestGiven] = React.useState(0);
+
+    async function interestedButton() {
+      console.log(event.interested)
+      const response = await fetch('/api/interested', { method: 'POST', body: JSON.stringify({ interestGiven: interestGiven, id: event.id }), });
+
+      if (!response.ok) {
+        throw new Error(response.statusText);
       }
+
+      const res = await response.json();
+
+      setInterested(interestGiven == 0 ? event.interested + 1 : event.interested);
+      setInterestGiven(1 - interestGiven);
+  
+      return res;
+    }
+
   return (
     <div className={styles.container}>
       <Head>
