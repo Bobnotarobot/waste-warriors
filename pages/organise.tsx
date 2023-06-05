@@ -7,7 +7,7 @@ export default function Organise() {
 
   async function saveEvent(event: any) {
     const location = event.target.Location.value;
-    const date = event.target.Time.value;
+    const date = event.target.Date.value;
     const response = await fetch('/api/event', { method: 'POST', body: JSON.stringify({ location: location, date: date }), });
 
     if (!response.ok) {
@@ -33,8 +33,8 @@ export default function Organise() {
             <input name='Location' id='Location'></input>
           </div>
           <div className={styles.card}>
-            <label form='Time'>Time: </label>
-            <input name='Time' id='Time'></input>
+            <label form='Date'>Date and time: </label>
+            <input name='Date' id='Date'></input>
           </div>
           <button type="submit">
             Submit
