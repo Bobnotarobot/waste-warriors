@@ -7,6 +7,7 @@ import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import prisma from '../lib/prisma';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export async function getServerSideProps() {
   const events = await prisma.event.findMany();
@@ -15,8 +16,25 @@ export async function getServerSideProps() {
   }
 }
 
-export async function refreshEvents() {
-
+export async function refreshEvents(filters: any) {
+  const maxDist = filters.target.MaxDist.value;
+  const minInterested = filters.target.MinInterested.value;
+  const dateMin = filters.target.DateMin.value;
+  const dateMax = filters.target.DateMax.value;
+  const hasSocial = filters.target.hasSocial.value;
+  const filteredEvents = await prisma.event.findMany({
+    where: {
+      interested: {
+        gt: minInterested,
+      },
+      date: {
+        gt: dateMin,
+        lt: dateMax,
+      },
+      social: hasSocial,
+    }
+  });
+  // return something maybe??
 }
 
 interface event {
@@ -24,7 +42,11 @@ interface event {
   location: string;
   date: string;
   duration: string;
+  creationDate: number;
   description: string;
+  interested: number;
+  social: boolean;
+  socialDescription: string;
 }
 
 export default function Home({ events }: any) {
@@ -47,7 +69,7 @@ export default function Home({ events }: any) {
             <form onSubmit={refreshEvents} className={styles.filterForm}>
               <div className={styles.filterForm}>
                 <label form='MaxDist'>Maximum distance: </label>
-                <input name='MaxDist' id='MaxDist' type='number' defaultValue='10' min='0'></input>
+                <input name='MaxDist' id='MaxDist' type='number' defaultValue='100' min='0'></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='MinInterested'>Minimum people interested: </label>
