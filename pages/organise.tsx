@@ -44,7 +44,7 @@ export default function Organise() {
     const marlatlng = marker.getPosition();
     const strmllng = marlatlng?.lng().toString();
     const strmllat = marlatlng?.lat().toString();
-    const str = strmllng + ', ' + strmllat;
+    const str = strmllat + ', ' + strmllng;
     const date = event.target.Date.value;
     const duration = event.target.Duration.value;
     const description = event.target.Description.value;
