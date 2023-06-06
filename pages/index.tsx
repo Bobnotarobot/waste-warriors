@@ -1,5 +1,4 @@
 'use client'
-import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
 import Image from 'next/image'
 import styles from './page.module.css'
@@ -36,19 +35,23 @@ export default function Home({ events }: any) {
   const [social, setSocial] = React.useState(false);
 
   function refreshEvents(filters: any) {
+    filters.preventDefault();
     // const maxDist = filters.target.MaxDist.value;
     setMinInterested(filters.target.MinInterested.value);
     setDateMin(filters.target.DateMin.value ? filters.target.DateMin.value.valueOf() : 0);
     setDateMax(filters.target.DateMax.value ? filters.target.DateMax.value.valueOf() : Number.MAX_VALUE);
-    setSocial(filters.target.hasSocial);
+    setSocial(filters.target.HasSocial.checked);
     return false;
   }
 
   function notFiltered(event: event) {
+    console.log(event.date);
+    console.log(dateMin);
+    console.log(dateMax);
     return (event.interested >= minInterested) &&
-    (Date.parse(event.date).valueOf() >= dateMin) &&
-    (Date.parse(event.date).valueOf() <= dateMax) &&
-    (social ? event.social : true);
+      (Date.parse(event.date).valueOf() >= dateMin) &&
+      (Date.parse(event.date).valueOf() <= dateMax) &&
+      (social == event.social == true || social == false);
   }
 
   return (
@@ -99,15 +102,15 @@ export default function Home({ events }: any) {
             <div className={styles.eventList}>
               {events?.map((event: event) =>
                 notFiltered(event) ?
-                (<div key={event.id}>
-                  <div className={styles.event}>
-                    <h4>{event.location}</h4>
-                    <h4>{event.date}</h4>
-                    <h4>Duration: {event.duration} h</h4>
-                    <p>About: {event.description}</p>
-                    <p>{event.interested} interested</p>
-                  </div>
-                </div>) : null
+                  (<div key={event.id}>
+                    <div className={styles.event}>
+                      <h4>{event.location}</h4>
+                      <h4>{event.date}</h4>
+                      <h4>Duration: {event.duration} h</h4>
+                      <p>About: {event.description}</p>
+                      <p>{event.interested} interested</p>
+                    </div>
+                  </div>) : null
               )}
             </div>
           </div>
