@@ -4,18 +4,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import prisma from '../../lib/prisma';
-
-// interface Event {
-//   id: number;
-//   location: string;
-//   date: string;
-//   duration: number;
-//   creationDate: string;
-//   description: string;
-//   interested: number;
-//   social: boolean;
-//   socialDescription: string;
-// }
+import moment from 'moment'
 
 export async function getServerSideProps(context: { query: { id: any; }; }) {
     const {id} = context.query;
@@ -31,10 +20,11 @@ export async function getServerSideProps(context: { query: { id: any; }; }) {
 
 export default function View({ event }: any) {
     const [interested, setInterested] = React.useState(event.interested);
-    const [interestGiven, setInterestGiven] = React.useState(0);
+    const [interestGiven, setInterestGiven] = React.useState(false);
+    const [buttonthing, setButtonthing] = React.useState("");
 
     async function interestedButton() {
-      console.log(event.interested)
+      setButtonthing("...");
       const response = await fetch('/api/interested', { method: 'POST', body: JSON.stringify({ interestGiven: interestGiven, id: event.id }), });
 
       if (!response.ok) {
@@ -43,10 +33,16 @@ export default function View({ event }: any) {
 
       const res = await response.json();
 
-      setInterested(interestGiven == 0 ? event.interested + 1 : event.interested);
-      setInterestGiven(1 - interestGiven);
+      setInterested(interestGiven ? event.interested : event.interested + 1);
+      setButtonthing(interestGiven ? "" : " ✔");
+      setInterestGiven(!interestGiven);
+      
   
       return res;
+    }
+
+    function prettyDate(date: Date) {
+      return moment(date).format('dddd MMMM Do, h:mm a');
     }
 
   return (
@@ -56,19 +52,21 @@ export default function View({ event }: any) {
       </Head>
 
       <main>
-        <Link href="/">back</Link>
-        <h1>{event.location}</h1>
-        <h2>{event.date} (~{event.duration} hours)</h2>
-        <p>{event.description}</p>
-        {event.social ? <div><p>Social event afterwards:</p> <p>{event.socialDescription}</p></div> : null}
-
-        <div className={styles.grid}>
-            {((new Date()).valueOf() - Date.parse(event.creationDate) < 1000 * 3600 * 24) ? <div className={styles.card}>New</div> : null }
-            {event.social ? <div className={styles.card}>Social</div> : <p></p> }
+        <div className={styles.margin}>
+            <Link href="/">back</Link>
+            {((new Date()).valueOf() - Date.parse(event.creationDate) < 1000 * 3600 * 24) ? <div className={styles.tag}>New</div> : null }
+            {event.social ? <div className={styles.tag}>Social</div> : null }
         </div>
 
-        <p>{interested} interested</p>
-        <button onClick={interestedButton}>Interested</button>
+        <div className={styles.bodywithmargin}>
+          <h1>{event.location}</h1>
+          <h2>{prettyDate(new Date(Date.parse(event.date)))} (~{event.duration} hours)</h2>
+          <p>{event.description}</p>
+          {event.social ? <div><p>Social event afterwards:</p> <p>{event.socialDescription}</p></div> : null}
+
+          <p>{interested} interested</p>
+          <button onClick={interestedButton}>Interested{buttonthing}</button>
+        </div>
 
       </main>
     </div>

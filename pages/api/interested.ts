@@ -12,7 +12,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const id = data.id;
   var savedEvent;
 
-  if (interestGiven == 1) {
+  if (interestGiven) {
           savedEvent = await prisma.event.update({
             where: {
               id: id
