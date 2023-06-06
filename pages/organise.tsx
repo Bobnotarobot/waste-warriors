@@ -10,11 +10,11 @@ export default function Organise() {
     const date = event.target.Date.value;
     const duration = event.target.Duration.value;
     const description = event.target.Description.value;
-    const social = event.target.Social.value;
+    const social = event.target.Social.checked;
     const socialDescription = event.target.SocialDescription.value;
     const jsdate = new Date();
     const creationDate = jsdate.getFullYear() + '-' + (jsdate.getMonth() + 1) + '-' + jsdate.getDate() + 'T' + jsdate.getHours() + ':' + jsdate.getMinutes();
-    const body = {location: postcode, date: date, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription}
+    const body = {location: postcode, date: date, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription};
     const response = await fetch('/api/event', { method: 'POST', body: JSON.stringify(body), });
 
     if (!response.ok) {
@@ -49,7 +49,7 @@ export default function Organise() {
           </div>
           <div className={styles.card}>
             <label form='Duration'>Duration (hours): </label>
-            <input name='Duration' id='Duration' required></input>
+            <input type="number" name='Duration' id='Duration' required></input>
           </div>
           <div className={styles.card}>
             <label form='Description'>Description: </label>
