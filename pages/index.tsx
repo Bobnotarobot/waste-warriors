@@ -16,27 +16,6 @@ export async function getServerSideProps() {
   }
 }
 
-export async function refreshEvents(filters: any) {
-  const maxDist = filters.target.MaxDist.value;
-  const minInterested = filters.target.MinInterested.value;
-  const dateMin = filters.target.DateMin.value;
-  const dateMax = filters.target.DateMax.value;
-  const hasSocial = filters.target.hasSocial.value;
-  const filteredEvents = await prisma.event.findMany({
-    where: {
-      interested: {
-        gt: minInterested,
-      },
-      date: {
-        gt: dateMin,
-        lt: dateMax,
-      },
-      social: hasSocial,
-    }
-  });
-  // return something maybe??
-}
-
 interface event {
   id: number;
   location: string;
@@ -50,6 +29,27 @@ interface event {
 }
 
 export default function Home({ events }: any) {
+  const [maxDist, setMaxDist] = React.useState(Number.MAX_VALUE);
+  const [minInterested, setMinInterested] = React.useState(0);
+  const [dateMin, setDateMin] = React.useState(0);
+  const [dateMax, setDateMax] = React.useState(Number.MAX_VALUE);
+  const [social, setSocial] = React.useState(false);
+
+  function refreshEvents(filters: any) {
+    // const maxDist = filters.target.MaxDist.value;
+    setMinInterested(filters.target.MinInterested.value);
+    setDateMin(filters.target.DateMin.value ? filters.target.DateMin.value.valueOf() : 0);
+    setDateMax(filters.target.DateMax.value ? filters.target.DateMax.value.valueOf() : Number.MAX_VALUE);
+    setSocial(filters.target.hasSocial);
+    return false;
+  }
+
+  function notFiltered(event: event) {
+    return (event.interested >= minInterested) &&
+    (Date.parse(event.date).valueOf() >= dateMin) &&
+    (Date.parse(event.date).valueOf() <= dateMax) &&
+    (social ? event.social : true);
+  }
 
   return (
     <div>
@@ -69,11 +69,11 @@ export default function Home({ events }: any) {
             <form onSubmit={refreshEvents} className={styles.filterForm}>
               <div className={styles.filterForm}>
                 <label form='MaxDist'>Maximum distance: </label>
-                <input name='MaxDist' id='MaxDist' type='number' defaultValue='100' min='0'></input>
+                <input name='MaxDist' id='MaxDist' type='number' min='0'></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='MinInterested'>Minimum people interested: </label>
-                <input name='MinInterested' id='MinInterested' type='number' defaultValue='0' min='0'></input>
+                <input name='MinInterested' id='MinInterested' type='number' min='0'></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='DateMin'>Date from: </label>
@@ -98,14 +98,16 @@ export default function Home({ events }: any) {
 
             <div className={styles.eventList}>
               {events?.map((event: event) =>
-                <div key={event.id}>
+                notFiltered(event) ?
+                (<div key={event.id}>
                   <div className={styles.event}>
                     <h4>{event.location}</h4>
                     <h4>{event.date}</h4>
                     <h4>Duration: {event.duration} h</h4>
                     <p>About: {event.description}</p>
+                    <p>{event.interested} interested</p>
                   </div>
-                </div>
+                </div>) : null
               )}
             </div>
           </div>
