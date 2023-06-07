@@ -61,7 +61,7 @@ export default function Organise() {
     if (!response.ok) {
       throw new Error(response.statusText);
     }
-    return await response.json();//add return to index page
+    return await response.json();
     
   }
 
