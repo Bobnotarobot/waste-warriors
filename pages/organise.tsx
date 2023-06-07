@@ -41,10 +41,9 @@ export default function Organise() {
   var marker: google.maps.Marker;
 
   async function saveEvent(event: any) {
-    const marlatlng = marker.getPosition();
-    const strmllng = marlatlng?.lng().toString();
-    const strmllat = marlatlng?.lat().toString();
-    const str = strmllat + ', ' + strmllng;
+    const mlng = marker.getPosition()?.lng();
+    const mlat = marker.getPosition()?.lat();
+    const location = event.target.Address.value;
     const date = event.target.Date.value;
     const duration = event.target.Duration.value;
     const description = event.target.Description.value;
@@ -52,7 +51,7 @@ export default function Organise() {
     const socialDescription = event.target.SocialDescription.value;
     const jsdate = new Date();
     const creationDate = jsdate.getFullYear() + '-' + (jsdate.getMonth() + 1) + '-' + jsdate.getDate() + 'T' + jsdate.getHours() + ':' + jsdate.getMinutes();
-    const body = {location: str, date: date, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription};
+    const body = {location: location, lat:mlat, lng:mlng, date: date, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription};
     const response = await fetch('/api/event', { method: 'POST', body: JSON.stringify(body), });
     if (!response.ok) {
       throw new Error(response.statusText);
@@ -69,9 +68,9 @@ export default function Organise() {
     map.addListener("bounds_changed", () => {searchBox.setBounds(map.getBounds() as google.maps.LatLngBounds);});
     searchBox.addListener("places_changed", () => {
       const places = searchBox.getPlaces();
-      if (places.length == 0)return;
+      if (places?.length == 0)return;
       const bounds = new google.maps.LatLngBounds();
-      if (places[0].geometry!.viewport) bounds.union(places[0].geometry!.viewport);
+      if (places[0].geometry?.viewport) bounds.union(places[0].geometry!.viewport);
       else bounds.extend(places[0].geometry!.location!);
       map.fitBounds(bounds);
       marker.setPosition(bounds.getCenter());
@@ -91,7 +90,7 @@ export default function Organise() {
         <form className="flex flex-col" onSubmit={saveEvent}>
           <div className={styles.card}>
             <label form='Image'>Image: </label>
-            <input type="file" name='Image' id='Image' accept="image/png, image/jpeg" required></input>
+            <input type="file" name='Image' id='Image' accept="image/png, image/jpeg"></input>
           </div>
           <div className={styles.card}>
             <input name='Address' id='Address' required></input>
