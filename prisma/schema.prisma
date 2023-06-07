@@ -12,7 +12,7 @@ datasource db {
 
 model Event {
   id                Int      @id @default(autoincrement())
-  location          String
+  location          String?
   lat               Float
   lng               Float
   date              String

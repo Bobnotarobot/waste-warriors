@@ -93,7 +93,7 @@ export default function Organise() {
             <input type="file" name='Image' id='Image' accept="image/png, image/jpeg"></input>
           </div>
           <div className={styles.card}>
-            <input name='Address' id='Address' required></input>
+            <input name='Address' id='Address'></input>
           </div>
           <GoogleMap
             id="map"
