@@ -195,13 +195,15 @@ export default function Home({ events }: any) {
               {events?.map((event: event) =>
                 notFiltered(event) ?
                   (<div key={event.id}>
-                    <div className={styles.event}>
-                      <h4>{event.location}</h4>
-                      <h4>{event.date}</h4>
-                      <h4>Duration: {event.duration} h</h4>
-                      <p>About: {event.description}</p>
-                      <p>{event.interested} interested</p>
-                    </div>
+                    <Link href={`/events/${encodeURIComponent(event.id)}`}>
+                      <div className={styles.event}>
+                        <h4>{event.location}</h4>
+                        <h4>{event.date}</h4>
+                        <h4>Duration: {event.duration} h</h4>
+                        <p>About: {event.description}</p>
+                        <p>{event.interested} interested</p>
+                      </div>
+                    </Link>
                   </div>) : null
               )}
             </div>
