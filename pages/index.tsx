@@ -214,7 +214,7 @@ export default function Home({ events }: any) {
                 zoom={14}
                 center={mapCenter}
                 mapTypeId={google.maps.MapTypeId.ROADMAP}
-                mapContainerStyle={{ width: '800px', height: '800px' }}
+                mapContainerStyle={{ width: '833px', height: '550px' }}
                 onLoad={() => console.log('Map Component Loaded...')}
               >
                 {markers.map((marker) => (
