@@ -88,7 +88,7 @@ export function generateMarkers(events: event[]) {
       time: new Date(event.date).toLocaleTimeString(),
       lat: event.lat,
       lng: event.lng,
-      duration: event.duration + "hours",
+      duration: event.duration,
       interested: event.interested,
       social: event.social,
       colour: col,
@@ -202,8 +202,8 @@ export default function Home({ events }: any) {
           infowindow.setContent(
           '<h3>' + markerEvent.location + '</h3>' +
           '<p>' + markerEvent.date + ' at ' + markerEvent.time +
-          '<br>' + 'Duration:  ' + markerEvent.duration + '</br>' +
-          '<br>Interested:  ' + markerEvent.interested + '</br>' +
+          '<br>' + 'Duration:  ' + markerEvent.duration + ' hours</br>' +
+          '<br>' + markerEvent.interested + ' Interested</br>' +
           (markerEvent.social ? '#Social' : '' ) + '</p>' +
           '<form action="/events/' + marker.id + '">' +
           '<input type="submit" value="View more event details ->" className={styles.viewEventButton} />' +
