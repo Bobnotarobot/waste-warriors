@@ -9,8 +9,8 @@ import prisma from '../lib/prisma';
 import { useLoadScript, GoogleMap, MarkerF } from '@react-google-maps/api';
 import { useMemo } from 'react';
 import Geolocation from '@react-native-community/geolocation';
-const DEVELOPMENT_GOOGLE_MAPS_KEY="AIzaSyD_uZuWbXXwxHrP4jetAlgWzrrc-dgQ_6Q"
-const PRODUCTION_GOOGLE_MAPS_KEY="AIzaSyBXcHbmJFrRxrot8_NXQzNMBUITngrsWEo"
+const DEVELOPMENT_GOOGLE_MAPS_KEY = "AIzaSyD_uZuWbXXwxHrP4jetAlgWzrrc-dgQ_6Q"
+const PRODUCTION_GOOGLE_MAPS_KEY = "AIzaSyBXcHbmJFrRxrot8_NXQzNMBUITngrsWEo"
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export async function getServerSideProps() {
@@ -75,7 +75,7 @@ export function generateMarkers(events: event[]) {
       //TODO: remove stale events from database
       return;
     }
-    markers.push({id: event.id, lat: latLng[0], lng: latLng[1], colour: col, title: ttl});
+    markers.push({ id: event.id, lat: latLng[0], lng: latLng[1], colour: col, title: ttl });
   });
 }
 
@@ -91,13 +91,13 @@ export default function Home({ events }: any) {
 
   const noMarkers = [
     {
-        featureType: "poi",
-        elementType: "labels",
-        stylers: [
-          { visibility: "off" }
-        ]
-      }
-    ];
+      featureType: "poi",
+      elementType: "labels",
+      stylers: [
+        { visibility: "off" }
+      ]
+    }
+  ];
 
   const mapOptions = useMemo<google.maps.MapOptions>(
     () => ({
@@ -218,14 +218,14 @@ export default function Home({ events }: any) {
                 onLoad={() => console.log('Map Component Loaded...')}
               >
                 {markers.map((marker) => (
-                    <MarkerF
-                      key={marker.id}
-                      position={{ lat: marker.lat, lng: marker.lng }}
-                      icon={{
-                        url: marker.colour,
-                      }}
-                      title={marker.title}
-                    />
+                  <MarkerF
+                    key={marker.id}
+                    position={{ lat: marker.lat, lng: marker.lng }}
+                    icon={{
+                      url: marker.colour,
+                    }}
+                    title={marker.title}
+                  />
                 ))};
               </GoogleMap>
             </div>
