@@ -68,10 +68,10 @@ export default function Organise() {
     map.addListener("bounds_changed", () => {searchBox.setBounds(map.getBounds() as google.maps.LatLngBounds);});
     searchBox.addListener("places_changed", () => {
       const places = searchBox.getPlaces();
-      if (places?.length == 0)return;
+      if (places!.length == 0)return;
       const bounds = new google.maps.LatLngBounds();
-      if (places[0].geometry?.viewport) bounds.union(places[0].geometry!.viewport);
-      else bounds.extend(places[0].geometry!.location!);
+      if (places![0].geometry?.viewport) bounds.union(places![0].geometry!.viewport);
+      else bounds.extend(places![0].geometry!.location!);
       map.fitBounds(bounds);
       marker.setPosition(bounds.getCenter());
     });
@@ -110,7 +110,7 @@ export default function Organise() {
           </div>
           <div className={styles.card}>
             <label form='Duration'>Duration (hours): </label>
-            <input type="number" name='Duration' id='Duration' required></input>
+            <input type="number" step="0.1" name='Duration' id='Duration' required></input>
           </div>
           <div className={styles.card}>
             <label form='Description'>Description: </label>
