@@ -11,14 +11,14 @@ datasource db {
 }
 
 model Event {
-  id                Int      @id @default(autoincrement())
+  id                Int     @id @default(autoincrement())
   location          String
   date              String
-  duration          Int?
-  creationDate      String?
-  description       String?
-  interested        Int?
-  social            Boolean?
+  duration          Int
+  creationDate      String
+  description       String
+  interested        Int
+  social            Boolean
   socialDescription String?
 }
 

@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 
 export default function Organise() {
   const [social, setSocial] = React.useState(false);
-  
+
   const libraries = useMemo(() => ['places'], []);
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
   /*if (navigator.geolocation) {
@@ -17,13 +17,13 @@ export default function Organise() {
   }*/
   const noMarkers = [
     {
-        featureType: "poi",
-        elementType: "labels",
-        stylers: [
-          { visibility: "off" }
-        ]   
-      }
-    ];
+      featureType: "poi",
+      elementType: "labels",
+      stylers: [
+        { visibility: "off" }
+      ]
+    }
+  ];
   const mapOptions = useMemo<google.maps.MapOptions>(
     () => ({
       disableDefaultUI: false,
@@ -34,7 +34,7 @@ export default function Organise() {
     []
   );
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyD_uZuWbXXwxHrP4jetAlgWzrrc-dgQ_6Q" ,
+    googleMapsApiKey: "AIzaSyD_uZuWbXXwxHrP4jetAlgWzrrc-dgQ_6Q",
     libraries: libraries as any,
   });
   if (!isLoaded) {
@@ -53,8 +53,10 @@ export default function Organise() {
     const social = event.target.Social.checked;
     const socialDescription = event.target.SocialDescription.value;
     const jsdate = new Date();
-    const creationDate = jsdate.getFullYear() + '-' + (jsdate.getMonth() + 1) + '-' + jsdate.getDate() + 'T' + jsdate.getHours() + ':' + jsdate.getMinutes();
-    const body = {location: str, date: date, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription};
+    var mm = jsdate.getMonth() + 1; // getMonth() is zero-based
+    var dd = jsdate.getDate();
+    const creationDate = jsdate.getFullYear() + '-' + (mm > 9 ? '' : '0') + mm + '-' + (dd > 9 ? '' : '0') + dd + 'T' + jsdate.getHours() + ':' + jsdate.getMinutes();
+    const body = { location: str, date: date, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription };
     const response = await fetch('/api/event', { method: 'POST', body: JSON.stringify(body), });
     if (!response.ok) {
       throw new Error(response.statusText);
@@ -64,14 +66,14 @@ export default function Organise() {
 
   function initMap(): void {
     const map = new google.maps.Map(document.getElementById("map") as HTMLElement, { zoom: 14, center: mapCenter });
-    marker = new google.maps.Marker({position: mapCenter, map: map, title: "drag this pointer to choose location", draggable:true });
+    marker = new google.maps.Marker({ position: mapCenter, map: map, title: "drag this pointer to choose location", draggable: true });
     const input = document.getElementById("Address") as HTMLInputElement;
     const searchBox = new google.maps.places.SearchBox(input);
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-    map.addListener("bounds_changed", () => {searchBox.setBounds(map.getBounds() as google.maps.LatLngBounds);});
+    map.addListener("bounds_changed", () => { searchBox.setBounds(map.getBounds() as google.maps.LatLngBounds); });
     searchBox.addListener("places_changed", () => {
       const places = searchBox.getPlaces();
-      if (places.length == 0)return;
+      if (places.length == 0) return;
       const bounds = new google.maps.LatLngBounds();
       if (places[0].geometry!.viewport) bounds.union(places[0].geometry!.viewport);
       else bounds.extend(places[0].geometry!.location!);
@@ -142,7 +144,7 @@ export default function Organise() {
 
       </main>
     </div>
-    
+
 
   );
 }

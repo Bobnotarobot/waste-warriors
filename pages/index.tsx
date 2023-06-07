@@ -27,7 +27,7 @@ interface event {
   location: string;
   date: string;
   duration: string;
-  creationDate: number;
+  creationDate: string;
   description: string;
   interested: number;
   social: boolean;
@@ -148,6 +148,13 @@ export default function Home({ events }: any) {
     return moment(date).format('dddd MMMM Do, h:mm a');
   }
 
+  function isNew(creationDate: string) {
+    console.log("new date: ", (new Date()).valueOf());
+    console.log("creation: ", Date.parse(creationDate).valueOf());
+    console.log((new Date()).valueOf() - Date.parse(creationDate).valueOf() < 1000 * 3600 * 24);
+    return ((new Date()).valueOf() - Date.parse(creationDate).valueOf() < 1000 * 3600 * 24);
+  }
+
   return (
     <div>
       <Head>
@@ -197,12 +204,17 @@ export default function Home({ events }: any) {
               {events?.map((event: event) =>
                 notFiltered(event) ?
                   (<div key={event.id}>
-                    <Link href={`/events/${encodeURIComponent(event.id)}`}>
+                    <Link className={styles.linkNoUnderline} href={`/events/${encodeURIComponent(event.id)}`}>
                       <div className={styles.event}>
+                        <div>
+                          {isNew(event.creationDate) ? <div className={styles.tag}>New</div> : null}
+                          {event.social ? <div className={styles.tag}>Social</div> : null}
+                        </div>
                         <h4>{event.location}</h4>
                         <h4>{prettyDate(new Date(Date.parse(event.date)))}</h4>
                         <h4>Duration: {event.duration} h</h4>
                         <p>About: {event.description}</p>
+                        {event.social ? <div><p>Social event afterwards: {event.socialDescription}</p></div> : null}
                         <p>{event.interested} interested</p>
                       </div>
                     </Link>
