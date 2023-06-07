@@ -67,6 +67,8 @@ export default function Organise() {
 
   function initMap(): void {
     const map = new google.maps.Map(document.getElementById("map") as HTMLElement, { zoom: 14, center: mapCenter });
+    map.setOptions(mapOptions);
+
     marker = new google.maps.Marker({ position: mapCenter, map: map, title: "drag this pointer to choose location", draggable: true });
     const input = document.getElementById("Address") as HTMLInputElement;
     const searchBox = new google.maps.places.SearchBox(input);
