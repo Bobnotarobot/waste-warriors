@@ -118,7 +118,7 @@ export default function Home({ events }: any) {
   const [maxDist, setMaxDist] = React.useState(Number.MAX_VALUE);
   const [minInterested, setMinInterested] = React.useState(0);
   const [dateMin, setDateMin] = React.useState("0");
-  const [dateMax, setDateMax] = React.useState("2100-06-07T12:24");
+  const [dateMax, setDateMax] = React.useState("5000-01-01T00:00");
   const [social, setSocial] = React.useState(false);
 
   function refreshEvents(filters: any) {
@@ -126,12 +126,13 @@ export default function Home({ events }: any) {
     // const maxDist = filters.target.MaxDist.value;
     setMinInterested(filters.target.MinInterested.value);
     setDateMin(filters.target.DateMin.value ? filters.target.DateMin.value.valueOf() : "0");
-    setDateMax(filters.target.DateMax.value ? filters.target.DateMax.value.valueOf() : "5000-00-00T00:00");
+    setDateMax(filters.target.DateMax.value ? filters.target.DateMax.value.valueOf() : "5000-01-01T00:00");
     setSocial(filters.target.HasSocial.checked);
     return false;
   }
 
   function notFiltered(event: event) {
+    console.log("date max: ", Date.parse(event.date).valueOf() <= Date.parse(dateMax).valueOf());
     return (event.interested >= minInterested) &&
       (Date.parse(event.date).valueOf() >= Date.parse(dateMin).valueOf()) &&
       (Date.parse(event.date).valueOf() <= Date.parse(dateMax).valueOf()) &&
