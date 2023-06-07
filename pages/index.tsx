@@ -144,6 +144,10 @@ export default function Home({ events }: any) {
 
   generateMarkers(events);
 
+  function prettyDate(date: Date) {
+    return moment(date).format('dddd MMMM Do, h:mm a');
+  }
+
   return (
     <div>
       <Head>
@@ -196,7 +200,7 @@ export default function Home({ events }: any) {
                     <Link href={`/events/${encodeURIComponent(event.id)}`}>
                       <div className={styles.event}>
                         <h4>{event.location}</h4>
-                        <h4>{event.date}</h4>
+                        <h4>{prettyDate(new Date(Date.parse(event.date)))}</h4>
                         <h4>Duration: {event.duration} h</h4>
                         <p>About: {event.description}</p>
                         <p>{event.interested} interested</p>
