@@ -118,7 +118,7 @@ export default function Home({ events }: any) {
   const [maxDist, setMaxDist] = React.useState(Number.MAX_VALUE);
   const [minInterested, setMinInterested] = React.useState(0);
   const [dateMin, setDateMin] = React.useState("0");
-  const [dateMax, setDateMax] = React.useState("2100-06-07T12:24");
+  const [dateMax, setDateMax] = React.useState("5000-01-01T00:00");
   const [social, setSocial] = React.useState(false);
 
   function refreshEvents(filters: any) {
@@ -126,12 +126,13 @@ export default function Home({ events }: any) {
     // const maxDist = filters.target.MaxDist.value;
     setMinInterested(filters.target.MinInterested.value);
     setDateMin(filters.target.DateMin.value ? filters.target.DateMin.value.valueOf() : "0");
-    setDateMax(filters.target.DateMax.value ? filters.target.DateMax.value.valueOf() : "5000-00-00T00:00");
+    setDateMax(filters.target.DateMax.value ? filters.target.DateMax.value.valueOf() : "5000-01-01T00:00");
     setSocial(filters.target.HasSocial.checked);
     return false;
   }
 
   function notFiltered(event: event) {
+    console.log("date max: ", Date.parse(event.date).valueOf() <= Date.parse(dateMax).valueOf());
     return (event.interested >= minInterested) &&
       (Date.parse(event.date).valueOf() >= Date.parse(dateMin).valueOf()) &&
       (Date.parse(event.date).valueOf() <= Date.parse(dateMax).valueOf()) &&
@@ -146,13 +147,6 @@ export default function Home({ events }: any) {
 
   function prettyDate(date: Date) {
     return moment(date).format('dddd MMMM Do, h:mm a');
-  }
-
-  function isNew(creationDate: string) {
-    console.log("new date: ", (new Date()).valueOf());
-    console.log("creation: ", Date.parse(creationDate).valueOf());
-    console.log((new Date()).valueOf() - Date.parse(creationDate).valueOf() < 1000 * 3600 * 24);
-    return ((new Date()).valueOf() - Date.parse(creationDate).valueOf() < 1000 * 3600 * 24);
   }
 
   return (
@@ -206,9 +200,9 @@ export default function Home({ events }: any) {
                   (<div key={event.id}>
                     <Link className={styles.linkNoUnderline} href={`/events/${encodeURIComponent(event.id)}`}>
                       <div className={styles.event}>
-                        <div>
-                          {isNew(event.creationDate) ? <div className={styles.tag}>New</div> : null}
-                          {event.social ? <div className={styles.tag}>Social</div> : null}
+                        <div className={styles.tags}>
+                          {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New</div> : null}
+                          {event.social ? <div className={styles.tagSocial}>Social</div> : null}
                         </div>
                         <h4>{event.location}</h4>
                         <h4>{prettyDate(new Date(Date.parse(event.date)))}</h4>
