@@ -2,6 +2,7 @@ import styles from './page.module.css'
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import Script from 'next/script'
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
 
@@ -57,6 +58,7 @@ export default function Organise() {
       throw new Error(response.statusText);
     }
     return await response.json();//add return to index page
+    
   }
 
   function initMap(): void {
@@ -82,10 +84,9 @@ export default function Organise() {
       <Head>
         <title>Organise event</title>
         <link rel="icon" href="/favicon.ico" />
-        <script>
-          let dateInput = document.getElementById("Date");
-          dateInput.min = new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));
-        </script>
+        <Script>
+          {'dateInput = document.getElementById("Date"); dateInput.min = new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));'}'
+        </Script>
       </Head>
 
       <main>
@@ -121,14 +122,14 @@ export default function Organise() {
             <input name='Description' id='Description' style={{width: "400px"}}></input>
           </div>
           <div className={styles.card}>
-            <label form='Social'>Social: </label> {/*add checkbox*/}
+            <label form='Social'>Social: </label>
             <input type="Checkbox" name='Social' id='Social'></input>
           </div>
           <div className={styles.card}>
             <label form='Social Description'>Social Description: </label>
             <input name='SocialDescription' id='SocialDescription'></input>
           </div>
-          <button type="submit">
+          <button type="submit" id="submit">
             Submit
           </button>
         </form>
