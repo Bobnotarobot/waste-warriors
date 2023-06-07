@@ -75,6 +75,31 @@
   margin-left: 8%;
 }
 
+.tagNew {
+  width: 30%;
+  color: black;
+  background-color: yellow;
+  padding: 1.5rem;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.tagSocial {
+  width: 30%;
+  color: black;
+  background-color: blue;
+  padding: 1.5rem;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.tags {
+  display: flex;
+  gap: 10px;
+}
+
 .card {
   max-width: 20%;
   margin: 1rem;

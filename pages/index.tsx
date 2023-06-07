@@ -148,13 +148,6 @@ export default function Home({ events }: any) {
     return moment(date).format('dddd MMMM Do, h:mm a');
   }
 
-  function isNew(creationDate: string) {
-    console.log("new date: ", (new Date()).valueOf());
-    console.log("creation: ", Date.parse(creationDate).valueOf());
-    console.log((new Date()).valueOf() - Date.parse(creationDate).valueOf() < 1000 * 3600 * 24);
-    return ((new Date()).valueOf() - Date.parse(creationDate).valueOf() < 1000 * 3600 * 24);
-  }
-
   return (
     <div>
       <Head>
@@ -206,9 +199,9 @@ export default function Home({ events }: any) {
                   (<div key={event.id}>
                     <Link className={styles.linkNoUnderline} href={`/events/${encodeURIComponent(event.id)}`}>
                       <div className={styles.event}>
-                        <div>
-                          {isNew(event.creationDate) ? <div className={styles.tag}>New</div> : null}
-                          {event.social ? <div className={styles.tag}>Social</div> : null}
+                        <div className={styles.tags}>
+                          {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New</div> : null}
+                          {event.social ? <div className={styles.tagSocial}>Social</div> : null}
                         </div>
                         <h4>{event.location}</h4>
                         <h4>{prettyDate(new Date(Date.parse(event.date)))}</h4>
