@@ -82,6 +82,10 @@ export default function Organise() {
       <Head>
         <title>Organise event</title>
         <link rel="icon" href="/favicon.ico" />
+        <script>
+          let dateInput = document.getElementById("Date");
+          dateInput.min = new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));
+        </script>
       </Head>
 
       <main>
