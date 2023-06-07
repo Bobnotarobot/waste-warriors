@@ -6,6 +6,8 @@ import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
 
 export default function Organise() {
+  const [social, setSocial] = React.useState(false);
+  
   const libraries = useMemo(() => ['places'], []);
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
   /*if (navigator.geolocation) {
@@ -78,6 +80,10 @@ export default function Organise() {
     });
   }
 
+  function enableSocial() {
+    setSocial(!social);
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -91,7 +97,7 @@ export default function Organise() {
         <form className="flex flex-col" onSubmit={saveEvent}>
           <div className={styles.card}>
             <label form='Image'>Image: </label>
-            <input type="file" name='Image' id='Image' accept="image/png, image/jpeg" required></input>
+            <input type="file" name='Image' id='Image' accept="image/png, image/jpeg"></input>
           </div>
           <div className={styles.card}>
             <input name='Address' id='Address' required></input>
@@ -115,15 +121,15 @@ export default function Organise() {
           </div>
           <div className={styles.card}>
             <label form='Description'>Description: </label>
-            <input name='Description' id='Description' style={{width: "400px"}}></input>
+            <textarea name='Description' id='Description' rows={6} cols={42} required className={styles.textarea}></textarea>
           </div>
           <div className={styles.card}>
             <label form='Social'>Social: </label> {/*add checkbox*/}
-            <input type="Checkbox" name='Social' id='Social'></input>
+            <input type="Checkbox" name='Social' id='Social' onClick={enableSocial}></input>
           </div>
           <div className={styles.card}>
             <label form='Social Description'>Social Description: </label>
-            <input name='SocialDescription' id='SocialDescription'></input>
+            <textarea name='SocialDescription' id='SocialDescription' rows={6} cols={42} required className={styles.textarea} disabled={!social}></textarea>
           </div>
           <button type="submit">
             Submit

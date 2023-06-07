@@ -3,6 +3,10 @@
   margin: 0;
 }
 
+.textarea {
+  resize: none;
+}
+
 .main {
   display: flex;
   flex-direction: column;
