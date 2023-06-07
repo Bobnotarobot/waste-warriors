@@ -135,7 +135,7 @@ export default function Organise() {
           </div>
           <div className={styles.card}>
             <label form='Social Description'>Social Description: </label>
-            <textarea name='SocialDescription' id='SocialDescription' rows={6} cols={42} required className={styles.textarea} disabled={!social}></textarea>
+            <textarea name='SocialDescription' id='SocialDescription' rows={6} cols={42} required className={styles.textarea} disabled={false} ></textarea>
           </div>
           <button type="submit" id="submit">
             Submit
