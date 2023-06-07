@@ -106,7 +106,7 @@ export default function Organise() {
             <input type="file" name='Image' id='Image' accept="image/png, image/jpeg"></input>
           </div>
           <div className={styles.card}>
-            <input name='Address' id='Address'></input>
+            <input name='Address' id='Address' required></input>
           </div>
           <GoogleMap
             id="map"
@@ -134,8 +134,8 @@ export default function Organise() {
             <input type="Checkbox" name='Social' id='Social'></input>
           </div>
           <div className={styles.card}>
-            <label form='Social Description'>Social Description: </label>
-            <textarea name='SocialDescription' id='SocialDescription' rows={6} cols={42} required className={styles.textarea} disabled={false} ></textarea>
+            <label form='SocialDescription'>Social Description: </label>
+            <textarea name='SocialDescription' id='SocialDescription' rows={6} cols={42} className={styles.textarea} disabled={false} ></textarea>
           </div>
           <button type="submit" id="submit">
             Submit
