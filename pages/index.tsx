@@ -6,7 +6,7 @@ import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import prisma from '../lib/prisma';
-import { useLoadScript, GoogleMap, MarkerF } from '@react-google-maps/api';
+import { useLoadScript, GoogleMap, MarkerF, InfoWindow } from '@react-google-maps/api';
 import { useMemo } from 'react';
 import Geolocation from '@react-native-community/geolocation';
 const DEVELOPMENT_GOOGLE_MAPS_KEY="AIzaSyD_uZuWbXXwxHrP4jetAlgWzrrc-dgQ_6Q"
@@ -15,7 +15,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export async function getServerSideProps() {
   const events = await prisma.event.findMany();
-  //const events = [{id:1, location:"51.5126, -0.1448", date:"2023-06-23"}, {id:2, location:"51.5226, -0.1348", date:"2023-06-09"}, {id:1, location:"51.5236, -0.1448", date:"2023-06-08"}, {id:4, location:"51.5136, -0.1448", date:"2023-06-06"}]
+  //const events = [{id:1, lat:51.5126, lng:-0.1448, date:"2023-06-23", interested:1, social:false}, {id:2, lat: 51.5226, lng: -0.1348, date:"2023-06-09", interested:5, social:true}, {id:3, lat:51.5236, lng:-0.1448, date:"2023-06-08", interested:2, social:true}, {id:4, lat: 51.5136, lng: -0.1448, date:"2023-06-06", interested:0, social:false}]
   return {
     props: { events }
   }
@@ -25,6 +25,8 @@ interface event {
   id: number;
   location: string;
   date: string;
+  lat: number;
+  lng: number;
   duration: string;
   creationDate: number;
   description: string;
@@ -35,8 +37,14 @@ interface event {
 
 interface marker {
   id: number;
+  location: string;
+  date: string;
+  time: string;
   lat: number;
   lng: number;
+  duration: string;
+  interested: number;
+  social: boolean;
   colour: string;
   title: string;
 }
@@ -50,8 +58,6 @@ var markers: marker[] = [];
 export function generateMarkers(events: event[]) {
 
   events.map((event: event) => {
-    const latLng = event.location.split(",").map(Number);
-
     const eventDate = new Date(event.date).getTime();
     const todayDate = new Date().getTime();
 
@@ -75,7 +81,18 @@ export function generateMarkers(events: event[]) {
       //TODO: remove stale events from database
       return;
     }
-    markers.push({id: event.id, lat: latLng[0], lng: latLng[1], colour: col, title: ttl});
+    markers.push({
+      id: event.id,
+      location: event.location,
+      date: new Date(event.date).toLocaleDateString(),
+      time: new Date(event.date).toLocaleTimeString(),
+      lat: event.lat,
+      lng: event.lng,
+      duration: event.duration + "hours",
+      interested: event.interested,
+      social: event.social,
+      colour: col,
+      title: ttl});
   });
 }
 
@@ -130,7 +147,7 @@ export default function Home({ events }: any) {
     return false;
   }
 
-  function notFiltered(event: event) {
+  function notFilteredEvent(event: event) {
     console.log(event.date);
     console.log(dateMin);
     console.log(dateMax);
@@ -140,11 +157,63 @@ export default function Home({ events }: any) {
       (social == event.social == true || social == false);
   }
 
+  function notFilteredMarker(marker: marker) {
+    return notFilteredEvent(getEventFromMarker(marker));
+  }
+
+  function getEventFromMarker(marker: marker) {
+    return events.find((event: event) => event.id == marker.id);
+  }
+
   if (!isLoaded) {
     return <p>Loading...</p>;
   }
 
   generateMarkers(events);
+
+  var mostRecentlyOpenedInfoWindow: google.maps.InfoWindow;
+
+  function initMap() {
+    const map = new google.maps.Map(document.getElementById("map") as HTMLElement, { zoom: 14, center: mapCenter });
+    map.setOptions(mapOptions);
+    markers.map((marker: marker) => {
+      if (notFilteredMarker(getEventFromMarker(marker))) {
+        const newMarker = new google.maps.Marker({
+          map: map,
+          position: { lat: marker.lat, lng: marker.lng },
+          icon: {
+            url: marker.colour,
+            labelOrigin: new google.maps.Point(10, -7)
+          },
+          title: marker.title,
+          label: {
+            text: marker.title,
+            fontSize: "13px",
+            fontWeight: "bold",
+            color:'black'
+          }
+        });
+        const infowindow = new google.maps.InfoWindow();
+        newMarker.addListener("click", () => {
+          if (mostRecentlyOpenedInfoWindow) {
+            mostRecentlyOpenedInfoWindow.close();
+          }
+          const markerEvent = getEventFromMarker(marker);
+          infowindow.setContent(
+          '<h3>' + markerEvent.location + '</h3>' +
+          '<p>' + markerEvent.date + ' at ' + markerEvent.time +
+          '<br>' + 'Duration:  ' + markerEvent.duration + '</br>' +
+          '<br>Interested:  ' + markerEvent.interested + '</br>' +
+          (markerEvent.social ? '#Social' : '' ) + '</p>' +
+          '<form action="/events/' + marker.id + '">' +
+          '<input type="submit" value="View more event details ->" className={styles.viewEventButton} />' +
+           '</form>');
+          infowindow.open(map, newMarker);
+          mostRecentlyOpenedInfoWindow = infowindow;
+        });
+      }
+    });
+  }
 
   return (
     <div>
@@ -193,7 +262,7 @@ export default function Home({ events }: any) {
 
             <div className={styles.eventList}>
               {events?.map((event: event) =>
-                notFiltered(event) ?
+                notFilteredEvent(event) ?
                   (<div key={event.id}>
                     <div className={styles.event}>
                       <h4>{event.location}</h4>
@@ -207,26 +276,16 @@ export default function Home({ events }: any) {
             </div>
           </div>
           <div className={styles.mapView}>
-            <h3> The map</h3>
-            <div className={styles.map}>
+            <div className={styles.map} style={{width: '57vw', height: '80vh'}}>
               <GoogleMap
+                id="map"
                 options={mapOptions}
                 zoom={14}
                 center={mapCenter}
                 mapTypeId={google.maps.MapTypeId.ROADMAP}
-                mapContainerStyle={{ width: '833px', height: '550px' }}
-                onLoad={() => console.log('Map Component Loaded...')}
+                mapContainerStyle={{ margin: "auto", width: "100%", height: "100%" }}
+                onLoad={initMap}
               >
-                {markers.map((marker) => (
-                    <MarkerF
-                      key={marker.id}
-                      position={{ lat: marker.lat, lng: marker.lng }}
-                      icon={{
-                        url: marker.colour,
-                      }}
-                      title={marker.title}
-                    />
-                ))};
               </GoogleMap>
             </div>
           </div>
@@ -236,7 +295,5 @@ export default function Home({ events }: any) {
   )
 }
 
-//TODO: add info window to markers
-//TODO: link clicking marker to event page
 //TODO: find a way to hide maps api key in .env file
 //POTENTIAL TODO: add id number to marker to link to card (using filter tool)
