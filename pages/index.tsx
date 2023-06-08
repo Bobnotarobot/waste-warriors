@@ -298,7 +298,7 @@ export default function Home({ events }: any) {
           </div>
           <div className={styles.mapView}>
             <div className={styles.map} style={{ width: '57vw', height: '80vh' }}>
-              {/* <GoogleMap
+              <GoogleMap
                 id="map"
                 options={mapOptions}
                 zoom={14}
@@ -317,7 +317,7 @@ export default function Home({ events }: any) {
                     title={marker.title}
                   />
                 ))};
-              </GoogleMap> */}
+              </GoogleMap>
             </div>
           </div>
         </main>
