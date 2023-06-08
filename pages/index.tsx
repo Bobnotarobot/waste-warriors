@@ -229,7 +229,7 @@ export default function Home({ events }: any) {
         <header className={styles.header}>
           <div className={styles.organiseEvent}>
             <form action="/organise">
-              <input type="submit" value="Organise an event!" className={styles.organiseEventButton} />
+              <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
             </form>
           </div>
           <div className={styles.filters}>
@@ -270,16 +270,20 @@ export default function Home({ events }: any) {
                   (<div key={event.id}>
                     <Link className={styles.linkNoUnderline} href={`/events/${encodeURIComponent(event.id)}`}>
                       <div className={styles.event}>
-                        <div className={styles.tags}>
-                          {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New</div> : null}
-                          {event.social ? <div className={styles.tagSocial}>Social</div> : null}
+                        <div style={{display: 'flex', maxHeight: '5%'}}>
+                          <h2 style={{float: 'left', flex: 'auto', marginTop: '-4px', maxWidth: '90%'}}>{event.location}</h2>
+                          <div className={styles.tags}>
+                            {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New</div> : null}
+                            {event.social ? <div className={styles.tagSocial}>Social</div> : null}
+                          </div>
                         </div>
-                        <h4>{event.location}</h4>
-                        <h4>{prettyDate(new Date(Date.parse(event.date)))}, Duration: {event.duration} h</h4>
-                        {/* <h4>Duration: {event.duration} h</h4> */}
+                        <h4 style={{marginTop: '-15px'}}>{prettyDate(new Date(Date.parse(event.date)))}, Duration: {event.duration} h</h4>
+                        
+                        <p style={{marginTop: '-15px'}}>{event.description}</p>
+                        <p style={{float: 'right', marginTop: '-15px'}}><strong>{event.interested}</strong> interested</p>
+                        {/* {event.social ? null : <p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p>}
                         <p>About: {event.description}</p>
-                        {event.social ? <div><p>Social event afterwards: {event.socialDescription}</p></div> : null}
-                        <p>{event.interested} interested</p>
+                        {event.social ? <div><p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p><p>Social event afterwards: {event.socialDescription}</p></div> : null} */}
                       </div>
                     </Link>
                   </div>) : null
