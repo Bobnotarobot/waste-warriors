@@ -15,7 +15,16 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import moment from 'moment'
 
 export async function getServerSideProps() {
-  const events = await prisma.event.findMany();
+  const rawEvents = await prisma.event.findMany();
+  const events = rawEvents?.filter((event: any) => {
+    const eventDate = new Date(event.date).getTime();
+    const todayDate = new Date().getTime();
+    if (eventDate >= todayDate) {
+      return true;
+    }
+    prisma.event.delete({ where: { id: event.id } });
+    return false;
+  });
   //const events = [{id:1, lat:51.5126, lng:-0.1448, date:"2023-06-23", interested:1, social:false}, {id:2, lat: 51.5226, lng: -0.1348, date:"2023-06-09", interested:5, social:true}, {id:3, lat:51.5236, lng:-0.1448, date:"2023-06-08", interested:2, social:true}, {id:4, lat: 51.5136, lng: -0.1448, date:"2023-06-06", interested:0, social:false}]
   return {
     props: { events }
@@ -74,14 +83,11 @@ export function generateMarkers(events: event[]) {
     } else if (diffDays <= 3 && diffDays > 1) {
       col = yellowMarker;
       ttl = "<3 days";
-    } else if (diffDays > 3) {
+    } else {
       col = greenMarker;
       ttl = ">3 days";
-    } else {
-      // does not display stale markers ie. in the past wrt today
-      //TODO: remove stale events from database
-      return;
     }
+
     markers.push({
       id: event.id,
       location: event.location,
