@@ -240,26 +240,26 @@ export default function Home({ events }: any) {
           </div>
           <div className={styles.filters}>
             <h3>Filters: </h3>
-            <form onSubmit={refreshEvents} className={styles.filterForm}>
+            <form onSubmit={refreshEvents} className={styles.filters}>
               <div className={styles.filterForm}>
                 <label form='MaxDist'>Maximum distance: </label>
-                <input name='MaxDist' id='MaxDist' type='number' min='0'></input>
+                <input name='MaxDist' id='MaxDist' type='number' min='0' style={{height: '15px', width: '50%'}}></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='MinInterested'>Minimum people interested: </label>
-                <input name='MinInterested' id='MinInterested' type='number' min='0'></input>
+                <input name='MinInterested' id='MinInterested' type='number' min='0' style={{height: '15px', width: '50%'}}></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='DateMin'>Date from: </label>
-                <input name='DateMin' id='DateMin' type='datetime-local'></input>
+                <input name='DateMin' id='DateMin' type='datetime-local' style={{height: '15px', width: '50%'}}></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='DateMax'>To: </label>
-                <input name='DateMax' id='DateMax' type='datetime-local'></input>
+                <input name='DateMax' id='DateMax' type='datetime-local' style={{height: '15px', width: '50%'}}></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='HasSocial'>Has social: </label>
-                <input name='HasSocial' id='HasSocial' type='checkbox'></input>
+                <input name='HasSocial' id='HasSocial' type='checkbox' style={{height: '15px', width: '50%'}}></input>
               </div>
               <button type="submit">Refresh</button>
             </form>
@@ -279,8 +279,8 @@ export default function Home({ events }: any) {
                         <div style={{display: 'flex', maxHeight: '5%'}}>
                           <h2 style={{float: 'left', flex: 'auto', marginTop: '-4px', maxWidth: '90%'}}>{event.location}</h2>
                           <div className={styles.tags}>
-                            {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New</div> : null}
-                            {event.social ? <div className={styles.tagSocial}>Social</div> : null}
+                            {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New Event</div> : null}
+                            {event.social ? <div className={styles.tagSocial}>Social Afterwards</div> : null}
                           </div>
                         </div>
                         <h4 style={{marginTop: '-15px'}}>{prettyDate(new Date(Date.parse(event.date)))}, Duration: {event.duration} h</h4>
@@ -298,7 +298,7 @@ export default function Home({ events }: any) {
           </div>
           <div className={styles.mapView}>
             <div className={styles.map} style={{ width: '57vw', height: '80vh' }}>
-              <GoogleMap
+              {/* <GoogleMap
                 id="map"
                 options={mapOptions}
                 zoom={14}
@@ -317,7 +317,7 @@ export default function Home({ events }: any) {
                     title={marker.title}
                   />
                 ))};
-              </GoogleMap>
+              </GoogleMap> */}
             </div>
           </div>
         </main>
