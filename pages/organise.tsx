@@ -73,7 +73,6 @@ export default function Organise() {
     marker = new google.maps.Marker({ position: mapCenter, map: map, title: "drag this pointer to choose location", draggable: true });
     const input = document.getElementById("Address") as HTMLInputElement;
     const searchBox = new google.maps.places.SearchBox(input);
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
     map.addListener("bounds_changed", () => { searchBox.setBounds(map.getBounds() as google.maps.LatLngBounds); });
     searchBox.addListener("places_changed", () => {
       const places = searchBox.getPlaces();
@@ -109,21 +108,11 @@ export default function Organise() {
               <label form='Image'>Image: </label>
               <input type="file" name='Image' id='Image' accept="image/png, image/jpeg"></input>
             </div> */}
-            <div style={{ float: 'left', backgroundColor: '#90a955', flex: '1', minWidth: '50%', }}>
-              <div>
-                <input name='Address' id='Address' required className={styles.locationInput} placeholder="Location (required)"></input>
-              </div>
-              <GoogleMap
-                id="map"
-                options={mapOptions}
-                zoom={14}
-                center={mapCenter}
-                mapTypeId={google.maps.MapTypeId.ROADMAP}
-                mapContainerStyle={{ width: '100%', height: '100%' }}
-                onLoad={initMap}
-              />
-            </div>
             <div style={{ float: 'right', flex: '1', minWidth: '50%', backgroundColor: '#90a955' }}>
+              <div className={styles.card}>
+                <label form='Address'>Location: </label>
+                <input name='Address' id='Address' required className={styles.locationInput} placeholder="Enter Location"></input>
+              </div>
               <div className={styles.card}>
                 <label form='Date'>Date and time: </label>
                 <input type="datetime-local" name='Date' id='Date' min={now} required></input>
@@ -144,16 +133,32 @@ export default function Organise() {
                 <label form='SocialDescription'>Social event description (optional): </label>
                 <textarea name='SocialDescription' id='SocialDescription' rows={6} style={{ width: '100%' }} className={styles.textarea} disabled={false} ></textarea>
               </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: '6%',
+                }}>
+                <button type="submit" id="submit" className={styles.button} style={{height: '8vh', width: '20vw', backgroundColor: "#FFCE66", fontSize: "20px" }}>
+                  Submit
+                </button>
+              </div>
+            </div>
+            <div style={{ float: 'left', backgroundColor: '#90a955', flex: '1', minWidth: '50%', }}>
+              <GoogleMap
+                id="map"
+                options={mapOptions}
+                zoom={14}
+                center={mapCenter}
+                mapTypeId={google.maps.MapTypeId.ROADMAP}
+                mapContainerStyle={{ width: '100%', height: '100%' }}
+                onLoad={initMap}
+              />
             </div>
           </div>
-          <button type="submit" id="submit" className={styles.button}>
-            Submit
-          </button>
         </form>
-
       </main>
     </div>
-
-
   );
 }
