@@ -217,10 +217,9 @@
 }
 
 .locationInput {
-  height: 5vh;
+  height: 4vh;
   width: 20vw;
-  font-size: 25px;
-  background-color: #f5f3ac;
+  font-size: 15px;
 }
 
 .button {
