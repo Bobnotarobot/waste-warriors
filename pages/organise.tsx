@@ -101,53 +101,59 @@ export default function Organise() {
       </Head>
 
       <main>
-        <h1>Organise event</h1>
+        <div style={{display: 'flex'}}>
+          <Link href="/" style={{float: 'left', flex: 'initial', width: '40px', height: '50px', backgroundColor: '#5f873d', textAlign: 'center'}}>←</Link>
+          <h1 style={{float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#4f772d', height: '50px', margin: '0'}}>Organise event</h1>
+        </div>
 
-        <form className="flex flex-col" onSubmit={saveEvent} action="/">
-          <div className={styles.card}>
-            <label form='Image'>Image: </label>
-            <input type="file" name='Image' id='Image' accept="image/png, image/jpeg"></input>
+        <form onSubmit={saveEvent} action="/">
+          <div style={{display: 'flex'}}>
+            {/* <div className={styles.uploadcard}>
+              <label form='Image'>Image: </label>
+              <input type="file" name='Image' id='Image' accept="image/png, image/jpeg"></input>
+            </div> */}
+            <div style={{float: 'left', backgroundColor: '#90a955', flex: '1', minWidth: '50%'}}>
+              <p style={{flex: 'auto', textAlign: 'center'}}>Location (Required):</p>
+              <div>
+                <input name='Address' id='Address' required></input>
+              </div>
+              <GoogleMap
+                id="map"
+                options={mapOptions}
+                zoom={14}
+                center={mapCenter}
+                mapTypeId={google.maps.MapTypeId.ROADMAP}
+                mapContainerStyle={{ width: '100%', height: '92%'}}
+                onLoad={initMap}
+              />
+            </div>
+            <div style={{float: 'right', flex: '1', minWidth: '50%', backgroundColor: '#90a955'}}>
+              <div className={styles.card}>
+                <label form='Date'>Date and time: </label>
+                <input type="datetime-local" name='Date' id='Date' required></input>
+              </div>
+              <div className={styles.card}>
+                <label form='Duration'>Duration (hours): </label>
+                <input type="number" step="0.1" name='Duration' id='Duration' required></input>
+              </div>
+              <div className={styles.card}>
+                <label form='Description'>Description: </label>
+                <textarea name='Description' id='Description' rows={6} style={{width: '100%'}} required className={styles.textarea}></textarea>
+              </div>
+              <div className={styles.card}>
+                <label form='Social'>Social: </label>
+                <input type="Checkbox" name='Social' id='Social'></input>
+              </div>
+              <div className={styles.card}>
+                <label form='SocialDescription'>Social Description: </label>
+                <textarea name='SocialDescription' id='SocialDescription' rows={6} style={{width: '100%'}} className={styles.textarea} disabled={false} ></textarea>
+              </div>
+            </div>
           </div>
-          <div className={styles.card}>
-            <input name='Address' id='Address' required></input>
-          </div>
-          <GoogleMap
-            id="map"
-            options={mapOptions}
-            zoom={14}
-            center={mapCenter}
-            mapTypeId={google.maps.MapTypeId.ROADMAP}
-            mapContainerStyle={{ width: '800px', height: '800px' }}
-            onLoad={initMap}
-          />
-          <div className={styles.card}>
-            <label form='Date'>Date and time: </label>
-            <input type="datetime-local" name='Date' id='Date' required></input>
-          </div>
-          <div className={styles.card}>
-            <label form='Duration'>Duration (hours): </label>
-            <input type="number" step="0.1" name='Duration' id='Duration' required></input>
-          </div>
-          <div className={styles.card}>
-            <label form='Description'>Description: </label>
-            <textarea name='Description' id='Description' rows={6} cols={42} required className={styles.textarea}></textarea>
-          </div>
-          <div className={styles.card}>
-            <label form='Social'>Social: </label>
-            <input type="Checkbox" name='Social' id='Social'></input>
-          </div>
-          <div className={styles.card}>
-            <label form='SocialDescription'>Social Description: </label>
-            <textarea name='SocialDescription' id='SocialDescription' rows={6} cols={42} className={styles.textarea} disabled={false} ></textarea>
-          </div>
-          <button type="submit" id="submit">
+          <button type="submit" id="submit" style={{width: '100%', backgroundColor: '#f5f3ac', height: '60px', borderRadius: '15px'}}>
             Submit
           </button>
         </form>
-
-        <div className={styles.card}>
-          <Link href="/">back</Link>
-        </div>
 
       </main>
     </div>
