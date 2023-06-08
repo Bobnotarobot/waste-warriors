@@ -40,7 +40,7 @@ interface marker {
   id: number;
   location: string;
   date: string;
-  time: string;
+  // time: string;
   lat: number;
   lng: number;
   duration: string;
@@ -85,8 +85,8 @@ export function generateMarkers(events: event[]) {
     markers.push({
       id: event.id,
       location: event.location,
-      date: new Date(event.date).toLocaleDateString(),
-      time: new Date(event.date).toLocaleTimeString(),
+      date: event.date,
+      // time: new Date(event.date).toLocaleTimeString(),
       lat: event.lat,
       lng: event.lng,
       duration: event.duration,
@@ -205,7 +205,7 @@ export default function Home({ events }: any) {
           const markerEvent = getEventFromMarker(marker);
           infowindow.setContent(
             '<h3>' + markerEvent.location + '</h3>' +
-            '<p>' + markerEvent.date + // ' at ' + markerEvent.time +
+            '<p>' + prettyDate(new Date(Date.parse(markerEvent.date))) +
             '<br>' + 'Duration:  ' + markerEvent.duration + ' hours</br>' +
             '<br>' + markerEvent.interested + ' Interested</br>' +
             (markerEvent.social ? '#Social' : '') + '</p>' +
@@ -275,8 +275,8 @@ export default function Home({ events }: any) {
                           {event.social ? <div className={styles.tagSocial}>Social</div> : null}
                         </div>
                         <h4>{event.location}</h4>
-                        <h4>{prettyDate(new Date(Date.parse(event.date)))}</h4>
-                        <h4>Duration: {event.duration} h</h4>
+                        <h4>{prettyDate(new Date(Date.parse(event.date)))}, Duration: {event.duration} h</h4>
+                        {/* <h4>Duration: {event.duration} h</h4> */}
                         <p>About: {event.description}</p>
                         {event.social ? <div><p>Social event afterwards: {event.socialDescription}</p></div> : null}
                         <p>{event.interested} interested</p>

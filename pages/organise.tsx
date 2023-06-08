@@ -91,12 +91,13 @@ export default function Organise() {
 
   return (
     <div className={styles.container}>
+      <Script src={'dateInput = document.getElementById("Date"); dateInput.min = new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));'} />
       <Head>
         <title>Organise event</title>
         <link rel="icon" href="/favicon.ico" />
-        <Script>
+        {/* <Script>
           {'dateInput = document.getElementById("Date"); dateInput.min = new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));'}'
-        </Script>
+        </Script> */}
       </Head>
 
       <main>
