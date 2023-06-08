@@ -62,7 +62,7 @@ export default function Organise() {
       throw new Error(response.statusText);
     }
     return await response.json();
-    
+
   }
 
   function initMap(): void {
@@ -76,7 +76,7 @@ export default function Organise() {
     map.addListener("bounds_changed", () => { searchBox.setBounds(map.getBounds() as google.maps.LatLngBounds); });
     searchBox.addListener("places_changed", () => {
       const places = searchBox.getPlaces();
-      if (places!.length == 0)return;
+      if (places!.length == 0) return;
       const bounds = new google.maps.LatLngBounds();
       if (places![0].geometry?.viewport) bounds.union(places![0].geometry!.viewport);
       else bounds.extend(places![0].geometry!.location!);
@@ -102,7 +102,7 @@ export default function Organise() {
       <main>
         <h1>Organise event</h1>
 
-        <form className="flex flex-col" onSubmit={saveEvent}>
+        <form className="flex flex-col" onSubmit={saveEvent} action="/">
           <div className={styles.card}>
             <label form='Image'>Image: </label>
             <input type="file" name='Image' id='Image' accept="image/png, image/jpeg"></input>

@@ -19,7 +19,8 @@
 .organiseEvent {
   text-align: center;
   padding: 0.5rem;
-  background-color: red;
+  background-color: #f5f3ac;
+  ;
 }
 
 .organiseEventButton {
@@ -50,16 +51,21 @@
 }
 
 .margin {
-  width: 8%;
+  width: 7%;
+  padding: 0.5%;
   float: left;
   background-color: #f5f3ac;
-  height: 500px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .bodywithmargin {
-  width: 92%;
+  width: 90%;
+  padding: 1%;
   float: right;
-  height: 500px;
+  height: 100vh;
   background-color: #e2ffe2;
 }
 
@@ -78,7 +84,8 @@
 .tagNew {
   width: 30%;
   color: black;
-  background-color: yellow;
+  background-color: #FEDF00;
+  ;
   padding: 1.5rem;
   text-align: center;
   border-radius: 5px;
@@ -88,7 +95,7 @@
 .tagSocial {
   width: 30%;
   color: black;
-  background-color: blue;
+  background-color: lightskyblue;
   padding: 1.5rem;
   text-align: center;
   border-radius: 5px;
@@ -122,7 +129,7 @@
 }
 
 .header {
-  background-color: yellow;
+  background-color: #f5f3ac;
   height: 20vh;
   margin: 0;
 }
@@ -130,7 +137,7 @@
 .listView {
   width: 38%;
   height: 80vh;
-  background-color: green;
+  background-color: #e2ffe2;
   float: left;
   overflow-y: scroll;
   padding: 1%;
@@ -139,7 +146,7 @@
 .mapView {
   width: 58%;
   height: 80vh;
-  background-color: blue;
+  background-color: #e2ffe2;
   float: right;
   margin: 0;
   padding: 1%;

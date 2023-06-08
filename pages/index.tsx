@@ -205,7 +205,7 @@ export default function Home({ events }: any) {
           const markerEvent = getEventFromMarker(marker);
           infowindow.setContent(
             '<h3>' + markerEvent.location + '</h3>' +
-            '<p>' + markerEvent.date + ' at ' + markerEvent.time +
+            '<p>' + markerEvent.date + // ' at ' + markerEvent.time +
             '<br>' + 'Duration:  ' + markerEvent.duration + ' hours</br>' +
             '<br>' + markerEvent.interested + ' Interested</br>' +
             (markerEvent.social ? '#Social' : '') + '</p>' +
