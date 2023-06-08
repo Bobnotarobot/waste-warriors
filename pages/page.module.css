@@ -24,6 +24,7 @@
 .organiseEventButton {
   font-size: 150%;
   background-color: #f5f3ac;
+  float: right;
 }
 
 .organiseEventButton:hover {
@@ -34,8 +35,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 20px;
+  font-size: 100%;
   padding: 10px;
+  margin-top: 30px;
 }
 
 .filterForm {
@@ -83,22 +85,25 @@
 }
 
 .tagNew {
-  width: 50%;
+  max-width: 50%;
+  flex: initial;
+  max-height: 5%;
   color: black;
   background-color: #FEDF00;
   border: 2px solid #132a13;
-  padding: 1rem;
+  padding: 0.2rem;
   text-align: center;
   border-radius: 5px;
   text-decoration: none;
 }
 
 .tagSocial {
-  width: 50%;
+  max-width: 50%;
+  flex: initial;
   color: black;
   background-color: lightskyblue;
   border: 2px solid #132a13;
-  padding: 1rem;
+  padding: 0.2rem;
   text-align: center;
   border-radius: 5px;
   text-decoration: none;
@@ -106,7 +111,13 @@
 
 .tags {
   display: flex;
+  flex: initial;
+  float: right;
   gap: 10px;
+  max-width: 40%;
+  width: 18%;
+  min-width: 40px;
+  height: 2%;
 }
 
 .card {
