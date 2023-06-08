@@ -31,14 +31,27 @@
   background-color: #f2f2d3;
 }
 
+.filtersWrapper {
+  display: flex;
+  align-items: center;
+  gap: 1%;
+  font-size: 100%;
+  padding: 1%;
+  width: 98%;
+  background-color: #90a955;
+}
+
 .filters {
   display: flex;
   align-items: center;
   gap: 1%;
   font-size: 100%;
-  padding: 10px;
-  margin-top: 30px;
+  padding: 0.5%;
   width: 98%;
+  border: 2px solid #132a13;
+  background-color: #f5f3ac;
+  color: black;
+  border-radius: 5px;
 }
 
 .filterForm {
@@ -47,6 +60,11 @@
   gap: 1%;
   size: 100%;
   max-width: 80%;
+}
+
+.filterInput {
+  height: 15px;
+  width: 50%;
 }
 
 .verticalInput {

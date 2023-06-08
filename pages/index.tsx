@@ -238,28 +238,28 @@ export default function Home({ events }: any) {
               <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
             </form>
           </div>
-          <div className={styles.filters}>
-            <h3>Filters: </h3>
+          <div className={styles.filtersWrapper}>
             <form onSubmit={refreshEvents} className={styles.filters}>
+              <h3>Filters: </h3>
               <div className={styles.filterForm}>
                 <label form='MaxDist'>Maximum distance: </label>
-                <input name='MaxDist' id='MaxDist' type='number' min='0' style={{height: '15px', width: '50%'}}></input>
+                <input name='MaxDist' id='MaxDist' type='number' min='0' className={styles.filterInput}></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='MinInterested'>Minimum people interested: </label>
-                <input name='MinInterested' id='MinInterested' type='number' min='0' style={{height: '15px', width: '50%'}}></input>
+                <input name='MinInterested' id='MinInterested' type='number' min='0' className={styles.filterInput}></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='DateMin'>Date from: </label>
-                <input name='DateMin' id='DateMin' type='datetime-local' style={{height: '15px', width: '50%'}}></input>
+                <input name='DateMin' id='DateMin' type='datetime-local' className={styles.filterInput}></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='DateMax'>To: </label>
-                <input name='DateMax' id='DateMax' type='datetime-local' style={{height: '15px', width: '50%'}}></input>
+                <input name='DateMax' id='DateMax' type='datetime-local' className={styles.filterInput}></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='HasSocial'>Has social: </label>
-                <input name='HasSocial' id='HasSocial' type='checkbox' style={{height: '15px', width: '50%'}}></input>
+                <input name='HasSocial' id='HasSocial' type='checkbox' className={styles.filterInput}></input>
               </div>
               <button type="submit">Refresh</button>
             </form>
@@ -276,17 +276,17 @@ export default function Home({ events }: any) {
                   (<div key={event.id}>
                     <Link className={styles.linkNoUnderline} href={`/events/${encodeURIComponent(event.id)}`}>
                       <div className={styles.event}>
-                        <div style={{display: 'flex', maxHeight: '5%'}}>
-                          <h2 style={{float: 'left', flex: 'auto', marginTop: '-4px', maxWidth: '90%'}}>{event.location}</h2>
+                        <div style={{ display: 'flex', maxHeight: '5%' }}>
+                          <h2 style={{ float: 'left', flex: 'auto', marginTop: '-4px', maxWidth: '90%' }}>{event.location}</h2>
                           <div className={styles.tags}>
                             {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New Event</div> : null}
                             {event.social ? <div className={styles.tagSocial}>Social Afterwards</div> : null}
                           </div>
                         </div>
-                        <h4 style={{marginTop: '-15px'}}>{prettyDate(new Date(Date.parse(event.date)))}, Duration: {event.duration} h</h4>
-                        
-                        <p style={{marginTop: '-15px'}}>{event.description}</p>
-                        <p style={{float: 'right', marginTop: '-15px'}}><strong>{event.interested}</strong> interested</p>
+                        <h4 style={{ marginTop: '-15px' }}>{prettyDate(new Date(Date.parse(event.date)))}, Duration: {event.duration} h</h4>
+
+                        <p style={{ marginTop: '-15px' }}>{event.description}</p>
+                        <p style={{ float: 'right', marginTop: '-15px' }}><strong>{event.interested}</strong> interested</p>
                         {/* {event.social ? null : <p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p>}
                         <p>About: {event.description}</p>
                         {event.social ? <div><p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p><p>Social event afterwards: {event.socialDescription}</p></div> : null} */}
