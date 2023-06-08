@@ -42,6 +42,7 @@ export default function Organise() {
     return <p>Loading...</p>;
   }
   var marker: google.maps.Marker;
+  const now=new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));
 
   async function saveEvent(event: any) {
     const mlng = marker.getPosition()?.lng();
@@ -91,7 +92,6 @@ export default function Organise() {
 
   return (
     <div className={styles.container}>
-      <Script src={'dateInput = document.getElementById("Date"); dateInput.min = new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));'} />
       <Head>
         <title>Organise event</title>
         <link rel="icon" href="/favicon.ico" />
@@ -126,7 +126,7 @@ export default function Organise() {
             <div style={{ float: 'right', flex: '1', minWidth: '50%', backgroundColor: '#90a955' }}>
               <div className={styles.card}>
                 <label form='Date'>Date and time: </label>
-                <input type="datetime-local" name='Date' id='Date' required></input>
+                <input type="datetime-local" name='Date' id='Date' min={now} required></input>
               </div>
               <div className={styles.card}>
                 <label form='Duration'>Duration (hours): </label>
