@@ -15,7 +15,16 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import moment from 'moment'
 
 export async function getServerSideProps() {
-  const events = await prisma.event.findMany();
+  const rawEvents = await prisma.event.findMany();
+  const events = rawEvents?.filter((event: any) => {
+    const eventDate = new Date(event.date).getTime();
+    const todayDate = new Date().getTime();
+    if (eventDate >= todayDate) {
+      return true;
+    }
+    prisma.event.delete({ where: { id: event.id } });
+    return false;
+  });
   //const events = [{id:1, lat:51.5126, lng:-0.1448, date:"2023-06-23", interested:1, social:false}, {id:2, lat: 51.5226, lng: -0.1348, date:"2023-06-09", interested:5, social:true}, {id:3, lat:51.5236, lng:-0.1448, date:"2023-06-08", interested:2, social:true}, {id:4, lat: 51.5136, lng: -0.1448, date:"2023-06-06", interested:0, social:false}]
   return {
     props: { events }
@@ -74,14 +83,11 @@ export function generateMarkers(events: event[]) {
     } else if (diffDays <= 3 && diffDays > 1) {
       col = yellowMarker;
       ttl = "<3 days";
-    } else if (diffDays > 3) {
+    } else {
       col = greenMarker;
       ttl = ">3 days";
-    } else {
-      // does not display stale markers ie. in the past wrt today
-      //TODO: remove stale events from database
-      return;
     }
+
     markers.push({
       id: event.id,
       location: event.location,
@@ -229,7 +235,7 @@ export default function Home({ events }: any) {
         <header className={styles.header}>
           <div className={styles.organiseEvent}>
             <form action="/organise">
-              <input type="submit" value="Organise an event!" className={styles.organiseEventButton} />
+              <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
             </form>
           </div>
           <div className={styles.filters}>
@@ -270,16 +276,20 @@ export default function Home({ events }: any) {
                   (<div key={event.id}>
                     <Link className={styles.linkNoUnderline} href={`/events/${encodeURIComponent(event.id)}`}>
                       <div className={styles.event}>
-                        <div className={styles.tags}>
-                          {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New</div> : null}
-                          {event.social ? <div className={styles.tagSocial}>Social</div> : null}
+                        <div style={{display: 'flex', maxHeight: '5%'}}>
+                          <h2 style={{float: 'left', flex: 'auto', marginTop: '-4px', maxWidth: '90%'}}>{event.location}</h2>
+                          <div className={styles.tags}>
+                            {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New</div> : null}
+                            {event.social ? <div className={styles.tagSocial}>Social</div> : null}
+                          </div>
                         </div>
-                        <h4>{event.location}</h4>
-                        <h4>{prettyDate(new Date(Date.parse(event.date)))}, Duration: {event.duration} h</h4>
-                        {/* <h4>Duration: {event.duration} h</h4> */}
+                        <h4 style={{marginTop: '-15px'}}>{prettyDate(new Date(Date.parse(event.date)))}, Duration: {event.duration} h</h4>
+                        
+                        <p style={{marginTop: '-15px'}}>{event.description}</p>
+                        <p style={{float: 'right', marginTop: '-15px'}}><strong>{event.interested}</strong> interested</p>
+                        {/* {event.social ? null : <p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p>}
                         <p>About: {event.description}</p>
-                        {event.social ? <div><p>Social event afterwards: {event.socialDescription}</p></div> : null}
-                        <p>{event.interested} interested</p>
+                        {event.social ? <div><p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p><p>Social event afterwards: {event.socialDescription}</p></div> : null} */}
                       </div>
                     </Link>
                   </div>) : null
