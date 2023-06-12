@@ -54,8 +54,8 @@ export default function View({ event }: any) {
       <main>
         <div className={styles.margin}>
           <Link href="/">back</Link>
-          {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New</div> : null}
-          {event.social ? <div className={styles.tagSocial}>Social</div> : null}
+          {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNewEvent}>New Event</div> : null}
+          {event.social ? <div className={styles.tagSocialEvent}>Social Afterwards</div> : null}
         </div>
 
         <div className={styles.bodywithmargin}>

@@ -25,11 +25,17 @@ model Event {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String?  @unique
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  username String @unique
+  password String
+}
 
-  @@map(name: "users")
+model Clan {
+  name        String  @id
+  points      Int     @default(0)
+  location    String?
+  lat         Float?
+  lng         Float?
+  logo        String?
+  description String
+  members     Int     @default(0)
 }
