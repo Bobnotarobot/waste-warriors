@@ -33,3 +33,13 @@ model User {
 
   @@map(name: "users")
 }
+
+model Clan {
+  name              String @id
+  points            Int
+  location          String?
+  lat               Float?
+  lng               Float?
+  logo              String?
+  description       String
+}
