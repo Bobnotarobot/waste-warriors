@@ -249,6 +249,9 @@ export default function Home({ events }: any) {
             <form action="/organise">
               <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
             </form>
+            <form action="/clans">
+              <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
+            </form>
           </div>
           <div className={styles.filtersWrapper}>
             <form onSubmit={refreshEvents} className={styles.filters}>
