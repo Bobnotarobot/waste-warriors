@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState, useRef, MutableRefObject } from 'react';
-import Image from 'next/image'
-import styles from './page.module.css'
+import Image from 'next/image';
+import styles from './page.module.css';
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -11,8 +11,9 @@ import { useMemo } from 'react';
 import Geolocation from '@react-native-community/geolocation';
 const DEVELOPMENT_GOOGLE_MAPS_KEY = "AIzaSyD_uZuWbXXwxHrP4jetAlgWzrrc-dgQ_6Q"
 const PRODUCTION_GOOGLE_MAPS_KEY = "AIzaSyBXcHbmJFrRxrot8_NXQzNMBUITngrsWEo"
-import type { NextApiRequest, NextApiResponse } from 'next';
-import moment from 'moment'
+import type { NextApiRequest, NextApiResponse, NextPage } from 'next';
+import { signIn, signOut, useSession } from "next-auth/react";
+import moment from 'moment';
 
 export async function getServerSideProps() {
   const rawEvents = await prisma.event.findMany();
@@ -25,7 +26,6 @@ export async function getServerSideProps() {
     prisma.event.delete({ where: { id: event.id } });
     return false;
   });
-  //const events = [{id:1, lat:51.5126, lng:-0.1448, date:"2023-06-23", interested:1, social:false}, {id:2, lat: 51.5226, lng: -0.1348, date:"2023-06-09", interested:5, social:true}, {id:3, lat:51.5236, lng:-0.1448, date:"2023-06-08", interested:2, social:true}, {id:4, lat: 51.5136, lng: -0.1448, date:"2023-06-06", interested:0, social:false}]
   return {
     props: { events }
   }
@@ -92,7 +92,6 @@ export function generateMarkers(events: event[]) {
       id: event.id,
       location: event.location,
       date: event.date,
-      // time: new Date(event.date).toLocaleTimeString(),
       lat: event.lat,
       lng: event.lng,
       duration: event.duration,
@@ -106,6 +105,10 @@ export function generateMarkers(events: event[]) {
 
 export default function Home({ events }: any) {
   const libraries = useMemo(() => ['places'], []);
+  const { status, data } = useSession();
+  if (data?.user !== undefined && data?.user.name !== undefined) {
+    console.log("username: ", data?.user.name);
+  }
 
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
   /*if (navigator.geolocation) {
@@ -156,7 +159,6 @@ export default function Home({ events }: any) {
   }
 
   function notFilteredEvent(event: event) {
-    console.log("date max: ", Date.parse(event.date).valueOf() <= Date.parse(dateMax).valueOf());
     return (event.interested >= minInterested) &&
       (Date.parse(event.date).valueOf() >= Date.parse(dateMin).valueOf()) &&
       (Date.parse(event.date).valueOf() <= Date.parse(dateMax).valueOf()) &&
@@ -233,6 +235,16 @@ export default function Home({ events }: any) {
 
       <div className={styles.body}>
         <header className={styles.header}>
+          <button onClick={() => {
+            signIn();
+          }}>Sign in</button>
+          <button onClick={() => {
+            signOut();
+          }}>Sign out</button>
+          <form action="/createAccount">
+            <input type="submit" value="Create account" />
+          </form>
+          {data?.user !== undefined ? <p> User session: {data?.user.name}</p> : null}
           <div className={styles.organiseEvent}>
             <form action="/organise">
               <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />

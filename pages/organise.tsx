@@ -42,7 +42,7 @@ export default function Organise() {
     return <p>Loading...</p>;
   }
   var marker: google.maps.Marker;
-  const now=new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));
+  const now = new Date().toISOString().slice(0, new Date().toISOString().lastIndexOf(":"));
 
   async function saveEvent(event: any) {
     const mlng = marker.getPosition()?.lng();
@@ -140,7 +140,7 @@ export default function Organise() {
                   justifyContent: "center",
                   height: '6%',
                 }}>
-                <button type="submit" id="submit" className={styles.button} style={{height: '8vh', width: '20vw', backgroundColor: "#FFCE66", fontSize: "20px" }}>
+                <button type="submit" id="submit" className={styles.button} style={{ height: '8vh', width: '20vw', backgroundColor: "#FFCE66", fontSize: "20px" }}>
                   Submit
                 </button>
               </div>
