@@ -43,21 +43,15 @@ export default function Organise() {
   var marker: google.maps.Marker;
   const now=new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));
 
-  async function saveEvent(event: any) {
+  async function makeClan(clan: any) {
     const mlng = marker.getPosition()?.lng();
     const mlat = marker.getPosition()?.lat();
-    const location = event.target.Address.value;
-    const date = event.target.Date.value;
-    const duration = event.target.Duration.value;
-    const description = event.target.Description.value;
-    const social = event.target.Social.checked;
-    const socialDescription = event.target.SocialDescription.value;
-    const jsdate = new Date();
-    var mm = jsdate.getMonth() + 1; // getMonth() is zero-based
-    var dd = jsdate.getDate();
-    const creationDate = jsdate.getFullYear() + '-' + (mm > 9 ? '' : '0') + mm + '-' + (dd > 9 ? '' : '0') + dd + 'T' + jsdate.getHours() + ':' + jsdate.getMinutes();
-    const body = { location: location, lat: mlat, lng: mlng, date: date, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription };
-    const response = await fetch('/api/event', { method: 'POST', body: JSON.stringify(body), });
+    const name = clan.target.Name.value;
+    const logo = clan.target.Logo.value;
+    const location = clan.target.Address.value;
+    const description = clan.target.Description.value;
+    const body = { name: name, logo: logo, location: location, lat: mlat, lng: mlng, description: description};
+    const response = await fetch('/api/clan', { method: 'POST', body: JSON.stringify(body), });
     if (!response.ok) {
       throw new Error(response.statusText);
     }
@@ -84,10 +78,6 @@ export default function Organise() {
     });
   }
 
-  function enableSocial() {
-    setSocial(!social);
-  }
-
   return (
     <div className={styles.container}>
       <Head>
@@ -101,7 +91,7 @@ export default function Organise() {
           <h1 style={{ float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#4f772d', height: '50px', margin: '0' }}>Organise event</h1>
         </div>
 
-        <form onSubmit={saveEvent} action="/">
+        <form onSubmit={makeClan} action="/clans">
           <div style={{ display: 'flex' }}>
             {/* <div className={styles.uploadcard}>
               <label form='Image'>Image: </label>
@@ -109,28 +99,20 @@ export default function Organise() {
             </div> */}
             <div style={{ float: 'right', flex: '1', minWidth: '50%', backgroundColor: '#90a955' }}>
               <div className={styles.card}>
-                <label form='Address'>Location: </label>
-                <input name='Address' id='Address' required className={styles.locationInput} placeholder="Enter Location"></input>
+                <label form='Name'>Name </label>
+                <input type="text" name='Name' id='Name' required></input>
               </div>
               <div className={styles.card}>
-                <label form='Date'>Date and time: </label>
-                <input type="datetime-local" name='Date' id='Date' min={now} required></input>
+                <label form='Address'>Location (optional): </label>
+                <input name='Address' id='Address' className={styles.locationInput} placeholder="Enter Location"></input>
               </div>
               <div className={styles.card}>
-                <label form='Duration'>Duration (hours): </label>
-                <input type="number" step="0.1" name='Duration' id='Duration' required></input>
+                <label form='Logo'>Link to logo (optional): </label>
+                <input type="text" name='Logo' id='Logo'></input>
               </div>
               <div className={styles.card}>
                 <label form='Description'>Description: </label>
                 <textarea name='Description' id='Description' rows={6} style={{ width: '100%' }} required className={styles.textarea}></textarea>
-              </div>
-              <div className={styles.card}>
-                <label form='Social'>Does the event have a social event: </label>
-                <input type="Checkbox" name='Social' id='Social'></input>
-              </div>
-              <div className={styles.card}>
-                <label form='SocialDescription'>Social event description (optional): </label>
-                <textarea name='SocialDescription' id='SocialDescription' rows={6} style={{ width: '100%' }} className={styles.textarea} disabled={false} ></textarea>
               </div>
               <div
                 style={{

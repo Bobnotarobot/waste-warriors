@@ -44,6 +44,9 @@ export default function Home({ clans }: any) {
       <div className={styles.body}>
         <main>
           <Link href='/'>back</Link>
+          <form action="/create_clan">
+              <input type="submit" value="Make your own!" className={styles.organiseEventButton} />
+          </form>
           <div className={styles.listView}>
             <h3>Clans:</h3>
 
