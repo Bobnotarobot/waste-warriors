@@ -103,7 +103,7 @@ export default function Organise() {
                 <input type="text" name='Name' id='Name' required></input>
               </div>
               <div className={styles.card}>
-                <label form='Address'>Location (optional): </label>
+                <label form='Address'>Location (optional, only include if you'll only be cleaning in a certain area): </label>
                 <input name='Address' id='Address' className={styles.locationInput} placeholder="Enter Location"></input>
               </div>
               <div className={styles.card}>
@@ -121,7 +121,7 @@ export default function Organise() {
                   justifyContent: "center",
                   height: '6%',
                 }}>
-                <button type="submit" id="submit" className={styles.button} style={{height: '8vh', width: '20vw', backgroundColor: "#FFCE66", fontSize: "20px" }}>
+                <button type="submit" id="submit" className={styles.button} style={{height: '8vh', width: '20vw', backgroundColor: "#FFCE66", fontSize: "20px", marginTop: '20px'}}>
                   Submit
                 </button>
               </div>
