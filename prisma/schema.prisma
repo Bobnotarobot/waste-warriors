@@ -42,10 +42,11 @@ model Clan {
 
 model Clan {
   name              String @id
-  points            Int
+  points            Int @default(0)
   location          String?
   lat               Float?
   lng               Float?
   logo              String?
   description       String
+  members           Int @default(0)
 }

@@ -300,7 +300,7 @@ export default function Home({ events }: any) {
                         </div>
                         <h4 style={{ marginTop: '-15px' }}>{prettyDate(new Date(Date.parse(event.date)))}, Duration: {event.duration} h</h4>
 
-                        <p style={{ marginTop: '-15px' }}>{event.description}</p>
+                        <p className={styles.eventDescription} style={{ marginTop: '-15px' }}>{event.description}</p>
                         <p style={{ float: 'right', marginTop: '-15px' }}><strong>{event.interested}</strong> interested</p>
                         {/* {event.social ? null : <p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p>}
                         <p>About: {event.description}</p>
