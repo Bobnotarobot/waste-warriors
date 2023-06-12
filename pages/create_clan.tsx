@@ -87,7 +87,7 @@ export default function Organise() {
 
       <main>
         <div style={{ display: 'flex' }}>
-          <Link href="/" style={{ float: 'left', flex: 'initial', width: '40px', height: '50px', backgroundColor: '#5f873d', textAlign: 'center' }}>←</Link>
+          <Link href="/clans" style={{ float: 'left', flex: 'initial', width: '40px', height: '50px', backgroundColor: '#5f873d', textAlign: 'center' }}>←</Link>
           <h1 style={{ float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#4f772d', height: '50px', margin: '0' }}>Organise event</h1>
         </div>
 

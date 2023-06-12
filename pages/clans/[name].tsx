@@ -26,10 +26,19 @@ export default function View({ clan }: any) {
       </Head>
 
       <body>
-        <h1>{clan.name}</h1>
-        <p>{clan.description}</p>
-        {clan.logo ? <Image src={clan.logo} alt={clan.name} width={500} height={500} /> : null}
-        <Link href='/clans'>back</Link>
+        <div className={styles.margin}>
+          <Link href="/clans">back</Link>
+        </div>
+
+        <div className={styles.bodywithmargin}>
+          {clan.logo ? <Image src={clan.logo} alt={clan.name} width={300} height={300} style={{float: 'right'}}/> : null}
+          <h1>{clan.name}</h1>        
+          {clan.location ? <h3>Based in {clan.location}</h3> : null}
+          <p>{clan.description}</p>
+
+          <p>{clan.members} members</p>
+          {/* <button onClick={interestedButton}>Interested{buttonthing}</button> */}
+        </div>
       </body>
     </div>
 

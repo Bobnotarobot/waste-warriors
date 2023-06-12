@@ -59,7 +59,7 @@ export default function Home({ clans }: any) {
                           <h3 style={{flex: 'auto'}}>{clan.name}</h3>
                           {clan.logo ? <Image src={clan.logo} alt={clan.name} width={100} height={100} style={{flex: 'initial'}}/> : null}
                         </div>
-                        <p>{clan.description}</p>
+                        <p className={styles.eventDescription}>{clan.description}</p>
                       </div>
                     </Link>
                   </div>
