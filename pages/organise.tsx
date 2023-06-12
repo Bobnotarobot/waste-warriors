@@ -126,11 +126,11 @@ export default function Organise() {
             <div style={{ float: 'right', flex: '1', minWidth: '50%', backgroundColor: '#90a955' }}>
               <div className={styles.card}>
                 <label form='Date'>Date and time: </label>
-                <input type="datetime-local" name='Date' id='Date' min={now} required></input>
+                <input type="datetime-local" name='Date' id='Date' min={now} step='1800' required></input>
               </div>
               <div className={styles.card}>
                 <label form='Duration'>Duration (hours): </label>
-                <input type="number" step="0.1" name='Duration' id='Duration' required></input>
+                <input type="number" step="0.5" name='Duration' id='Duration' required></input>
               </div>
               <div className={styles.card}>
                 <label form='Description'>Description: </label>
