@@ -2,6 +2,7 @@ import { NextPage } from "next";
 import { signIn } from "next-auth/react";
 import { FormEventHandler, useState } from "react";
 import styles from './page.module.css'
+import Link from "next/link";
 
 interface Props { }
 
@@ -22,8 +23,8 @@ export default function CreateAccount() {
   }
 
   return (
-    <div>
-      <form onSubmit={saveAccount}>
+    <div className={styles.accountFormContainer}>
+      <form onSubmit={saveAccount} className={styles.accountForm}>
         <div>
           <label form='Username'>Username: </label>
           <input name='Username' id='Username' required placeholder="Username"></input>
@@ -32,9 +33,11 @@ export default function CreateAccount() {
           <label form='Password'>Password: </label>
           <input type="password" name='Password' id='Password' required placeholder="********"></input>
         </div>
-        <button type="submit" id="submit">
-          Create account
-        </button>
+        <Link className={styles.linkNoUnderline} href="/">
+          <button type="submit" id="submit">
+            Create account
+          </button>
+        </Link>
       </form>
     </div>
   )

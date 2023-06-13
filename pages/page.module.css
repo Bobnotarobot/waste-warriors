@@ -16,7 +16,7 @@
   margin-left: 150px;
 }
 
-.organiseEvent {
+.topBar {
   text-align: center;
   padding: 0.5rem;
 }
@@ -25,10 +25,36 @@
   font-size: 150%;
   background-color: #f5f3ac;
   float: right;
+  border: 2px solid #132a13;
+  background-color: #f5f3ac;
+  color: black;
+  border-radius: 5px;
+  margin-left: 0.5vh;
 }
 
 .organiseEventButton:hover {
   background-color: #f2f2d3;
+}
+
+.accountButton {
+  font-size: 150%;
+  background-color: #f5f3ac;
+  float: left;
+  border: 2px solid #132a13;
+  background-color: #f5f3ac;
+  color: black;
+  border-radius: 5px;
+  margin-right: 0.5vw;
+}
+
+.accountButton:hover {
+  background-color: #f2f2d3;
+}
+
+.signedIn {
+  float: left;
+  font-size: 150%;
+  margin-right: 0.5vw;
 }
 
 .filtersWrapper {
@@ -257,4 +283,25 @@
 
 .button:hover {
   background-color: #f2f2d3;
+}
+
+.accountFormContainer {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.accountForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 3vh;
+  padding: 10%;
+  border: 2px solid #132a13;
+  background-color: #f5f3ac;
+  color: black;
+  border-radius: 5px;
 }
