@@ -233,7 +233,7 @@ export default function Home({ events }: any) {
         <title>Litter picking</title>
       </Head>
 
-      <div className={styles.body}>
+      <body className={styles.body}>
         <header className={styles.header}>
           <div className={styles.topBar}>
             <button className={styles.accountButton} onClick={() => {
@@ -336,8 +336,8 @@ export default function Home({ events }: any) {
             </div>
           </div>
         </main>
-      </div>
-    </div>
+      </body>
+    </div >
   )
 }
 
