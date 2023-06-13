@@ -1,10 +1,11 @@
 import styles from '../page.module.css'
 import React from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 import prisma from '../../lib/prisma';
 import moment from 'moment'
+import { GoogleMap, useLoadScript } from '@react-google-maps/api';
+import { useMemo } from 'react';
 
 export async function getServerSideProps(context: { query: { id: any; }; }) {
   const { id } = context.query;
@@ -22,6 +23,38 @@ export default function View({ event }: any) {
   const [interested, setInterested] = React.useState(event.interested);
   const [interestGiven, setInterestGiven] = React.useState(false);
   const [buttonthing, setButtonthing] = React.useState("");
+  var mapCenter= { lat: event.lat, lng: event.lng };
+  const libraries = useMemo(() => ['places'], []);
+
+  const noMarkers = [
+    {
+      featureType: "poi",
+      elementType: "labels",
+      stylers: [
+        { visibility: "off" }
+      ]
+    }
+  ];
+  const mapOptions = useMemo<google.maps.MapOptions>(
+    () => ({
+      disableDefaultUI: false,
+      clickableIcons: false,
+      scrollwheel: true,
+      styles: noMarkers
+    }),
+    []
+  );
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: "AIzaSyD_uZuWbXXwxHrP4jetAlgWzrrc-dgQ_6Q",
+    libraries: libraries as any,
+  });
+  if (!isLoaded) {
+    return <p>Loading...</p>;
+  }
+  function initMap(): void {
+    const map = new google.maps.Map(document.getElementById("map") as HTMLElement, { zoom: 14, center: mapCenter });
+    const marker = new google.maps.Marker({ position: map.getCenter(), map: map, title: "location" });
+  }
 
   async function interestedButton() {
     setButtonthing("...");
@@ -66,8 +99,17 @@ export default function View({ event }: any) {
 
           <p>{interested} interested</p>
           <button onClick={interestedButton}>Interested{buttonthing}</button>
+          <GoogleMap
+            id="map"
+            options={mapOptions}
+            zoom={14}
+            center={mapCenter}
+            mapTypeId={google.maps.MapTypeId.ROADMAP}
+            mapContainerStyle={{ width: '50%', height: '50%' }}
+            onLoad={initMap}
+          />
         </div>
-
+        
       </main>
     </div>
 
