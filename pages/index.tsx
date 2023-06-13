@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState, useRef, MutableRefObject } from 'react';
-import Image from 'next/image'
-import styles from './page.module.css'
+import Image from 'next/image';
+import styles from './page.module.css';
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -11,8 +11,9 @@ import { useMemo } from 'react';
 import Geolocation from '@react-native-community/geolocation';
 const DEVELOPMENT_GOOGLE_MAPS_KEY = "AIzaSyD_uZuWbXXwxHrP4jetAlgWzrrc-dgQ_6Q"
 const PRODUCTION_GOOGLE_MAPS_KEY = "AIzaSyBXcHbmJFrRxrot8_NXQzNMBUITngrsWEo"
-import type { NextApiRequest, NextApiResponse } from 'next';
-import moment from 'moment'
+import type { NextApiRequest, NextApiResponse, NextPage } from 'next';
+import { signIn, signOut, useSession } from "next-auth/react";
+import moment from 'moment';
 
 export async function getServerSideProps() {
   const rawEvents = await prisma.event.findMany();
@@ -25,7 +26,6 @@ export async function getServerSideProps() {
     prisma.event.delete({ where: { id: event.id } });
     return false;
   });
-  //const events = [{id:1, lat:51.5126, lng:-0.1448, date:"2023-06-23", interested:1, social:false}, {id:2, lat: 51.5226, lng: -0.1348, date:"2023-06-09", interested:5, social:true}, {id:3, lat:51.5236, lng:-0.1448, date:"2023-06-08", interested:2, social:true}, {id:4, lat: 51.5136, lng: -0.1448, date:"2023-06-06", interested:0, social:false}]
   return {
     props: { events }
   }
@@ -92,7 +92,6 @@ export function generateMarkers(events: event[]) {
       id: event.id,
       location: event.location,
       date: event.date,
-      // time: new Date(event.date).toLocaleTimeString(),
       lat: event.lat,
       lng: event.lng,
       duration: event.duration,
@@ -106,6 +105,10 @@ export function generateMarkers(events: event[]) {
 
 export default function Home({ events }: any) {
   const libraries = useMemo(() => ['places'], []);
+  const { status, data } = useSession();
+  if (data?.user !== undefined && data?.user.name !== undefined) {
+    console.log("username: ", data?.user.name);
+  }
 
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
   /*if (navigator.geolocation) {
@@ -156,7 +159,6 @@ export default function Home({ events }: any) {
   }
 
   function notFilteredEvent(event: event) {
-    console.log("date max: ", Date.parse(event.date).valueOf() <= Date.parse(dateMax).valueOf());
     return (event.interested >= minInterested) &&
       (Date.parse(event.date).valueOf() >= Date.parse(dateMin).valueOf()) &&
       (Date.parse(event.date).valueOf() <= Date.parse(dateMax).valueOf()) &&
@@ -233,33 +235,46 @@ export default function Home({ events }: any) {
 
       <div className={styles.body}>
         <header className={styles.header}>
-          <div className={styles.organiseEvent}>
+            <div className={styles.topBar}>
+            <button className={styles.accountButton} onClick={() => {
+              signIn();
+            }}>Sign in</button>
+            <button className={styles.accountButton} onClick={() => {
+              signOut();
+            }}>Sign out</button>
+            <form action="/createAccount">
+              <input type="submit" value="Create account" className={styles.accountButton} />
+            </form>
+            {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : null}
             <form action="/organise">
               <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
             </form>
+            <form action="/clans">
+              <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
+            </form>
           </div>
-          <div className={styles.filters}>
-            <h3>Filters: </h3>
-            <form onSubmit={refreshEvents} className={styles.filterForm}>
+          <div className={styles.filtersWrapper}>
+            <form onSubmit={refreshEvents} className={styles.filters}>
+              <h3>Filters: </h3>
               <div className={styles.filterForm}>
                 <label form='MaxDist'>Maximum distance: </label>
-                <input name='MaxDist' id='MaxDist' type='number' min='0'></input>
+                <input name='MaxDist' id='MaxDist' type='number' min='0' className={styles.filterInput}></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='MinInterested'>Minimum people interested: </label>
-                <input name='MinInterested' id='MinInterested' type='number' min='0'></input>
+                <input name='MinInterested' id='MinInterested' type='number' min='0' className={styles.filterInput}></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='DateMin'>Date from: </label>
-                <input name='DateMin' id='DateMin' type='datetime-local'></input>
+                <input name='DateMin' id='DateMin' type='datetime-local' className={styles.filterInput}></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='DateMax'>To: </label>
-                <input name='DateMax' id='DateMax' type='datetime-local'></input>
+                <input name='DateMax' id='DateMax' type='datetime-local' className={styles.filterInput}></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='HasSocial'>Has social: </label>
-                <input name='HasSocial' id='HasSocial' type='checkbox'></input>
+                <input name='HasSocial' id='HasSocial' type='checkbox' className={styles.filterInput}></input>
               </div>
               <button type="submit">Refresh</button>
             </form>
@@ -276,17 +291,17 @@ export default function Home({ events }: any) {
                   (<div key={event.id}>
                     <Link className={styles.linkNoUnderline} href={`/events/${encodeURIComponent(event.id)}`}>
                       <div className={styles.event}>
-                        <div style={{display: 'flex', maxHeight: '5%'}}>
-                          <h2 style={{float: 'left', flex: 'auto', marginTop: '-4px', maxWidth: '90%'}}>{event.location}</h2>
+                        <div style={{ display: 'flex', maxHeight: '5%' }}>
+                          <h2 style={{ float: 'left', flex: 'auto', marginTop: '-4px', maxWidth: '90%' }}>{event.location}</h2>
                           <div className={styles.tags}>
-                            {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New</div> : null}
-                            {event.social ? <div className={styles.tagSocial}>Social</div> : null}
+                            {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New Event</div> : null}
+                            {event.social ? <div className={styles.tagSocial}>Social Afterwards</div> : null}
                           </div>
                         </div>
-                        <h4 style={{marginTop: '-15px'}}>{prettyDate(new Date(Date.parse(event.date)))}, Duration: {event.duration} h</h4>
-                        
-                        <p style={{marginTop: '-15px'}}>{event.description}</p>
-                        <p style={{float: 'right', marginTop: '-15px'}}><strong>{event.interested}</strong> interested</p>
+                        <h4 style={{ marginTop: '-15px' }}>{prettyDate(new Date(Date.parse(event.date)))}, Duration: {event.duration} h</h4>
+
+                        <p className={styles.eventDescription} style={{ marginTop: '-15px' }}>{event.description}</p>
+                        <p style={{ float: 'right', marginTop: '-15px' }}><strong>{event.interested}</strong> interested</p>
                         {/* {event.social ? null : <p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p>}
                         <p>About: {event.description}</p>
                         {event.social ? <div><p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p><p>Social event afterwards: {event.socialDescription}</p></div> : null} */}

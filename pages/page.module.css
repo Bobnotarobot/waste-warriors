@@ -16,7 +16,7 @@
   margin-left: 150px;
 }
 
-.organiseEvent {
+.topBar {
   text-align: center;
   padding: 0.5rem;
 }
@@ -25,24 +25,72 @@
   font-size: 150%;
   background-color: #f5f3ac;
   float: right;
+  border: 2px solid #132a13;
+  background-color: #f5f3ac;
+  color: black;
+  border-radius: 5px;
+  margin-left: 0.5vh;
 }
 
 .organiseEventButton:hover {
   background-color: #f2f2d3;
 }
 
+.accountButton {
+  font-size: 150%;
+  background-color: #f5f3ac;
+  float: left;
+  border: 2px solid #132a13;
+  background-color: #f5f3ac;
+  color: black;
+  border-radius: 5px;
+  margin-right: 0.5vw;
+}
+
+.accountButton:hover {
+  background-color: #f2f2d3;
+}
+
+.signedIn {
+  float: left;
+  font-size: 150%;
+  margin-right: 0.5vw;
+}
+
+.filtersWrapper {
+  display: flex;
+  align-items: center;
+  gap: 1%;
+  font-size: 100%;
+  padding: 1%;
+  width: 98%;
+  background-color: #90a955;
+}
+
 .filters {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 1%;
   font-size: 100%;
-  padding: 10px;
-  margin-top: 30px;
+  padding: 0.5%;
+  width: 98%;
+  border: 2px solid #132a13;
+  background-color: #f5f3ac;
+  color: black;
+  border-radius: 5px;
 }
 
 .filterForm {
   display: flex;
-  gap: 10px;
+  flex: auto;
+  gap: 1%;
+  size: 100%;
+  max-width: 80%;
+}
+
+.filterInput {
+  height: 15px;
+  width: 50%;
 }
 
 .verticalInput {
@@ -85,8 +133,8 @@
 }
 
 .tagNew {
-  max-width: 50%;
-  flex: initial;
+  max-width: 30%;
+  flex: auto;
   max-height: 5%;
   color: black;
   background-color: #FEDF00;
@@ -95,15 +143,40 @@
   text-align: center;
   border-radius: 5px;
   text-decoration: none;
+  font-size: 80%;
 }
 
 .tagSocial {
   max-width: 50%;
-  flex: initial;
+  min-width: 30%;
+  flex: auto;
   color: black;
   background-color: lightskyblue;
   border: 2px solid #132a13;
   padding: 0.2rem;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 80%;
+}
+
+.tagNewEvent {
+  width: 60%;
+  color: black;
+  background-color: #FEDF00;
+  border: 2px solid #132a13;
+  padding: 1rem;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.tagSocialEvent {
+  width: 60%;
+  color: black;
+  background-color: lightskyblue;
+  border: 2px solid #132a13;
+  padding: 1rem;
   text-align: center;
   border-radius: 5px;
   text-decoration: none;
@@ -113,11 +186,11 @@
   display: flex;
   flex: initial;
   float: right;
-  gap: 10px;
+  gap: 5%;
   max-width: 40%;
   width: 18%;
-  min-width: 40px;
-  height: 2%;
+  min-width: 40%;
+  height: 30%;
 }
 
 .card {
@@ -142,13 +215,21 @@
   border-radius: 5px;
 }
 
+.eventDescription {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+  -webkit-line-clamp: 3;
+}
+
 .event:hover {
   background-color: #f2f2d3;
 }
 
 .header {
   background-color: #90a955;
-  height: 15vh;
+  height: 20%;
   margin: 0;
 }
 
@@ -188,10 +269,9 @@
 }
 
 .locationInput {
-  height: 5vh;
+  height: 4vh;
   width: 20vw;
-  font-size: 25px;
-  background-color: #f5f3ac;
+  font-size: 15px;
 }
 
 .button {
@@ -203,4 +283,25 @@
 
 .button:hover {
   background-color: #f2f2d3;
+}
+
+.accountFormContainer {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.accountForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 3vh;
+  padding: 10%;
+  border: 2px solid #132a13;
+  background-color: #f5f3ac;
+  color: black;
+  border-radius: 5px;
 }

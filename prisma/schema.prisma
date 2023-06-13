@@ -19,17 +19,26 @@ model Event {
   duration          Int
   creationDate      String
   description       String
-  interested        Int
+  interested        Int     @default(0)
+  users             User[]
   social            Boolean
   socialDescription String?
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String?  @unique
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  username  String @id
+  password  String
+  clans     Clan[]
+  events    Event[]
+}
 
-  @@map(name: "users")
+model Clan {
+  name        String  @id
+  points      Int     @default(0)
+  location    String?
+  lat         Float?
+  lng         Float?
+  logo        String?
+  description String
+  members     User[]
 }
