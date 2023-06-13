@@ -19,15 +19,17 @@ model Event {
   duration          Int
   creationDate      String
   description       String
-  interested        Int
+  interested        Int     @default(0)
+  users             User[]
   social            Boolean
   socialDescription String?
 }
 
 model User {
-  username String @id
-  password String
-  clans Clan[]
+  username  String @id
+  password  String
+  clans     Clan[]
+  events    Event[]
 }
 
 model Clan {

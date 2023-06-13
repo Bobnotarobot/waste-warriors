@@ -235,17 +235,17 @@ export default function Home({ events }: any) {
 
       <div className={styles.body}>
         <header className={styles.header}>
-          <div className={styles.topBar}>
-            <button className={styles.accountButton} onClick={() => {
-              signIn();
-            }}>Sign in</button>
-            <button className={styles.accountButton} onClick={() => {
-              signOut();
-            }}>Sign out</button>
-            <form action="/createAccount">
-              <input type="submit" value="Create account" className={styles.accountButton} />
-            </form>
-            {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : null}
+          <button onClick={() => {
+            signIn();
+          }}>Sign in</button>
+          <button onClick={() => {
+            signOut();
+          }}>Sign out</button>
+          <form action="/createAccount">
+            <input type="submit" value="Create account" />
+          </form>
+          {data?.user !== undefined ? <p> User session: {data?.user.name}</p> : null}
+          <div className={styles.organiseEvent}>
             <form action="/organise">
               <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
             </form>
