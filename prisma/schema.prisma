@@ -19,14 +19,17 @@ model Event {
   duration          Int
   creationDate      String
   description       String
-  interested        Int
+  interested        Int     @default(0)
+  users             User[]
   social            Boolean
   socialDescription String?
 }
 
 model User {
-  username String @unique
-  password String
+  username  String @id
+  password  String
+  clans     Clan[]
+  events    Event[]
 }
 
 model Clan {
@@ -37,5 +40,5 @@ model Clan {
   lng         Float?
   logo        String?
   description String
-  members     Int     @default(0)
+  members     User[]
 }

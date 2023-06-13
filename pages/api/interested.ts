@@ -10,6 +10,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const data = JSON.parse(req.body);
   const interestGiven = data.interestGiven;
   const id = data.id;
+  const name = data.user;
   var savedEvent;
 
   if (interestGiven) {
@@ -18,7 +19,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
               id: id
             },
             data: {
-              interested: {increment: -1},
+              users: {
+                disconnect: {
+                  username: name
+                }
+              },
+              interested: {increment: 1}
             },
           })
         }
@@ -28,7 +34,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
               id: id
             },
             data: {
-              interested: {increment: 1},
+              users: {
+                connect: {
+                  username: name
+                }
+              },
+              interested: {increment: 1}
             },
           })
         }

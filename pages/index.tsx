@@ -235,7 +235,7 @@ export default function Home({ events }: any) {
 
       <body className={styles.body}>
         <header className={styles.header}>
-          <div className={styles.topBar}>
+            <div className={styles.topBar}>
             <button className={styles.accountButton} onClick={() => {
               signIn();
             }}>Sign in</button>

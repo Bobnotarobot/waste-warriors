@@ -6,6 +6,9 @@ import prisma from '../../lib/prisma';
 import moment from 'moment'
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
+import { useSession } from 'next-auth/react';
+import { User } from '@prisma/client';
+import { redirect } from 'next/navigation';
 
 export async function getServerSideProps(context: { query: { id: any; }; }) {
   const { id } = context.query;
@@ -13,6 +16,9 @@ export async function getServerSideProps(context: { query: { id: any; }; }) {
     where: {
       id: parseInt(id)
     },
+    include: {
+      users: true
+    }
   })
   return {
     props: { event }
@@ -20,9 +26,20 @@ export async function getServerSideProps(context: { query: { id: any; }; }) {
 }
 
 export default function View({ event }: any) {
+  const { status, data } = useSession();
+  var loggedIn = false;
+  if (data?.user !== undefined && data?.user.name !== undefined) {
+    console.log("username: ", data?.user.name);
+    loggedIn = true;
+  }
+  else {
+    loggedIn = false;
+  }
+  const usersByUsername: String[] = event.users.map((user: User) => user.username);
+
   const [interested, setInterested] = React.useState(event.interested);
-  const [interestGiven, setInterestGiven] = React.useState(false);
-  const [buttonthing, setButtonthing] = React.useState("");
+  const [interestGiven, setInterestGiven] = React.useState(loggedIn ? usersByUsername.includes(data?.user.name) : false);
+  const [buttonthing, setButtonthing] = React.useState(loggedIn ? (usersByUsername.includes(data?.user.name) ? " ✔" : "") : "Log in to join");
   var mapCenter= { lat: event.lat, lng: event.lng };
   const libraries = useMemo(() => ['places'], []);
 
@@ -57,8 +74,12 @@ export default function View({ event }: any) {
   }
 
   async function interestedButton() {
+    if (!loggedIn) {
+      redirect('/auth/signin');
+    }
+    
     setButtonthing("...");
-    const response = await fetch('/api/interested', { method: 'POST', body: JSON.stringify({ interestGiven: interestGiven, id: event.id }), });
+    const response = await fetch('/api/interested', { method: 'POST', body: JSON.stringify({ interestGiven: interestGiven, id: event.id, user: data?.user.name }), });
 
     if (!response.ok) {
       throw new Error(response.statusText);
