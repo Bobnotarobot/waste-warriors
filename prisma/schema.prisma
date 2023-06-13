@@ -25,8 +25,9 @@ model Event {
 }
 
 model User {
-  username String @unique
+  username String @id
   password String
+  clans Clan[]
 }
 
 model Clan {
@@ -37,5 +38,5 @@ model Clan {
   lng         Float?
   logo        String?
   description String
-  members     Int     @default(0)
+  members     User[]
 }

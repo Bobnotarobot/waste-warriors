@@ -22,7 +22,7 @@ export async function getServerSideProps(context: { query: { id: any; }; }) {
 export default function View({ event }: any) {
   const [interested, setInterested] = React.useState(event.interested);
   const [interestGiven, setInterestGiven] = React.useState(false);
-  const [buttonthing, setButtonthing] = React.useState("");
+  const [buttonthing, setButtonthing] = React.useState(!interestGiven ? "" : " ✔");
   var mapCenter= { lat: event.lat, lng: event.lng };
   const libraries = useMemo(() => ['places'], []);
 
