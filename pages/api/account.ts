@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-
+import { signIn } from "next-auth/react";
 import prisma from '../../lib/prisma';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -11,6 +11,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const username = accountData.username;
   const password = accountData.password;
   const data = { username: username, password: password };
-  const savedEvent = await prisma.user.create({ data: data });
-  res.json(savedEvent);
+  if ((await prisma.user.findMany({ where: { username: username }, })).length === 0) {
+    const savedEvent = await prisma.user.create({ data: data });
+    res.json(savedEvent);
+  }
 };

@@ -106,9 +106,6 @@ export function generateMarkers(events: event[]) {
 export default function Home({ events }: any) {
   const libraries = useMemo(() => ['places'], []);
   const { status, data } = useSession();
-  if (data?.user !== undefined && data?.user.name !== undefined) {
-    console.log("username: ", data?.user.name);
-  }
 
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
   /*if (navigator.geolocation) {
@@ -228,14 +225,14 @@ export default function Home({ events }: any) {
   }
 
   return (
-    <div>
+    <div className={styles.body}>
       <Head>
         <title>Litter picking</title>
       </Head>
 
-      <div className={styles.body}>
+      <body className={styles.body}>
         <header className={styles.header}>
-            <div className={styles.topBar}>
+          <div className={styles.topBar}>
             <button className={styles.accountButton} onClick={() => {
               signIn();
             }}>Sign in</button>
@@ -245,7 +242,7 @@ export default function Home({ events }: any) {
             <form action="/createAccount">
               <input type="submit" value="Create account" className={styles.accountButton} />
             </form>
-            {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : null}
+            {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : <div className={styles.signedIn}> Not signed in</div>}
             <form action="/organise">
               <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
             </form>
@@ -336,8 +333,8 @@ export default function Home({ events }: any) {
             </div>
           </div>
         </main>
-      </div>
-    </div>
+      </body>
+    </div >
   )
 }
 

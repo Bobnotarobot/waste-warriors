@@ -19,12 +19,11 @@ export default function CreateAccount() {
       throw new Error(response.statusText);
     }
     return await response.json();
-
   }
 
   return (
     <div className={styles.accountFormContainer}>
-      <form onSubmit={saveAccount} className={styles.accountForm}>
+      <form onSubmit={saveAccount} className={styles.accountForm} action="/">
         <div>
           <label form='Username'>Username: </label>
           <input name='Username' id='Username' required placeholder="Username"></input>
@@ -33,10 +32,11 @@ export default function CreateAccount() {
           <label form='Password'>Password: </label>
           <input type="password" name='Password' id='Password' required placeholder="********"></input>
         </div>
+        <button type="submit" id="submit">
+          Create account
+        </button>
         <Link className={styles.linkNoUnderline} href="/">
-          <button type="submit" id="submit">
-            Create account
-          </button>
+          back
         </Link>
       </form>
     </div>

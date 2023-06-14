@@ -1,6 +1,6 @@
 .body {
-  min-height: 100%;
   margin: 0;
+  padding: 0;
 }
 
 .textarea {
@@ -12,7 +12,6 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 6rem;
-  min-height: 100vh;
   margin-left: 150px;
 }
 
@@ -37,7 +36,7 @@
 }
 
 .accountButton {
-  font-size: 150%;
+  font-size: 100%;
   background-color: #f5f3ac;
   float: left;
   border: 2px solid #132a13;
@@ -53,7 +52,7 @@
 
 .signedIn {
   float: left;
-  font-size: 150%;
+  font-size: 100%;
   margin-right: 0.5vw;
 }
 
@@ -194,7 +193,7 @@
 }
 
 .card {
-  width: '50%';
+  width: 50%;
   margin: 1rem;
   flex-basis: 45%;
   padding: 1.5rem;
@@ -204,6 +203,19 @@
   text-decoration: none;
   border-radius: 5px;
   transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.clanCard {
+  max-width: 30%;
+  max-height: 30%;
+  margin: 1rem;
+  flex: initial;
+  padding: 0.2rem;
+  text-align: left;
+  color: #313131;
+  background-color: #f5f3ac;
+  text-decoration: none;
+  border-radius: 5px;
 }
 
 .event {
