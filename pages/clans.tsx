@@ -6,6 +6,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import prisma from '../lib/prisma';
 import { signIn, signOut, useSession } from "next-auth/react";
+import Header from './header';
 
 export async function getServerSideProps() {
   const clans = (await prisma.clan.findMany()).sort((c1, c2) => {
@@ -44,31 +45,8 @@ export default function Home({ clans }: any) {
       </Head>
 
       <div className={styles.body}>
-        <header className={styles.header}>
-          <div className={styles.leftHeader}>
-            <form action="/">
-              <input type="submit" value="Home" className={styles.homeButton} />
-            </form>
-            <button className={styles.accountButton} onClick={() => {
-              signIn();
-            }}>Sign in</button>
-            <button className={styles.accountButton} onClick={() => {
-              signOut();
-            }}>Sign out</button>
-            <form action="/createAccount">
-              <input type="submit" value="Create account" className={styles.accountButton} />
-            </form>
-            {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : <div className={styles.signedIn}> Not signed in</div>}
-          </div>
-          <div className={styles.rightHeader}>
-            <form action="/organise">
-              <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
-            </form>
-            <form action="/clans">
-              <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
-            </form>
-          </div>
-        </header>
+        <Header />
+      
         <main>
           <form action="/create_clan">
             <input type="submit" value="Make your own!" className={styles.organiseEventButton} />
