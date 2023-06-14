@@ -114,11 +114,11 @@ export default function Organise() {
               </div>
               <div className={styles.card}>
                 <label form='Date'>Date and time: </label>
-                <input type="datetime-local" name='Date' id='Date' min={now} step='1800' required></input>
+                <input type="datetime-local" name='Date' id='Date' min={now} required></input>
               </div>
               <div className={styles.card}>
-                <label form='Duration'>Duration (hours): </label>
-                <input type="number" step="0.5" name='Duration' id='Duration' required></input>
+                <label form='Duration'>Estimated duration (in hours): </label>
+                <input type="number" step="0.5" name='Duration' id='Duration' min={0} required></input>
               </div>
               <div className={styles.card}>
                 <label form='Description'>Description: </label>
