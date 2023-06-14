@@ -5,7 +5,8 @@ import prisma from "../../../lib/prisma";
 const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
-  },
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    },
   providers: [
     CredentialsProvider({
       type: "credentials",
@@ -22,7 +23,7 @@ const authOptions: NextAuthOptions = {
           where: { username: username },
         }))[0]
         if (user.password != password) {
-          throw new Error("invalid credentials");
+          return null;
         }
 
         // if everything is fine
