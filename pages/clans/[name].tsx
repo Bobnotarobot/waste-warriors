@@ -37,13 +37,16 @@ export default function View({ clan }: any) {
   }
   const membersByUsername: String[] = clan.members.map((user: User) => user.username);
 
+  const router = useRouter();
+
   const [members, setMembers] = React.useState(clan.members.length);
   const [joined, setJoined] = React.useState(loggedIn ? membersByUsername.includes(data?.user.name) : false);
   const [buttonthing, setButtonthing] = React.useState(loggedIn ? (membersByUsername.includes(data?.user.name) ? "Joined" : "Join") : "Log in to join");
 
   async function joinClan() {
     if (!loggedIn) {
-      redirect('/auth/signin');
+      router.push('/auth/signin');
+      return null;
     }
     setButtonthing(joined ? "Joined..." : "Join...");
     const response = await fetch('/api/joinclan', { method: 'POST', body: JSON.stringify({ joined: joined, user: data?.user.name, clan: clan.name }), });

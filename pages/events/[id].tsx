@@ -10,6 +10,7 @@ import { useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { Clan, User } from '@prisma/client';
+import { Router, useRouter } from 'next/router';
 
 export async function getServerSideProps(context: { query: { id: any; }; }) {
   const { id } = context.query;
@@ -53,6 +54,8 @@ export default function View({ props }: any) {
   }
   const usersByUsername: String[] = event.users.map((user: User) => user.username);
 
+  const router = useRouter();
+
   const [interested, setInterested] = React.useState(event.interested);
   const [interestGiven, setInterestGiven] = React.useState(loggedIn ? usersByUsername.includes(data?.user.name) : false);
   const [buttonthing, setButtonthing] = React.useState(loggedIn ? (usersByUsername.includes(data?.user.name) ? "Interested ✔" : "Interested") : "Log in to join");
@@ -91,7 +94,8 @@ export default function View({ props }: any) {
 
   async function interestedButton() {
     if (!loggedIn) {
-      redirect('/auth/signin');
+      router.push('/auth/signin');
+      return null;
     }
     
     setButtonthing("Interested...");
