@@ -105,104 +105,97 @@ export default function Organise({ users }: any) {
   }
 
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Organise event</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <header className={styles.header}>
-        <div className={styles.leftHeader}>
-          <form action="/">
-            <input type="submit" value="Home" className={styles.homeButton} />
-          </form>
-          <button className={styles.accountButton} onClick={() => {
-            signIn();
-          }}>Sign in</button>
-          <button className={styles.accountButton} onClick={() => {
-            signOut();
-          }}>Sign out</button>
-          <form action="/createAccount">
-            <input type="submit" value="Create account" className={styles.accountButton} />
-          </form>
-          {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : <div className={styles.signedIn}> Not signed in</div>}
-        </div>
-        <div className={styles.rightHeader}>
-          <form action="/organise">
-            <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
-          </form>
-          <form action="/clans">
-            <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
-          </form>
-        </div>
-      </header>
-
-      <main>
-        <div style={{ display: 'flex' }}>
-          <h1 style={{ float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#98bf64', height: '50px', margin: '0' }}>Organise event</h1>
-        </div>
-
-        <form onSubmit={saveEvent} action="/">
-          <div style={{ display: 'flex' }}>
-            {/* <div className={styles.uploadcard}>
-              <label form='Image'>Image: </label>
-              <input type="file" name='Image' id='Image' accept="image/png, image/jpeg"></input>
-            </div> */}
-            <div style={{ float: 'right', flex: '1', minWidth: '50%', backgroundColor: '#90a955' }}>
-              <div className={styles.card}>
-                <label form='Address'>Location: </label>
-                <input name='Address' id='Address' required className={styles.locationInput} placeholder="Enter Location"></input>
-              </div>
-              <div className={styles.card}>
-                <label form='Date'>Date: </label>
-                <input type="date" name='Date' id='Date' min={now} required></input>
-              </div>
-              <div className={styles.card}>
-                <label form='Time'>Time: </label>
-                <input type="time" name='Time' id='Time' min={now} required></input>
-              </div>
-              <div className={styles.card}>
-                <label form='Duration'>Estimated duration (in hours): </label>
-                <input type="number" step="0.5" name='Duration' id='Duration' min={0} required></input>
-              </div>
-              <div className={styles.card}>
-                <label form='Description'>Description: </label>
-                <textarea name='Description' id='Description' rows={6} style={{ width: '100%' }} required className={styles.textarea}></textarea>
-              </div>
-              <div className={styles.card}>
-                <label form='Social'>Does the event have a social event: </label>
-                <input type="Checkbox" name='Social' id='Social'></input>
-              </div>
-              <div className={styles.card}>
-                <label form='SocialDescription'>Social event description (optional): </label>
-                <textarea name='SocialDescription' id='SocialDescription' rows={6} style={{ width: '100%' }} className={styles.textarea} disabled={false} ></textarea>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: '6%',
-                }}>
-                <button type="submit" id="submit" className={styles.button} style={{ height: '8vh', width: '20vw', backgroundColor: "#FFCE66", fontSize: "20px" }}>
-                  Submit
-                </button>
-              </div>
-            </div>
-            <div style={{ float: 'left', backgroundColor: '#90a955', flex: '1', minWidth: '50%', }}>
-              <GoogleMap
-                id="map"
-                options={mapOptions}
-                zoom={14}
-                center={mapCenter}
-                mapTypeId={google.maps.MapTypeId.ROADMAP}
-                mapContainerStyle={{ width: '100%', height: '100%' }}
-                onLoad={initMap}
-              />
-            </div>
+      <body className={styles.body}>
+        <header className={styles.header}>
+          <div className={styles.leftHeader}>
+            <form action="/">
+              <input type="submit" value="Home" className={styles.homeButton} />
+            </form>
+            <button className={styles.accountButton} onClick={() => {
+              signIn();
+            }}>Sign in</button>
+            <button className={styles.accountButton} onClick={() => {
+              signOut();
+            }}>Sign out</button>
+            <form action="/createAccount">
+              <input type="submit" value="Create account" className={styles.accountButton} />
+            </form>
+            {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : <div className={styles.signedIn}> Not signed in</div>}
           </div>
-        </form>
-      </main>
+          <div className={styles.rightHeader}>
+            <form action="/organise">
+              <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
+            </form>
+            <form action="/clans">
+              <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
+            </form>
+          </div>
+        </header>
+
+        <main className={styles.mainIndex}>
+          <form onSubmit={saveEvent} action="/">
+            <div style={{ display: 'flex' }}>
+              <div style={{ float: 'right', flex: '1', minWidth: '50%' }}>
+                <div className={styles.card}>
+                  <label form='Address'>Location: </label>
+                  <input name='Address' id='Address' required className={styles.locationInput} placeholder="Enter Location"></input>
+                </div>
+                <div className={styles.card}>
+                  <label form='Date'>Date: </label>
+                  <input type="date" name='Date' id='Date' min={now} required></input>
+                </div>
+                <div className={styles.card}>
+                  <label form='Time'>Time: </label>
+                  <input type="time" name='Time' id='Time' min={now} required></input>
+                </div>
+                <div className={styles.card}>
+                  <label form='Duration'>Estimated duration (in hours): </label>
+                  <input type="number" step="0.5" name='Duration' id='Duration' min={0} required></input>
+                </div>
+                <div className={styles.card}>
+                  <label form='Description'>Description: </label>
+                  <textarea name='Description' id='Description' rows={6} style={{ width: '100%' }} required className={styles.textarea}></textarea>
+                </div>
+                <div className={styles.card}>
+                  <label form='Social'>Does the event have a social event: </label>
+                  <input type="Checkbox" name='Social' id='Social'></input>
+                </div>
+                <div className={styles.card}>
+                  <label form='SocialDescription'>Social event description (optional): </label>
+                  <textarea name='SocialDescription' id='SocialDescription' rows={6} style={{ width: '100%' }} className={styles.textarea} disabled={false} ></textarea>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: '6%',
+                  }}>
+                  <button type="submit" id="submit" className={styles.button} style={{ height: '8vh', width: '20vw', backgroundColor: "#FFCE66", fontSize: "20px" }}>
+                    Submit
+                  </button>
+                </div>
+              </div>
+              <div style={{ float: 'left', backgroundColor: '#90a955', flex: '1', minWidth: '50%', }}>
+                <GoogleMap
+                  id="map"
+                  options={mapOptions}
+                  zoom={14}
+                  center={mapCenter}
+                  mapTypeId={google.maps.MapTypeId.ROADMAP}
+                  mapContainerStyle={{ width: '100%', height: '100%' }}
+                  onLoad={initMap}
+                />
+              </div>
+            </div>
+          </form>
+        </main>
+      </body>
     </div>
   );
 }
