@@ -48,6 +48,8 @@ export default function Organise() {
     const mlat = marker.getPosition()?.lat();
     const location = event.target.Address.value;
     const date = event.target.Date.value;
+    const time = event.target.Time.value;
+    const dateTime = new Date(date + 'T' + time);
     const duration = event.target.Duration.value;
     const description = event.target.Description.value;
     const social = event.target.Social.checked;
@@ -56,7 +58,7 @@ export default function Organise() {
     var mm = jsdate.getMonth() + 1; // getMonth() is zero-based
     var dd = jsdate.getDate();
     const creationDate = jsdate.getFullYear() + '-' + (mm > 9 ? '' : '0') + mm + '-' + (dd > 9 ? '' : '0') + dd + 'T' + jsdate.getHours() + ':' + jsdate.getMinutes();
-    const body = { location: location, lat: mlat, lng: mlng, date: date, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription };
+    const body = { location: location, lat: mlat, lng: mlng, date: dateTime, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription };
     const response = await fetch('/api/event', { method: 'POST', body: JSON.stringify(body), });
     if (!response.ok) {
       throw new Error(response.statusText);
@@ -113,8 +115,12 @@ export default function Organise() {
                 <input name='Address' id='Address' required className={styles.locationInput} placeholder="Enter Location"></input>
               </div>
               <div className={styles.card}>
-                <label form='Date'>Date and time: </label>
-                <input type="datetime-local" name='Date' id='Date' min={now} required></input>
+                <label form='Date'>Date: </label>
+                <input type="date" name='Date' id='Date' min={now} required></input>
+              </div>
+              <div className={styles.card}>
+                <label form='Time'>Time: </label>
+                <input type="time" name='Time' id='Time' min={now} required></input>
               </div>
               <div className={styles.card}>
                 <label form='Duration'>Estimated duration (in hours): </label>
