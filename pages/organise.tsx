@@ -4,20 +4,20 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
-import { useSession } from 'next-auth/react';
 import prisma from '../lib/prisma';
 import { User } from '@prisma/client';
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export async function getServerSideProps() {
   const users = await prisma.user.findMany({
-    include: {clan: true}
+    include: { clan: true }
   });
   return {
     props: { users }
   }
 }
 
-export default function Organise({users}: any) {
+export default function Organise({ users }: any) {
   const [social, setSocial] = React.useState(false);
   const { status, data } = useSession();
 
@@ -111,10 +111,35 @@ export default function Organise({users}: any) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <header className={styles.header}>
+        <div className={styles.leftHeader}>
+          <form action="/">
+            <input type="submit" value="Home" className={styles.homeButton} />
+          </form>
+          <button className={styles.accountButton} onClick={() => {
+            signIn();
+          }}>Sign in</button>
+          <button className={styles.accountButton} onClick={() => {
+            signOut();
+          }}>Sign out</button>
+          <form action="/createAccount">
+            <input type="submit" value="Create account" className={styles.accountButton} />
+          </form>
+          {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : <div className={styles.signedIn}> Not signed in</div>}
+        </div>
+        <div className={styles.rightHeader}>
+          <form action="/organise">
+            <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
+          </form>
+          <form action="/clans">
+            <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
+          </form>
+        </div>
+      </header>
+
       <main>
         <div style={{ display: 'flex' }}>
-          <Link href="/" style={{ float: 'left', flex: 'initial', width: '40px', height: '50px', backgroundColor: '#5f873d', textAlign: 'center' }}>←</Link>
-          <h1 style={{ float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#4f772d', height: '50px', margin: '0' }}>Organise event</h1>
+          <h1 style={{ float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#98bf64', height: '50px', margin: '0' }}>Organise event</h1>
         </div>
 
         <form onSubmit={saveEvent} action="/">

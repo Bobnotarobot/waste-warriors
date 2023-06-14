@@ -235,7 +235,10 @@ export default function Home({ events }: any) {
 
       <body className={styles.body}>
         <header className={styles.header}>
-          <div className={styles.topBar}>
+          <div className={styles.leftHeader}>
+            <form action="/">
+              <input type="submit" value="Home" className={styles.homeButton} />
+            </form>
             <button className={styles.accountButton} onClick={() => {
               signIn();
             }}>Sign in</button>
@@ -246,6 +249,11 @@ export default function Home({ events }: any) {
               <input type="submit" value="Create account" className={styles.accountButton} />
             </form>
             {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : <div className={styles.signedIn}> Not signed in</div>}
+          </div>
+          <div className={styles.rightHeader}>
+            <form action="/clans">
+              <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
+            </form>
             <button type="submit" onClick={() => {
               if (data?.user === undefined) {
                 router.push('/auth/signin')
@@ -254,10 +262,10 @@ export default function Home({ events }: any) {
                 router.push('/organise')
               }
             }} className={styles.organiseEventButton}>Organise your own! →</button>
-            <form action="/clans">
-              <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
-            </form>
           </div>
+        </header>
+
+        <main className={styles.mainIndex}>
           <div className={styles.filtersWrapper}>
             <form onSubmit={refreshEvents} className={styles.filters}>
               <h3>Filters: </h3>
@@ -284,9 +292,6 @@ export default function Home({ events }: any) {
               <button type="submit">Refresh</button>
             </form>
           </div>
-        </header>
-
-        <main>
           <div className={styles.listView}>
             <h3>Upcoming events:</h3>
 
@@ -317,7 +322,7 @@ export default function Home({ events }: any) {
             </div>
           </div>
           <div className={styles.mapView}>
-            <div className={styles.map} style={{ width: '57vw', height: '80vh' }}>
+            <div className={styles.map} style={{ width: '100%', height: '100%' }}>
               <GoogleMap
                 id="map"
                 options={mapOptions}
