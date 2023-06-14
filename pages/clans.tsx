@@ -70,7 +70,6 @@ export default function Home({ clans }: any) {
           </div>
         </header>
         <main>
-          <Link href='/'>back</Link>
           <form action="/create_clan">
             <input type="submit" value="Make your own!" className={styles.organiseEventButton} />
           </form>

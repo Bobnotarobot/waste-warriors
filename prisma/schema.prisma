@@ -23,13 +23,17 @@ model Event {
   social            Boolean
   socialDescription String?
   users             User[]  @relation("EventToUser")
+  organiser         User?   @relation(fields: [orgKey], references: [username], name: "Owner")
+  orgKey            String?
 }
 
 model User {
-  username String  @id
-  password String
-  clans    Clan[]  @relation("ClanToUser")
-  events   Event[] @relation("EventToUser")
+  username        String  @id
+  password        String
+  clan            Clan?   @relation(fields: [clanKey], references: [name])
+  clanKey         String?
+  events          Event[] @relation("EventToUser")
+  organisedEvents Event[] @relation("Owner")
 }
 
 model Clan {
@@ -40,5 +44,5 @@ model Clan {
   lng         Float?
   logo        String?
   description String
-  members     User[]  @relation("ClanToUser")
+  members     User[]
 }

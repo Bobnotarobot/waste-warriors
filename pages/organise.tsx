@@ -4,9 +4,20 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
+import prisma from '../lib/prisma';
+import { User } from '@prisma/client';
 import { signIn, signOut, useSession } from "next-auth/react";
 
-export default function Organise() {
+export async function getServerSideProps() {
+  const users = await prisma.user.findMany({
+    include: { clan: true }
+  });
+  return {
+    props: { users }
+  }
+}
+
+export default function Organise({ users }: any) {
   const [social, setSocial] = React.useState(false);
   const { status, data } = useSession();
 
@@ -46,10 +57,13 @@ export default function Organise() {
   const now = new Date().toISOString().slice(0, new Date().toISOString().lastIndexOf(":"));
 
   async function saveEvent(event: any) {
+    const organiser = data?.user.name;
     const mlng = marker.getPosition()?.lng();
     const mlat = marker.getPosition()?.lat();
     const location = event.target.Address.value;
     const date = event.target.Date.value;
+    const time = event.target.Time.value;
+    const dateTime = new Date(date + 'T' + time);
     const duration = event.target.Duration.value;
     const description = event.target.Description.value;
     const social = event.target.Social.checked;
@@ -58,7 +72,7 @@ export default function Organise() {
     var mm = jsdate.getMonth() + 1; // getMonth() is zero-based
     var dd = jsdate.getDate();
     const creationDate = jsdate.getFullYear() + '-' + (mm > 9 ? '' : '0') + mm + '-' + (dd > 9 ? '' : '0') + dd + 'T' + jsdate.getHours() + ':' + jsdate.getMinutes();
-    const body = { location: location, lat: mlat, lng: mlng, date: date, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription };
+    const body = { organiser: organiser, location: location, lat: mlat, lng: mlng, date: dateTime, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription };
     const response = await fetch('/api/event', { method: 'POST', body: JSON.stringify(body), });
     if (!response.ok) {
       throw new Error(response.statusText);
@@ -125,8 +139,7 @@ export default function Organise() {
 
       <main>
         <div style={{ display: 'flex' }}>
-          <Link href="/" style={{ float: 'left', flex: 'initial', width: '40px', height: '50px', backgroundColor: '#5f873d', textAlign: 'center' }}>←</Link>
-          <h1 style={{ float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#4f772d', height: '50px', margin: '0' }}>Organise event</h1>
+          <h1 style={{ float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#98bf64', height: '50px', margin: '0' }}>Organise event</h1>
         </div>
 
         <form onSubmit={saveEvent} action="/">
@@ -141,12 +154,16 @@ export default function Organise() {
                 <input name='Address' id='Address' required className={styles.locationInput} placeholder="Enter Location"></input>
               </div>
               <div className={styles.card}>
-                <label form='Date'>Date and time: </label>
-                <input type="datetime-local" name='Date' id='Date' min={now} step='1800' required></input>
+                <label form='Date'>Date: </label>
+                <input type="date" name='Date' id='Date' min={now} required></input>
               </div>
               <div className={styles.card}>
-                <label form='Duration'>Duration (hours): </label>
-                <input type="number" step="0.5" name='Duration' id='Duration' required></input>
+                <label form='Time'>Time: </label>
+                <input type="time" name='Time' id='Time' min={now} required></input>
+              </div>
+              <div className={styles.card}>
+                <label form='Duration'>Estimated duration (in hours): </label>
+                <input type="number" step="0.5" name='Duration' id='Duration' min={0} required></input>
               </div>
               <div className={styles.card}>
                 <label form='Description'>Description: </label>
