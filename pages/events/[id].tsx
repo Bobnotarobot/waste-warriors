@@ -6,9 +6,10 @@ import prisma from '../../lib/prisma';
 import moment from 'moment'
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
+
 import { useSession } from 'next-auth/react';
-import { User } from '@prisma/client';
 import { redirect } from 'next/navigation';
+import { Clan, User } from '@prisma/client';
 
 export async function getServerSideProps(context: { query: { id: any; }; }) {
   const { id } = context.query;
@@ -20,26 +21,41 @@ export async function getServerSideProps(context: { query: { id: any; }; }) {
       users: true
     }
   })
+  const users = await prisma.user.findMany({
+    include: {clan: true}
+  });
+  const props = { event, users }
   return {
-    props: { event }
+    props: { props }
   }
 }
 
-export default function View({ event }: any) {
+export default function View({ props }: any) {
+  const event = props.event;
+  const users = props.users;
   const { status, data } = useSession();
   var loggedIn = false;
+  var clan: Clan | null;
   if (data?.user !== undefined && data?.user.name !== undefined) {
     console.log("username: ", data?.user.name);
     loggedIn = true;
+    clan = users.find((user: User) => user.username === data?.user.name).clan
+    if (clan === undefined) clan = null;
+    // if (data?.user.clans !== undefined)
+    //   clans = data?.user.clans;
+    // else {
+    //   clans = [];
+    // }
   }
   else {
     loggedIn = false;
+    clan = null;
   }
   const usersByUsername: String[] = event.users.map((user: User) => user.username);
 
   const [interested, setInterested] = React.useState(event.interested);
   const [interestGiven, setInterestGiven] = React.useState(loggedIn ? usersByUsername.includes(data?.user.name) : false);
-  const [buttonthing, setButtonthing] = React.useState(loggedIn ? (usersByUsername.includes(data?.user.name) ? " ✔" : "") : "Log in to join");
+  const [buttonthing, setButtonthing] = React.useState(loggedIn ? (usersByUsername.includes(data?.user.name) ? "Interested ✔" : "Interested") : "Log in to join");
   var mapCenter= { lat: event.lat, lng: event.lng };
   const libraries = useMemo(() => ['places'], []);
 
@@ -78,7 +94,7 @@ export default function View({ event }: any) {
       redirect('/auth/signin');
     }
     
-    setButtonthing("...");
+    setButtonthing("Interested...");
     const response = await fetch('/api/interested', { method: 'POST', body: JSON.stringify({ interestGiven: interestGiven, id: event.id, user: data?.user.name }), });
 
     if (!response.ok) {
@@ -88,7 +104,7 @@ export default function View({ event }: any) {
     const res = await response.json();
 
     setInterested(interestGiven ? event.interested : event.interested + 1);
-    setButtonthing(interestGiven ? "" : " ✔");
+    setButtonthing(interestGiven ? "Interested" : "Interested ✔");
     setInterestGiven(!interestGiven);
 
 
@@ -118,8 +134,11 @@ export default function View({ event }: any) {
           <p>{event.description}</p>
           {event.social ? <div><p>Social event afterwards:</p> <p>{event.socialDescription}</p></div> : null}
 
-          <p>{interested} interested</p>
-          <button onClick={interestedButton}>Interested{buttonthing}</button>
+          <div style={{display: 'flex', gap: '8px'}}>
+            <p>{interested} interested</p>
+            {loggedIn && (clan !== null) ? <div className={styles.card}>{event.users.filter((user: User) => user.clanKey === clan.name).length} from {clan.name}</div> : null}
+          </div>
+          <button onClick={interestedButton}>{buttonthing}</button>
           <GoogleMap
             id="map"
             options={mapOptions}

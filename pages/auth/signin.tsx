@@ -16,7 +16,7 @@ const SignIn: NextPage = (props): JSX.Element => {
     const res = await signIn('credentials', {
       username: userInfo.username,
       password: userInfo.password,
-      redirect: false,
+      callbackUrl: '/'
     });
 
     console.log(res);
@@ -42,9 +42,6 @@ const SignIn: NextPage = (props): JSX.Element => {
         <button type="submit" id="submit">
           Sign in
         </button>
-        <Link className={styles.linkNoUnderline} href="/">
-          back
-        </Link>
       </form>
     </div >
   )

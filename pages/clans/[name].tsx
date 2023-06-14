@@ -24,16 +24,6 @@ export async function getServerSideProps(context: { query: { name: any; }; }) {
   }
 }
 
-interface clan {
-  name: string;
-  points: number;
-  location: string;
-  lat: number;
-  lng: number;
-  logo: string;
-  description: string;
-  members: User[];
-}
 
 export default function View({ clan }: any) {
   const { status, data } = useSession();

@@ -28,7 +28,8 @@ model Event {
 model User {
   username String  @id
   password String
-  clans    Clan[]  @relation("ClanToUser")
+  clan     Clan?   @relation(fields: [clanKey], references: [name])
+  clanKey  String?
   events   Event[] @relation("EventToUser")
 }
 
@@ -40,5 +41,5 @@ model Clan {
   lng         Float?
   logo        String?
   description String
-  members     User[]  @relation("ClanToUser")
+  members     User[]
 }
