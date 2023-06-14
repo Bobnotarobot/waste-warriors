@@ -4,9 +4,11 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function Organise() {
   const [social, setSocial] = React.useState(false);
+  const { status, data } = useSession();
 
   const libraries = useMemo(() => ['places'], []);
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
@@ -94,6 +96,32 @@ export default function Organise() {
         <title>Organise event</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      <header className={styles.header}>
+        <div className={styles.leftHeader}>
+          <form action="/">
+            <input type="submit" value="Home" className={styles.homeButton} />
+          </form>
+          <button className={styles.accountButton} onClick={() => {
+            signIn();
+          }}>Sign in</button>
+          <button className={styles.accountButton} onClick={() => {
+            signOut();
+          }}>Sign out</button>
+          <form action="/createAccount">
+            <input type="submit" value="Create account" className={styles.accountButton} />
+          </form>
+          {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : <div className={styles.signedIn}> Not signed in</div>}
+        </div>
+        <div className={styles.rightHeader}>
+          <form action="/organise">
+            <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
+          </form>
+          <form action="/clans">
+            <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
+          </form>
+        </div>
+      </header>
 
       <main>
         <div style={{ display: 'flex' }}>

@@ -6,9 +6,9 @@ import prisma from '../../lib/prisma';
 import moment from 'moment'
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
-import { useSession } from 'next-auth/react';
 import { User } from '@prisma/client';
 import { redirect } from 'next/navigation';
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export async function getServerSideProps(context: { query: { id: any; }; }) {
   const { id } = context.query;
@@ -40,7 +40,7 @@ export default function View({ event }: any) {
   const [interested, setInterested] = React.useState(event.interested);
   const [interestGiven, setInterestGiven] = React.useState(loggedIn ? usersByUsername.includes(data?.user.name) : false);
   const [buttonthing, setButtonthing] = React.useState(loggedIn ? (usersByUsername.includes(data?.user.name) ? " ✔" : "") : "Log in to join");
-  var mapCenter= { lat: event.lat, lng: event.lng };
+  var mapCenter = { lat: event.lat, lng: event.lng };
   const libraries = useMemo(() => ['places'], []);
 
   const noMarkers = [
@@ -77,7 +77,7 @@ export default function View({ event }: any) {
     if (!loggedIn) {
       redirect('/auth/signin');
     }
-    
+
     setButtonthing("...");
     const response = await fetch('/api/interested', { method: 'POST', body: JSON.stringify({ interestGiven: interestGiven, id: event.id, user: data?.user.name }), });
 
@@ -105,33 +105,60 @@ export default function View({ event }: any) {
         <title>Event {event.id}</title>
       </Head>
 
-      <main>
-        <div className={styles.margin}>
-          <Link href="/">back</Link>
-          {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNewEvent}>New Event</div> : null}
-          {event.social ? <div className={styles.tagSocialEvent}>Social Afterwards</div> : null}
-        </div>
+      <body className={styles.body}>
+        <header className={styles.header}>
+          <div className={styles.leftHeader}>
+            <form action="/">
+              <input type="submit" value="Home" className={styles.homeButton} />
+            </form>
+            <button className={styles.accountButton} onClick={() => {
+              signIn();
+            }}>Sign in</button>
+            <button className={styles.accountButton} onClick={() => {
+              signOut();
+            }}>Sign out</button>
+            <form action="/createAccount">
+              <input type="submit" value="Create account" className={styles.accountButton} />
+            </form>
+            {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : <div className={styles.signedIn}> Not signed in</div>}
+          </div>
+          <div className={styles.rightHeader}>
+            <form action="/organise">
+              <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
+            </form>
+            <form action="/clans">
+              <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
+            </form>
+          </div>
+        </header>
 
-        <div className={styles.bodywithmargin}>
-          <h1>{event.location}</h1>
-          <h2>{prettyDate(new Date(Date.parse(event.date)))} (~{event.duration} hours)</h2>
-          <p>{event.description}</p>
-          {event.social ? <div><p>Social event afterwards:</p> <p>{event.socialDescription}</p></div> : null}
+        <main>
+          <div className={styles.margin}>
+            <Link href="/">back</Link>
+            {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNewEvent}>New Event</div> : null}
+            {event.social ? <div className={styles.tagSocialEvent}>Social Afterwards</div> : null}
+          </div>
 
-          <p>{interested} interested</p>
-          <button onClick={interestedButton}>Interested{buttonthing}</button>
-          <GoogleMap
-            id="map"
-            options={mapOptions}
-            zoom={14}
-            center={mapCenter}
-            mapTypeId={google.maps.MapTypeId.ROADMAP}
-            mapContainerStyle={{ width: '50%', height: '50%' }}
-            onLoad={initMap}
-          />
-        </div>
-        
-      </main>
+          <div className={styles.bodywithmargin}>
+            <h1>{event.location}</h1>
+            <h2>{prettyDate(new Date(Date.parse(event.date)))} (~{event.duration} hours)</h2>
+            <p>{event.description}</p>
+            {event.social ? <div><p>Social event afterwards:</p> <p>{event.socialDescription}</p></div> : null}
+
+            <p>{interested} interested</p>
+            <button onClick={interestedButton}>Interested{buttonthing}</button>
+            <GoogleMap
+              id="map"
+              options={mapOptions}
+              zoom={14}
+              center={mapCenter}
+              mapTypeId={google.maps.MapTypeId.ROADMAP}
+              mapContainerStyle={{ width: '50%', height: '50%' }}
+              onLoad={initMap}
+            />
+          </div>
+        </main>
+      </body>
     </div>
 
   );
