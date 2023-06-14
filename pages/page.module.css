@@ -36,7 +36,7 @@
 }
 
 .accountButton {
-  font-size: 150%;
+  font-size: 100%;
   background-color: #f5f3ac;
   float: left;
   border: 2px solid #132a13;
@@ -52,7 +52,7 @@
 
 .signedIn {
   float: left;
-  font-size: 150%;
+  font-size: 100%;
   margin-right: 0.5vw;
 }
 
@@ -303,15 +303,4 @@
   background-color: #f5f3ac;
   color: black;
   border-radius: 5px;
-}
-
-.testBorders {
-  background-color: green;
-  width: 100vw;
-  height: 100vh;
-}
-
-.testBordersBody {
-  margin: 0;
-  padding: 0;
 }

@@ -11,7 +11,8 @@ const SignIn: NextPage = (props): JSX.Element => {
   const [userInfo, setUserInfo] = useState({ username: '', password: '' })
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    console.log("got here");
     const res = await signIn('credentials', {
       username: userInfo.username,
       password: userInfo.password,
@@ -23,7 +24,7 @@ const SignIn: NextPage = (props): JSX.Element => {
 
   return (
     <div className={styles.accountFormContainer}>
-      <form onSubmit={handleSubmit} className={styles.accountForm} action="../_app">
+      <form onSubmit={handleSubmit} className={styles.accountForm}>
         <div>
           <label form='Username'>Username: </label>
           <input type="string" placeholder="username"
@@ -38,10 +39,11 @@ const SignIn: NextPage = (props): JSX.Element => {
             onChange={({ target }) =>
               setUserInfo({ ...userInfo, password: target.value })} />
         </div>
+        <button type="submit" id="submit">
+          Sign in
+        </button>
         <Link className={styles.linkNoUnderline} href="/">
-          <button type="submit" id="submit">
-            Sign in
-          </button>
+          back
         </Link>
       </form>
     </div >

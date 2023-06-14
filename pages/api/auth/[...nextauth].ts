@@ -17,6 +17,7 @@ const authOptions: NextAuthOptions = {
         };
         // perform you login logic
         // find out user from db
+        console.log("looking for username: ", username);
         const user = (await prisma.user.findMany({
           where: { username: username },
         }))[0]
