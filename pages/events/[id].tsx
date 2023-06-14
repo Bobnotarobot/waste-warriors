@@ -136,7 +136,7 @@ export default function View({ props }: any) {
 
           <div style={{display: 'flex', gap: '8px'}}>
             <p>{interested} interested</p>
-            {loggedIn && (clan !== null) ? <div className={styles.card}>{event.users.filter((user: User) => user.clanKey === clan.name).length} from {clan.name}</div> : null}
+            {loggedIn && (clan !== null) ? <div className={styles.clanCard}>{event.users.filter((user: User) => user.clanKey === clan!.name).length} from {clan.name}</div> : null}
           </div>
           <button onClick={interestedButton}>{buttonthing}</button>
           <GoogleMap
