@@ -135,6 +135,7 @@ export default function View({ props }: any) {
         <div className={styles.bodywithmargin}>
           <h1>{event.location}</h1>
           <h2>{prettyDate(new Date(Date.parse(event.date)))} (~{event.duration} hours)</h2>
+          <h4>Organised by {event.orgKey}</h4>
           <p>{event.description}</p>
           {event.social ? <div><p>Social event afterwards:</p> <p>{event.socialDescription}</p></div> : null}
 

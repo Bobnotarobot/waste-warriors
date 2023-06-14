@@ -14,6 +14,7 @@ const PRODUCTION_GOOGLE_MAPS_KEY = "AIzaSyBXcHbmJFrRxrot8_NXQzNMBUITngrsWEo"
 import type { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import { signIn, signOut, useSession } from "next-auth/react";
 import moment from 'moment';
+import { useRouter } from 'next/router';
 
 export async function getServerSideProps() {
   const rawEvents = await prisma.event.findMany();
@@ -104,6 +105,8 @@ export function generateMarkers(events: event[]) {
 }
 
 export default function Home({ events }: any) {
+  const router = useRouter();
+
   const libraries = useMemo(() => ['places'], []);
   const { status, data } = useSession();
 
@@ -243,9 +246,14 @@ export default function Home({ events }: any) {
               <input type="submit" value="Create account" className={styles.accountButton} />
             </form>
             {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : <div className={styles.signedIn}> Not signed in</div>}
-            <form action="/organise">
-              <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
-            </form>
+            <button type="submit" onClick={() => {
+              if (data?.user === undefined) {
+                router.push('/auth/signin')
+              }
+              else {
+                router.push('/organise')
+              }
+            }} className={styles.organiseEventButton}>Organise your own! →</button>
             <form action="/clans">
               <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
             </form>

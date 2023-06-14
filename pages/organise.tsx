@@ -4,9 +4,22 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
+import { useSession } from 'next-auth/react';
+import prisma from '../lib/prisma';
+import { User } from '@prisma/client';
 
-export default function Organise() {
+export async function getServerSideProps() {
+  const users = await prisma.user.findMany({
+    include: {clan: true}
+  });
+  return {
+    props: { users }
+  }
+}
+
+export default function Organise({users}: any) {
   const [social, setSocial] = React.useState(false);
+  const { status, data } = useSession();
 
   const libraries = useMemo(() => ['places'], []);
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
@@ -44,6 +57,7 @@ export default function Organise() {
   const now = new Date().toISOString().slice(0, new Date().toISOString().lastIndexOf(":"));
 
   async function saveEvent(event: any) {
+    const organiser = data?.user.name;
     const mlng = marker.getPosition()?.lng();
     const mlat = marker.getPosition()?.lat();
     const location = event.target.Address.value;
@@ -56,7 +70,7 @@ export default function Organise() {
     var mm = jsdate.getMonth() + 1; // getMonth() is zero-based
     var dd = jsdate.getDate();
     const creationDate = jsdate.getFullYear() + '-' + (mm > 9 ? '' : '0') + mm + '-' + (dd > 9 ? '' : '0') + dd + 'T' + jsdate.getHours() + ':' + jsdate.getMinutes();
-    const body = { location: location, lat: mlat, lng: mlng, date: date, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription };
+    const body = { organiser: organiser, location: location, lat: mlat, lng: mlng, date: date, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription };
     const response = await fetch('/api/event', { method: 'POST', body: JSON.stringify(body), });
     if (!response.ok) {
       throw new Error(response.statusText);
