@@ -6,7 +6,6 @@ import prisma from '../../lib/prisma';
 import moment from 'moment'
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
-
 import { redirect } from 'next/navigation';
 import { Clan, User } from '@prisma/client';
 import { Router, useRouter } from 'next/router';
@@ -139,11 +138,14 @@ export default function View({ props }: any) {
           <div className={styles.bodywithmargin}>
             <h1>{event.location}</h1>
             <h2>{prettyDate(new Date(Date.parse(event.date)))} (~{event.duration} hours)</h2>
-            <h4>Organised by {event.orgKey}</h4>
+            {loggedIn && event.orgKey === data?.user.name ? <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
+              <h4>Organised by {event.orgKey}</h4>
+              <Link href={`/events/edit/${encodeURIComponent(event.id)}`}><button className={styles.accountButton}>Edit Event</button></Link>
+            </div> : <h4>Organised by {event.orgKey}</h4>}
             <p>{event.description}</p>
             {event.social ? <div><p>Social event afterwards:</p> <p>{event.socialDescription}</p></div> : null}
 
-            <div style={{ display: 'flex', gap: '8px' }}>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <p>{interested} interested</p>
               {loggedIn && (clan !== null) ? <div className={styles.clanCard}>{event.users.filter((user: User) => user.clanKey === clan!.name).length} from {clan.name}</div> : null}
             </div>

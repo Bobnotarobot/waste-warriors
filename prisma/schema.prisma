@@ -16,33 +16,35 @@ model Event {
   lat               Float
   lng               Float
   date              String
-  duration          Int
+  duration          Float
   creationDate      String
   description       String
   interested        Int     @default(0)
   social            Boolean
   socialDescription String?
   users             User[]  @relation("EventToUser")
-  organiser         User @relation(fields: [orgKey], references: [username], name: "Owner")
+  organiser         User    @relation(fields: [orgKey], references: [username], name: "Owner")
   orgKey            String
 }
 
 model User {
   username        String  @id
   password        String
-  clan            Clan?   @relation(fields: [clanKey], references: [name])
+  clan            Clan?   @relation(fields: [clanKey], references: [name], "members")
   clanKey         String?
   events          Event[] @relation("EventToUser")
   organisedEvents Event[] @relation("Owner")
+  createdClan     Boolean @default(false)
 }
 
 model Clan {
-  name        String  @id
-  points      Int     @default(0)
-  location    String?
-  lat         Float?
-  lng         Float?
-  logo        String?
-  description String
-  members     User[]
+  name         String  @id
+  points       Int     @default(0)
+  location     String?
+  lat          Float?
+  lng          Float?
+  logo         String?
+  description  String
+  members      User[]  @relation("members")
+  owner        String?
 }

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import prisma from '../lib/prisma';
 import { signIn, signOut, useSession } from "next-auth/react";
 import Header from './header';
+import { useRouter } from 'next/router';
 
 export async function getServerSideProps() {
   const clans = (await prisma.clan.findMany()).sort((c1, c2) => {
@@ -37,6 +38,7 @@ interface clan {
 }
 
 export default function Home({ clans }: any) {
+  const router = useRouter();
   const { status, data } = useSession();
   return (
     <div>
@@ -48,9 +50,14 @@ export default function Home({ clans }: any) {
         <Header />
       
         <main>
-          <form action="/create_clan">
-            <input type="submit" value="Make your own!" className={styles.organiseEventButton} />
-          </form>
+        <button type="submit" onClick={() => {
+          if (data?.user === undefined) {
+            router.push('/auth/signin')
+          }
+          else {
+            router.push('/myevents')
+          }
+        }} className={styles.organiseEventButton}>Make your own!</button>
           <div className={styles.listView}>
             <h3>Clans:</h3>
 

@@ -81,6 +81,10 @@ export default function View({ clan }: any) {
           {clan.logo ? <Image src={clan.logo} alt={clan.name} width={300} height={300} style={{float: 'right'}}/> : null}
           <h1>{clan.name}</h1>        
           {clan.location ? <h3>Based in {clan.location}</h3> : null}
+          {clan.owner ? (loggedIn && clan.owner === data?.user.name ? <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
+          <h3>Owned by {clan.owner}</h3>
+              <Link href={`/clans/edit/${encodeURIComponent(clan.name)}`}><button className={styles.accountButton}>Edit Clan</button></Link>
+            </div> : <h3>Owned by {clan.owner}</h3>) : <h3>Default clan</h3>}
           <p>{clan.description}</p>
 
           <p>{members} members</p>

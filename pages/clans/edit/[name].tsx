@@ -1,17 +1,39 @@
-import styles from './page.module.css'
+import styles from '../../page.module.css'
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
-import Header from './header';
-import { useSession } from 'next-auth/react';
+import prisma from '../../../lib/prisma';
+import { User } from '@prisma/client';
+import { signIn, signOut, useSession } from "next-auth/react";
+import Header from '../../header';
+import { useRouter } from 'next/router';
+import { redirect } from 'next/navigation';
+import moment from 'moment';
 
-export default function Organise() {
+export async function getServerSideProps(context: { query: { name: any; }; }) {
+    const { name } = context.query;
+    const oldclan = await prisma.clan.findUnique({
+      where: {
+        name: name
+      }
+    })
+    return {
+      props: { oldclan }
+    }
+  }
+
+export default function EditEvent({ oldclan }: any) {
+  const router = useRouter();
   const { status, data } = useSession();
 
+  if (data?.user === undefined || data?.user.name !== oldclan.owner) {
+    redirect('/')
+  }
+
   const libraries = useMemo(() => ['places'], []);
-  var mapCenter = { lat: 51.5126, lng: -0.1448 };
+  var mapCenter = { lat: oldclan.lat, lng: oldclan.lng };
   /*if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
     mapCenter = { lat: position.coords.latitude, lng: position.coords.longitude };
@@ -43,24 +65,7 @@ export default function Organise() {
     return <p>Loading...</p>;
   }
   var marker: google.maps.Marker;
-  const now=new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));
-
-  async function makeClan(clan: any) {
-    const mlng = marker.getPosition()?.lng();
-    const mlat = marker.getPosition()?.lat();
-    const name = clan.target.Name.value;
-    const logo = clan.target.Logo.value;
-    const location = clan.target.Address.value;
-    const description = clan.target.Description.value;
-    const owner = data?.user.name;
-    const body = { name: name, logo: logo, location: location, lat: mlat, lng: mlng, description: description, owner: owner};
-    const response = await fetch('/api/clan', { method: 'POST', body: JSON.stringify(body), });
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-    return await response.json();
-
-  }
+  const now = new Date().toISOString().slice(0, new Date().toISOString().lastIndexOf(":"));
 
   function initMap(): void {
     const map = new google.maps.Map(document.getElementById("map") as HTMLElement, { zoom: 14, center: mapCenter });
@@ -79,6 +84,23 @@ export default function Organise() {
       map.fitBounds(bounds);
       marker.setPosition(bounds.getCenter());
     });
+  }
+
+  async function makeClan(clan: any) {
+    const oldName = oldclan.name;
+    const mlng = marker.getPosition()?.lng();
+    const mlat = marker.getPosition()?.lat();
+    const name = clan.target.Name.value;
+    const logo = clan.target.Logo.value;
+    const location = clan.target.Address.value;
+    const description = clan.target.Description.value;
+    const body = { oldName: oldName, name: name, logo: logo, location: location, lat: mlat, lng: mlng, description: description};
+    const response = await fetch('/api/clanedit', { method: 'POST', body: JSON.stringify(body), });
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    return await response.json();
+
   }
 
   return (
@@ -105,19 +127,19 @@ export default function Organise() {
             <div style={{ float: 'right', flex: '1', minWidth: '50%', backgroundColor: '#90a955' }}>
               <div className={styles.card}>
                 <label form='Name'>Name </label>
-                <input type="text" name='Name' id='Name' required></input>
+                <input type="text" name='Name' id='Name' required defaultValue={oldclan.name}></input>
               </div>
               <div className={styles.card}>
                 <label form='Address'>Location (optional, only include if you&apos;ll only be cleaning in a certain area): </label>
-                <input name='Address' id='Address' className={styles.locationInput} placeholder="Enter Location"></input>
+                <input name='Address' id='Address' className={styles.locationInput} placeholder="Enter Location" defaultValue={oldclan.location}></input>
               </div>
               <div className={styles.card}>
                 <label form='Logo'>Link to logo (optional): </label>
-                <input type="text" name='Logo' id='Logo'></input>
+                <input type="text" name='Logo' id='Logo' defaultValue={oldclan.logo}></input>
               </div>
               <div className={styles.card}>
                 <label form='Description'>Description: </label>
-                <textarea name='Description' id='Description' rows={6} style={{ width: '100%' }} required className={styles.textarea}></textarea>
+                <textarea name='Description' id='Description' rows={6} style={{ width: '100%' }} required className={styles.textarea} defaultValue={oldclan.description}></textarea>
               </div>
               <div
                 style={{
