@@ -99,6 +99,17 @@
   border-radius: 5px;
 }
 
+.backButton {
+  font-size: 100%;
+  float: left;
+  border: 2px solid #132a13;
+  background-color: #f0eda0;
+  color: black;
+  border-radius: 5px;
+  width: 50%;
+  align-self: center;
+}
+
 .homeButton {
   font-size: 150%;
   background-color: #f5f3ac;
@@ -242,6 +253,7 @@
   text-align: center;
   border-radius: 5px;
   text-decoration: none;
+  align-self: center;
 }
 
 .tagSocialEvent {
@@ -253,6 +265,7 @@
   text-align: center;
   border-radius: 5px;
   text-decoration: none;
+  align-self: center;
 }
 
 .tags {

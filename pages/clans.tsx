@@ -7,6 +7,7 @@ import Link from 'next/link';
 import prisma from '../lib/prisma';
 import { signIn, signOut, useSession } from "next-auth/react";
 import Header from './header';
+import { useRouter } from 'next/router';
 
 export async function getServerSideProps() {
   const clans = (await prisma.clan.findMany()).sort((c1, c2) => {
@@ -37,6 +38,7 @@ interface clan {
 }
 
 export default function Home({ clans }: any) {
+  const router = useRouter();
   const { status, data } = useSession();
   return (
     <div>
