@@ -244,10 +244,13 @@ export default function Home({ events }: any) {
             </form>
             {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : <div className={styles.signedIn}> Not signed in</div>}
             <form action="/organise">
-              <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
+              <input type="submit" value="Organise an event! →" className={styles.organiseEventButton} />
             </form>
             <form action="/clans">
               <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
+            </form>
+            <form action="/clanLeaderboard">
+              <input type="submit" value="Clan Leaderboard" className={styles.organiseEventButton} />
             </form>
           </div>
           <div className={styles.filtersWrapper}>

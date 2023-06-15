@@ -317,3 +317,17 @@
   color: black;
   border-radius: 5px;
 }
+
+.leaderboardListView {
+  display: flex;
+  flex-direction: column;
+  background-color: #f2f2d3;
+  width: 50%;
+  border: 2px solid #132a13;
+  align-items: center;
+  float: center;
+  overflow-y: scroll;
+  padding: 1%;
+  gap: 10px;
+  max-height: 88vh;
+}

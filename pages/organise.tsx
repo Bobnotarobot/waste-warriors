@@ -99,8 +99,8 @@ export default function Organise() {
 
       <main>
         <div style={{ display: 'flex' }}>
-          <Link href="/" style={{ float: 'left', flex: 'initial', width: '40px', height: '50px', backgroundColor: '#5f873d', textAlign: 'center' }}>←</Link>
-          <h1 style={{ float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#4f772d', height: '50px', margin: '0' }}>Organise event</h1>
+          <Link href="/" style={{ float: 'left', flex: 'initial', width: '3vw', height: '4vh', backgroundColor: '#f2f2d3', textAlign: 'center', padding: '2vh', textDecoration: 'none', fontSize:"2em" }}>↩</Link>
+          <h1 style={{ float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#98bf64', height: '4vh', margin: '0', padding: '2vh' }}>Organise Event</h1>
         </div>
 
         <form onSubmit={saveEvent} action="/">
