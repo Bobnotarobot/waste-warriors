@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { useSession } from 'next-auth/react';
 import { User } from '@prisma/client';
 import { redirect } from 'next/navigation';
+import Header from '../header';
 
 export async function getServerSideProps(context: { query: { name: any; }; }) {
   const { name } = context.query;
@@ -69,13 +70,14 @@ export default function View({ clan }: any) {
         <title>{clan.id}</title>
       </Head>
 
+      <Header />
+
       <body>
         <div className={styles.margin}>
           <Link href="/clans">back</Link>
         </div>
 
         <div className={styles.bodywithmargin}>
-          {data?.user !== undefined ? <p> User session: {data?.user.name}</p> : null}
           {clan.logo ? <Image src={clan.logo} alt={clan.name} width={300} height={300} style={{float: 'right'}}/> : null}
           <h1>{clan.name}</h1>        
           {clan.location ? <h3>Based in {clan.location}</h3> : null}

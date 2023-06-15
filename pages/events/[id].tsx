@@ -7,10 +7,11 @@ import moment from 'moment'
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
 
-import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { Clan, User } from '@prisma/client';
 import { Router, useRouter } from 'next/router';
+import { signIn, signOut, useSession } from "next-auth/react";
+import Header from '../header';
 
 export async function getServerSideProps(context: { query: { id: any; }; }) {
   const { id } = context.query;
@@ -23,7 +24,7 @@ export async function getServerSideProps(context: { query: { id: any; }; }) {
     }
   })
   const users = await prisma.user.findMany({
-    include: {clan: true}
+    include: { clan: true }
   });
   const props = { event, users }
   return {
@@ -59,7 +60,7 @@ export default function View({ props }: any) {
   const [interested, setInterested] = React.useState(event.interested);
   const [interestGiven, setInterestGiven] = React.useState(loggedIn ? usersByUsername.includes(data?.user.name) : false);
   const [buttonthing, setButtonthing] = React.useState(loggedIn ? (usersByUsername.includes(data?.user.name) ? "Interested ✔" : "Interested") : "Log in to join");
-  var mapCenter= { lat: event.lat, lng: event.lng };
+  var mapCenter = { lat: event.lat, lng: event.lng };
   const libraries = useMemo(() => ['places'], []);
 
   const noMarkers = [
@@ -97,7 +98,7 @@ export default function View({ props }: any) {
       router.push('/auth/signin');
       return null;
     }
-    
+
     setButtonthing("Interested...");
     const response = await fetch('/api/interested', { method: 'POST', body: JSON.stringify({ interestGiven: interestGiven, id: event.id, user: data?.user.name }), });
 
@@ -125,36 +126,40 @@ export default function View({ props }: any) {
         <title>Event {event.id}</title>
       </Head>
 
-      <main>
-        <div className={styles.margin}>
-          <Link href="/">back</Link>
-          {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNewEvent}>New Event</div> : null}
-          {event.social ? <div className={styles.tagSocialEvent}>Social Afterwards</div> : null}
-        </div>
+      <body className={styles.body}>
+        <Header />
 
-        <div className={styles.bodywithmargin}>
-          <h1>{event.location}</h1>
-          <h2>{prettyDate(new Date(Date.parse(event.date)))} (~{event.duration} hours)</h2>
-          <p>{event.description}</p>
-          {event.social ? <div><p>Social event afterwards:</p> <p>{event.socialDescription}</p></div> : null}
-
-          <div style={{display: 'flex', gap: '8px'}}>
-            <p>{interested} interested</p>
-            {loggedIn && (clan !== null) ? <div className={styles.clanCard}>{event.users.filter((user: User) => user.clanKey === clan!.name).length} from {clan.name}</div> : null}
+        <main>
+          <div className={styles.margin}>
+            <Link href="/">back</Link>
+            {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNewEvent}>New Event</div> : null}
+            {event.social ? <div className={styles.tagSocialEvent}>Social Afterwards</div> : null}
           </div>
-          <button onClick={interestedButton}>{buttonthing}</button>
-          <GoogleMap
-            id="map"
-            options={mapOptions}
-            zoom={14}
-            center={mapCenter}
-            mapTypeId={google.maps.MapTypeId.ROADMAP}
-            mapContainerStyle={{ width: '50%', height: '50%' }}
-            onLoad={initMap}
-          />
-        </div>
-        
-      </main>
+
+          <div className={styles.bodywithmargin}>
+            <h1>{event.location}</h1>
+            <h2>{prettyDate(new Date(Date.parse(event.date)))} (~{event.duration} hours)</h2>
+            <h4>Organised by {event.orgKey}</h4>
+            <p>{event.description}</p>
+            {event.social ? <div><p>Social event afterwards:</p> <p>{event.socialDescription}</p></div> : null}
+
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <p>{interested} interested</p>
+              {loggedIn && (clan !== null) ? <div className={styles.clanCard}>{event.users.filter((user: User) => user.clanKey === clan!.name).length} from {clan.name}</div> : null}
+            </div>
+            <button onClick={interestedButton}>{buttonthing}</button>
+            <GoogleMap
+              id="map"
+              options={mapOptions}
+              zoom={14}
+              center={mapCenter}
+              mapTypeId={google.maps.MapTypeId.ROADMAP}
+              mapContainerStyle={{ width: '50%', height: '50%' }}
+              onLoad={initMap}
+            />
+          </div>
+        </main>
+      </body>
     </div>
 
   );

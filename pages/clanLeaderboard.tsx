@@ -2,6 +2,7 @@ import { size } from 'cypress/types/lodash';
 import prisma from '../lib/prisma';
 import styles from './page.module.css';
 import Link from 'next/link';
+import Header from './header';
 
 
 export async function getServerSideProps() {
@@ -24,10 +25,7 @@ export default function ClanLeaderboard({ clans }: any) {
     var bgCol;
     return(
         <main>
-            <div style={{ display: 'flex' }}>
-                <Link href="/" style={{ float: 'left', flex: 'initial', width: '3vw', height: '4vh', backgroundColor: '#f2f2d3', textAlign: 'center', padding: '2vh', textDecoration: 'none', fontSize:"2em" }}>↩</Link>
-                <h1 style={{ float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#90a955', height: '4vh', margin: '0', padding: '2vh' }}>Clan Leaderboard</h1>
-            </div>
+            <Header />
             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#98bf64'}}>
                 <div className={styles.leaderboardListView}>
                     {clans.map((clan : clan, index : number) => {

@@ -4,9 +4,23 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
+import prisma from '../lib/prisma';
+import { User } from '@prisma/client';
+import { signIn, signOut, useSession } from "next-auth/react";
+import Header from './header';
 
-export default function Organise() {
+export async function getServerSideProps() {
+  const users = await prisma.user.findMany({
+    include: { clan: true }
+  });
+  return {
+    props: { users }
+  }
+}
+
+export default function Organise({ users }: any) {
   const [social, setSocial] = React.useState(false);
+  const { status, data } = useSession();
 
   const libraries = useMemo(() => ['places'], []);
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
@@ -44,6 +58,7 @@ export default function Organise() {
   const now = new Date().toISOString().slice(0, new Date().toISOString().lastIndexOf(":"));
 
   async function saveEvent(event: any) {
+    const organiser = data?.user.name;
     const mlng = marker.getPosition()?.lng();
     const mlat = marker.getPosition()?.lat();
     const location = event.target.Address.value;
@@ -58,7 +73,7 @@ export default function Organise() {
     var mm = jsdate.getMonth() + 1; // getMonth() is zero-based
     var dd = jsdate.getDate();
     const creationDate = jsdate.getFullYear() + '-' + (mm > 9 ? '' : '0') + mm + '-' + (dd > 9 ? '' : '0') + dd + 'T' + jsdate.getHours() + ':' + jsdate.getMinutes();
-    const body = { location: location, lat: mlat, lng: mlng, date: dateTime, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription };
+    const body = { organiser: organiser, location: location, lat: mlat, lng: mlng, date: dateTime, duration: duration, creationDate: creationDate, description: description, social: social, socialDescription: socialDescription };
     const response = await fetch('/api/event', { method: 'POST', body: JSON.stringify(body), });
     if (!response.ok) {
       throw new Error(response.statusText);
@@ -91,79 +106,73 @@ export default function Organise() {
   }
 
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Organise event</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <body className={styles.body}>
+        <Header />
 
-      <main>
-        <div style={{ display: 'flex' }}>
-          <Link href="/" style={{ float: 'left', flex: 'initial', width: '3vw', height: '4vh', backgroundColor: '#f2f2d3', textAlign: 'center', padding: '2vh', textDecoration: 'none', fontSize:"2em" }}>↩</Link>
-          <h1 style={{ float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#98bf64', height: '4vh', margin: '0', padding: '2vh' }}>Organise Event</h1>
-        </div>
-
-        <form onSubmit={saveEvent} action="/">
-          <div style={{ display: 'flex' }}>
-            {/* <div className={styles.uploadcard}>
-              <label form='Image'>Image: </label>
-              <input type="file" name='Image' id='Image' accept="image/png, image/jpeg"></input>
-            </div> */}
-            <div style={{ float: 'right', flex: '1', minWidth: '50%', backgroundColor: '#90a955' }}>
-              <div className={styles.card}>
-                <label form='Address'>Location: </label>
-                <input name='Address' id='Address' required className={styles.locationInput} placeholder="Enter Location"></input>
+        <main className={styles.mainIndex}>
+          <form onSubmit={saveEvent} action="/">
+            <div style={{ display: 'flex' }}>
+              <div style={{ float: 'right', flex: '1', minWidth: '50%' }}>
+                <div className={styles.card}>
+                  <label form='Address'>Location: </label>
+                  <input name='Address' id='Address' required className={styles.locationInput} placeholder="Enter Location"></input>
+                </div>
+                <div className={styles.card}>
+                  <label form='Date'>Date: </label>
+                  <input type="date" name='Date' id='Date' min={now} required></input>
+                </div>
+                <div className={styles.card}>
+                  <label form='Time'>Time: </label>
+                  <input type="time" name='Time' id='Time' min={now} required></input>
+                </div>
+                <div className={styles.card}>
+                  <label form='Duration'>Estimated duration (in hours): </label>
+                  <input type="number" step="0.5" name='Duration' id='Duration' min={0} required></input>
+                </div>
+                <div className={styles.card}>
+                  <label form='Description'>Description: </label>
+                  <textarea name='Description' id='Description' rows={6} style={{ width: '100%' }} required className={styles.textarea}></textarea>
+                </div>
+                <div className={styles.card}>
+                  <label form='Social'>Does the event have a social event: </label>
+                  <input type="Checkbox" name='Social' id='Social'></input>
+                </div>
+                <div className={styles.card}>
+                  <label form='SocialDescription'>Social event description (optional): </label>
+                  <textarea name='SocialDescription' id='SocialDescription' rows={6} style={{ width: '100%' }} className={styles.textarea} disabled={false} ></textarea>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: '6%',
+                  }}>
+                  <button type="submit" id="submit" className={styles.button} style={{ height: '8vh', width: '20vw', backgroundColor: "#FFCE66", fontSize: "20px" }}>
+                    Submit
+                  </button>
+                </div>
               </div>
-              <div className={styles.card}>
-                <label form='Date'>Date: </label>
-                <input type="date" name='Date' id='Date' min={now} required></input>
-              </div>
-              <div className={styles.card}>
-                <label form='Time'>Time: </label>
-                <input type="time" name='Time' id='Time' min={now} required></input>
-              </div>
-              <div className={styles.card}>
-                <label form='Duration'>Estimated duration (in hours): </label>
-                <input type="number" step="0.5" name='Duration' id='Duration' min={0} required></input>
-              </div>
-              <div className={styles.card}>
-                <label form='Description'>Description: </label>
-                <textarea name='Description' id='Description' rows={6} style={{ width: '100%' }} required className={styles.textarea}></textarea>
-              </div>
-              <div className={styles.card}>
-                <label form='Social'>Does the event have a social event: </label>
-                <input type="Checkbox" name='Social' id='Social'></input>
-              </div>
-              <div className={styles.card}>
-                <label form='SocialDescription'>Social event description (optional): </label>
-                <textarea name='SocialDescription' id='SocialDescription' rows={6} style={{ width: '100%' }} className={styles.textarea} disabled={false} ></textarea>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: '6%',
-                }}>
-                <button type="submit" id="submit" className={styles.button} style={{ height: '8vh', width: '20vw', backgroundColor: "#FFCE66", fontSize: "20px" }}>
-                  Submit
-                </button>
+              <div style={{ float: 'left', backgroundColor: '#90a955', flex: '1', minWidth: '50%', }}>
+                <GoogleMap
+                  id="map"
+                  options={mapOptions}
+                  zoom={14}
+                  center={mapCenter}
+                  mapTypeId={google.maps.MapTypeId.ROADMAP}
+                  mapContainerStyle={{ width: '100%', height: '100%' }}
+                  onLoad={initMap}
+                />
               </div>
             </div>
-            <div style={{ float: 'left', backgroundColor: '#90a955', flex: '1', minWidth: '50%', }}>
-              <GoogleMap
-                id="map"
-                options={mapOptions}
-                zoom={14}
-                center={mapCenter}
-                mapTypeId={google.maps.MapTypeId.ROADMAP}
-                mapContainerStyle={{ width: '100%', height: '100%' }}
-                onLoad={initMap}
-              />
-            </div>
-          </div>
-        </form>
-      </main>
+          </form>
+        </main>
+      </body>
     </div>
   );
 }

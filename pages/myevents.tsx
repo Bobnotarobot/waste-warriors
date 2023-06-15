@@ -15,6 +15,7 @@ import type { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import { signIn, signOut, useSession } from "next-auth/react";
 import moment from 'moment';
 import { useRouter } from 'next/router';
+import { Event } from '@prisma/client';
 import Header from './header';
 
 export async function getServerSideProps() {
@@ -45,6 +46,7 @@ interface event {
   interested: number;
   social: boolean;
   socialDescription: string;
+  orgKey: string;
 }
 
 interface marker {
@@ -160,10 +162,7 @@ export default function Home({ events }: any) {
   }
 
   function notFilteredEvent(event: event) {
-    return (event.interested >= minInterested) &&
-      (Date.parse(event.date).valueOf() >= Date.parse(dateMin).valueOf()) &&
-      (Date.parse(event.date).valueOf() <= Date.parse(dateMax).valueOf()) &&
-      (social == event.social == true || social == false);
+    return event.orgKey === data?.user.name;
   }
 
   function notFilteredMarker(marker: marker) {
@@ -231,41 +230,15 @@ export default function Home({ events }: any) {
   return (
     <div className={styles.body}>
       <Head>
-        <title>Litter picking</title>
+        <title>My events</title>
       </Head>
 
       <body className={styles.body}>
         <Header />
 
         <main className={styles.mainIndex}>
-          <div className={styles.filtersWrapper}>
-            <form onSubmit={refreshEvents} className={styles.filters}>
-              <h3>Filters: </h3>
-              <div className={styles.filterForm}>
-                <label form='MaxDist'>Maximum distance: </label>
-                <input name='MaxDist' id='MaxDist' type='number' min='0' className={styles.filterInput}></input>
-              </div>
-              <div className={styles.filterForm}>
-                <label form='MinInterested'>Minimum people interested: </label>
-                <input name='MinInterested' id='MinInterested' type='number' min='0' className={styles.filterInput}></input>
-              </div>
-              <div className={styles.filterForm}>
-                <label form='DateMin'>Date from: </label>
-                <input name='DateMin' id='DateMin' type='datetime-local' className={styles.filterInput}></input>
-              </div>
-              <div className={styles.filterForm}>
-                <label form='DateMax'>To: </label>
-                <input name='DateMax' id='DateMax' type='datetime-local' className={styles.filterInput}></input>
-              </div>
-              <div className={styles.filterForm}>
-                <label form='HasSocial'>Has social: </label>
-                <input name='HasSocial' id='HasSocial' type='checkbox' className={styles.filterInput}></input>
-              </div>
-              <button type="submit">Refresh</button>
-            </form>
-          </div>
           <div className={styles.listView}>
-            <h3>Upcoming events:</h3>
+            <h3>Your events:</h3>
 
             <div className={styles.eventList}>
               {events?.map((event: event) =>
@@ -322,6 +295,3 @@ export default function Home({ events }: any) {
     </div >
   )
 }
-
-//TODO: find a way to hide maps api key in .env file
-//POTENTIAL TODO: add id number to marker to link to card (using filter tool)
