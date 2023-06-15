@@ -46,33 +46,35 @@ export default function Home({ clans }: any) {
 
       <div className={styles.body}>
         <Header />
-      
-        <main>
-          <form action="/create_clan">
-            <input type="submit" value="Make your own!" className={styles.organiseEventButton} />
-          </form>
-          <div className={styles.listView}>
-            <h3>Clans:</h3>
 
-            <div className={styles.eventList}>
-              {clans?.map((clan: clan) =>
-                <div key={clan.name}>
-                  <Link className={styles.linkNoUnderline} href={`/clans/${clan.name}`}>
-                    <div className={styles.event}>
-                      <div style={{ display: 'flex' }}>
-                        <h3 style={{ flex: 'auto' }}>{clan.name}</h3>
-                        {clan.logo ? <Image src={clan.logo} alt={clan.name} width={100} height={100} style={{ flex: 'initial' }} /> : null}
-                      </div>
-                      {clan.location ? <div>
-                        <h4 style={{ marginTop: '-55px' }}>Based in {clan.location}</h4>
-                        <p className={styles.eventDescription} style={{ marginTop: '55px' }}>{clan.description}</p>
-                      </div> :
-                        <p className={styles.eventDescription}>{clan.description}</p>}
+        <main className={styles.mainClans}>
+          <div className={styles.clansDescription}>
+            <form action="/create_clan">
+              <p>
+                Clans are a way for cool kidz to do litter picking while fighting for the top spot on the clan leaderboards.
+              </p>
+              <input type="submit" value="Make your own!" className={styles.createClanButton} />
+            </form>
+          </div>
+          <div className={styles.clansListView}>
+            <h3>Clans:</h3>
+            {clans?.map((clan: clan) =>
+              <div key={clan.name}>
+                <Link className={styles.linkNoUnderline} href={`/clans/${clan.name}`}>
+                  <div className={styles.event}>
+                    <div style={{ display: 'flex' }}>
+                      <h3 style={{ flex: 'auto' }}>{clan.name}</h3>
+                      {clan.logo ? <Image src={clan.logo} alt={clan.name} width={100} height={100} style={{ flex: 'initial' }} /> : null}
                     </div>
-                  </Link>
-                </div>
-              )}
-            </div>
+                    {clan.location ? <div>
+                      <h4 style={{ marginTop: '-55px' }}>Based in {clan.location}</h4>
+                      <p className={styles.eventDescription} style={{ marginTop: '55px' }}>{clan.description}</p>
+                    </div> :
+                      <p className={styles.eventDescription}>{clan.description}</p>}
+                  </div>
+                </Link>
+              </div>
+            )}
           </div>
         </main>
       </div>

@@ -25,7 +25,7 @@ export default function Header() {
       </div>
       <div className={styles.rightHeader}>
         <form action="/clanLeaderboard">
-            <input type="submit" value="Clan Leaderboard" className={styles.organiseEventButton} />
+          <input type="submit" value="Clan Leaderboard" className={styles.organiseEventButton} />
         </form>
         <form action="/clans">
           <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
