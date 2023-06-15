@@ -113,11 +113,6 @@ export default function EditEvent({ oldclan }: any) {
       <Header />
 
       <main>
-        <div style={{ display: 'flex' }}>
-          <Link href="/clans" style={{ float: 'left', flex: 'initial', width: '40px', height: '50px', backgroundColor: '#5f873d', textAlign: 'center' }}>←</Link>
-          <h1 style={{ float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#4f772d', height: '50px', margin: '0' }}>Organise clan</h1>
-        </div>
-
         <form onSubmit={makeClan} action="/clans">
           <div style={{ display: 'flex' }}>
             {/* <div className={styles.uploadcard}>

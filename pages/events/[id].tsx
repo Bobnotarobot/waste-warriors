@@ -130,7 +130,9 @@ export default function View({ props }: any) {
 
         <main>
           <div className={styles.margin}>
-            <Link href="/">back</Link>
+            <button type="button" onClick={() => router.back()} className={styles.backButton}>
+              ←
+            </button>
             {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNewEvent}>New Event</div> : null}
             {event.social ? <div className={styles.tagSocialEvent}>Social Afterwards</div> : null}
           </div>

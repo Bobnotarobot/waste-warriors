@@ -72,9 +72,11 @@ export default function View({ clan }: any) {
 
       <Header />
 
-      <body>
+      <div>
         <div className={styles.margin}>
-          <Link href="/clans">back</Link>
+          <button type="button" onClick={() => router.back()} className={styles.backButton}>
+              ←
+            </button>
         </div>
 
         <div className={styles.bodywithmargin}>
@@ -90,7 +92,7 @@ export default function View({ clan }: any) {
           <p>{members} members</p>
           <button onClick={joinClan}>{buttonthing}</button>
         </div>
-      </body>
+      </div>
     </div>
 
   );
