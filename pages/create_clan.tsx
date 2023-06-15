@@ -43,7 +43,7 @@ export default function Organise() {
     return <p>Loading...</p>;
   }
   var marker: google.maps.Marker;
-  const now=new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));
+  const now = new Date().toISOString().slice(0, new Date().toISOString().lastIndexOf(":"));
 
   async function makeClan(clan: any) {
     const mlng = marker.getPosition()?.lng();
@@ -53,7 +53,7 @@ export default function Organise() {
     const location = clan.target.Address.value;
     const description = clan.target.Description.value;
     const owner = data?.user.name;
-    const body = { name: name, logo: logo, location: location, lat: mlat, lng: mlng, description: description, owner: owner};
+    const body = { name: name, logo: logo, location: location, lat: mlat, lng: mlng, description: description, owner: owner };
     const response = await fetch('/api/clan', { method: 'POST', body: JSON.stringify(body), });
     if (!response.ok) {
       throw new Error(response.statusText);
@@ -84,25 +84,17 @@ export default function Organise() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Organise event</title>
+        <title>Create clan</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header />
+      <div className={styles.body}>
+        <Header />
 
-      <main>
-        <div style={{ display: 'flex' }}>
-          <Link href="/clans" style={{ float: 'left', flex: 'initial', width: '40px', height: '50px', backgroundColor: '#5f873d', textAlign: 'center' }}>←</Link>
-          <h1 style={{ float: 'right', flex: 'auto', textAlign: 'center', backgroundColor: '#4f772d', height: '50px', margin: '0' }}>Organise clan</h1>
-        </div>
+        <main>
 
-        <form onSubmit={makeClan} action="/clans">
-          <div style={{ display: 'flex' }}>
-            {/* <div className={styles.uploadcard}>
-              <label form='Image'>Image: </label>
-              <input type="file" name='Image' id='Image' accept="image/png, image/jpeg"></input>
-            </div> */}
-            <div style={{ float: 'right', flex: '1', minWidth: '50%', backgroundColor: '#90a955' }}>
+          <form onSubmit={makeClan} action="/clans">
+            <div className={styles.createClanForm}>
               <div className={styles.card}>
                 <label form='Name'>Name </label>
                 <input type="text" name='Name' id='Name' required></input>
@@ -126,12 +118,12 @@ export default function Organise() {
                   justifyContent: "center",
                   height: '6%',
                 }}>
-                <button type="submit" id="submit" className={styles.button} style={{height: '8vh', width: '20vw', backgroundColor: "#FFCE66", fontSize: "20px", marginTop: '20px'}}>
+                <button type="submit" id="submit" className={styles.button} style={{ height: '8vh', width: '20vw', backgroundColor: "#FFCE66", fontSize: "20px", marginTop: '20px' }}>
                   Submit
                 </button>
               </div>
             </div>
-            <div style={{ float: 'left', backgroundColor: '#90a955', flex: '1', minWidth: '50%', }}>
+            <div className={styles.createClanMap}>
               <GoogleMap
                 id="map"
                 options={mapOptions}
@@ -142,9 +134,9 @@ export default function Organise() {
                 onLoad={initMap}
               />
             </div>
-          </div>
-        </form>
-      </main>
+          </form>
+        </main>
+      </div>
     </div>
   );
 }

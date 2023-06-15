@@ -51,12 +51,17 @@ export default function Home({ clans }: any) {
 
         <main className={styles.mainClans}>
           <div className={styles.clansDescription}>
-            <form action="/create_clan">
-              <p>
-                Clans are a way for cool kidz to do litter picking while fighting for the top spot on the clan leaderboards.
-              </p>
-              <input type="submit" value="Make your own!" className={styles.createClanButton} />
-            </form>
+            <p>
+              Clans are a way for cool kidz to do litter picking while fighting for the top spot on the clan leaderboards.
+            </p>
+            <button type="submit" onClick={() => {
+              if (data?.user === undefined) {
+                router.push('/auth/signin')
+              }
+              else {
+                router.push('/create_clan')
+              }
+            }} className={styles.createClanButton}>Make your own!</button>
           </div>
           <div className={styles.clansListView}>
             <h3>Clans:</h3>

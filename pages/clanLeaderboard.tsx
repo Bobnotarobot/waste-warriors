@@ -3,6 +3,7 @@ import prisma from '../lib/prisma';
 import styles from './page.module.css';
 import Link from 'next/link';
 import Header from './header';
+import Head from 'next/head';
 
 
 export async function getServerSideProps() {
@@ -24,36 +25,42 @@ const defaultImg = "https://thumbs.dreamstime.com/b/cute-happy-smiling-trash-bin
 export default function ClanLeaderboard({ clans }: any) {
     var bgCol;
     return (
-        <main>
-            <Header />
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#98bf64' }}>
-                <div className={styles.leaderboardListView}>
-                    {clans.map((clan: clan, index: number) => {
-                        const image = clan.logo! || defaultImg;
-                        if (index == 0) {
-                            bgCol = '#ffd700'
-                        } else if (index == 1) {
-                            bgCol = '#c0c0c0'
-                        } else if (index == 2) {
-                            bgCol = '#cd7f32'
-                        } else {
-                            bgCol = '#ffffff'
-                        }
-                        return (
-                            <Link className={styles.linkNoUnderline} key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '2px solid #132a13', padding: '1rem', width: "90%", borderRadius: '5px', backgroundColor: bgCol }} href={`/clans/${encodeURIComponent(clan.name)}`}>
-                                <span style={{ fontSize: '2em' }}>{index + 1}</span>
-                                <img src={image} alt="" height='200' max-height='100%' object-fit='cover' />
+        <div>
+            <Head>
+                <title>Clan leaderboard</title>
+            </Head>
 
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                    <h3 style={{ alignItems: 'center', padding: '5px', fontSize: "1.5em" }}>{clan.name}</h3>
-                                    <span style={{ fontSize: "1.2em" }}>{clan.location}</span>
-                                </div>
+            <div className={styles.body}>
+                <Header />
+                <main className={styles.mainLeaderboard}>
+                    <div className={styles.leaderboardListView}>
+                        {clans.map((clan: clan, index: number) => {
+                            const image = clan.logo! || defaultImg;
+                            if (index == 0) {
+                                bgCol = '#ffd700'
+                            } else if (index == 1) {
+                                bgCol = '#c0c0c0'
+                            } else if (index == 2) {
+                                bgCol = '#cd7f32'
+                            } else {
+                                bgCol = '#ffffff'
+                            }
+                            return (
+                                <Link className={styles.linkNoUnderline} key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '2px solid #132a13', padding: '1rem', width: "90%", borderRadius: '5px', backgroundColor: bgCol }} href={`/clans/${encodeURIComponent(clan.name)}`}>
+                                    <span style={{ fontSize: '2em' }}>{index + 1}</span>
+                                    <img src={image} alt="" height='200' max-height='100%' object-fit='cover' />
 
-                                <span style={{ display: 'flex', float: 'right', alignSelf: "flex-end", fontSize: "1.2em" }}>{clan.points} points</span>
-                            </Link>)
-                    })}
-                </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <h3 style={{ alignItems: 'center', padding: '5px', fontSize: "1.5em" }}>{clan.name}</h3>
+                                        <span style={{ fontSize: "1.2em" }}>{clan.location}</span>
+                                    </div>
+
+                                    <span style={{ display: 'flex', float: 'right', alignSelf: "flex-end", fontSize: "1.2em" }}>{clan.points} points</span>
+                                </Link>)
+                        })}
+                    </div>
+                </main>
             </div>
-        </main>
+        </div>
     )
 }
