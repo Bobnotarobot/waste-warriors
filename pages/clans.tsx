@@ -55,7 +55,7 @@ export default function Home({ clans }: any) {
             router.push('/auth/signin')
           }
           else {
-            router.push('/myevents')
+            router.push('/create_clan')
           }
         }} className={styles.organiseEventButton}>Make your own!</button>
           <div className={styles.listView}>
