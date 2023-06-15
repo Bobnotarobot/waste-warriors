@@ -35,7 +35,7 @@ export default function Header() {
             router.push('/auth/signin')
           }
           else {
-            router.push('/myevents')
+            router.push('/myinterestedevents')
           }
         }} className={styles.organiseEventButton}>Your Events</button>
         <button type="submit" onClick={() => {
