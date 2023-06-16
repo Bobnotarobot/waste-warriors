@@ -231,7 +231,7 @@ export default function Home({ events }: any) {
   return (
     <div className={styles.body}>
       <Head>
-        <title>Litter picking</title>
+        <title>Waste Warriors</title>
       </Head>
 
       <body className={styles.body}>
