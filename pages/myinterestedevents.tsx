@@ -15,21 +15,15 @@ import type { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import { signIn, signOut, useSession } from "next-auth/react";
 import moment from 'moment';
 import { useRouter } from 'next/router';
+import { Event, User } from '@prisma/client';
 import Header from './header';
 
 export async function getServerSideProps() {
-  const rawEvents = await prisma.event.findMany();
-  const events = rawEvents?.filter((event: any) => {
-    const eventDate = new Date(event.date).getTime();
-    const todayDate = new Date().getTime();
-    if (eventDate >= todayDate) {
-      return true;
-    }
-    prisma.event.delete({ where: { id: event.id } });
-    return false;
+  const users = await prisma.user.findMany({
+    include: { events: true }
   });
   return {
-    props: { events }
+    props: { users }
   }
 }
 
@@ -45,6 +39,7 @@ interface event {
   interested: number;
   social: boolean;
   socialDescription: string;
+  orgKey: string;
 }
 
 interface marker {
@@ -105,11 +100,14 @@ export function generateMarkers(events: event[]) {
   });
 }
 
-export default function Home({ events }: any) {
+export default function Home({ users }: any) {
   const router = useRouter();
 
   const libraries = useMemo(() => ['places'], []);
   const { status, data } = useSession();
+
+  const user = users.find((user: User) => user.username === data?.user.name)
+  const events = user.events;
 
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
   /*if (navigator.geolocation) {
@@ -160,10 +158,7 @@ export default function Home({ events }: any) {
   }
 
   function notFilteredEvent(event: event) {
-    return (event.interested >= minInterested) &&
-      (Date.parse(event.date).valueOf() >= Date.parse(dateMin).valueOf()) &&
-      (Date.parse(event.date).valueOf() <= Date.parse(dateMax).valueOf()) &&
-      (social == event.social == true || social == false);
+    return event.orgKey === data?.user.name;
   }
 
   function notFilteredMarker(marker: marker) {
@@ -231,75 +226,38 @@ export default function Home({ events }: any) {
   return (
     <div className={styles.body}>
       <Head>
-        <title>Waste Warriors</title>
+        <title>My events</title>
       </Head>
 
       <body className={styles.body}>
         <Header />
 
         <main className={styles.mainIndex}>
-          <div className={styles.filtersWrapper}>
-            <form onSubmit={refreshEvents} className={styles.filters}>
-              <h3>Filters: </h3>
-              <div className={styles.filterForm}>
-                <label form='MaxDist'>Maximum distance: </label>
-                <input name='MaxDist' id='MaxDist' type='number' min='0' className={styles.filterInput}></input>
-              </div>
-              <div className={styles.filterForm}>
-                <label form='MinInterested'>Minimum people interested: </label>
-                <input name='MinInterested' id='MinInterested' type='number' min='0' className={styles.filterInput}></input>
-              </div>
-              <div className={styles.filterForm}>
-                <label form='DateMin'>Date from: </label>
-                <input name='DateMin' id='DateMin' type='datetime-local' className={styles.filterInput}></input>
-              </div>
-              <div className={styles.filterForm}>
-                <label form='DateMax'>To: </label>
-                <input name='DateMax' id='DateMax' type='datetime-local' className={styles.filterInput}></input>
-              </div>
-              <div className={styles.filterForm}>
-                <label form='HasSocial'>Has social: </label>
-                <input name='HasSocial' id='HasSocial' type='checkbox' className={styles.filterInput}></input>
-              </div>
-              <button type="submit">Refresh</button>
-            </form>
-          </div>
           <div className={styles.listView}>
-            {data?.user === undefined ? <h3>Upcoming events:</h3> : <div style={{display: 'flex', alignItems: 'center', gap: '5%'}}>
-              <h3>Upcoming events:</h3>
-              <button type="submit" onClick={() => {
-                if (data?.user === undefined) {
-                  router.push('/auth/signin')
-                }
-                else {
-                  router.push('/myevents')
-                }
-              }} className={styles.accountButton} style={{height: '20%'}}>Organised by you →</button>
-            </div>}
-          
+            <h3>Your events:</h3>
+
             <div className={styles.eventList}>
               {events?.map((event: event) =>
-                notFilteredEvent(event) ?
-                  (<div key={event.id}>
-                    <Link className={styles.linkNoUnderline} href={`/events/${encodeURIComponent(event.id)}`}>
-                      <div className={styles.event}>
-                        <div style={{ display: 'flex', maxHeight: '5%' }}>
-                          <h2 style={{ float: 'left', flex: 'auto', marginTop: '-4px', maxWidth: '90%' }}>{event.location}</h2>
-                          <div className={styles.tags}>
-                            {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New Event</div> : null}
-                            {event.social ? <div className={styles.tagSocial}>Social Afterwards</div> : null}
-                          </div>
-                        </div>
-                        <h4 style={{ marginTop: '-15px' }}>{prettyDate(new Date(Date.parse(event.date)))}, Duration: {event.duration} h</h4>
-
-                        <p className={styles.eventDescription} style={{ marginTop: '-15px' }}>{event.description}</p>
-                        <p style={{ float: 'right', marginTop: '-15px' }}><strong>{event.interested}</strong> interested</p>
-                        {/* {event.social ? null : <p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p>}
-                        <p>About: {event.description}</p>
-                        {event.social ? <div><p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p><p>Social event afterwards: {event.socialDescription}</p></div> : null} */}
+                <div key={event.id}>
+                <Link className={styles.linkNoUnderline} href={`/events/${encodeURIComponent(event.id)}`}>
+                  <div className={styles.event}>
+                    <div style={{ display: 'flex', maxHeight: '5%' }}>
+                      <h2 style={{ float: 'left', flex: 'auto', marginTop: '-4px', maxWidth: '90%' }}>{event.location}</h2>
+                      <div className={styles.tags}>
+                        {((new Date()).valueOf() - Date.parse(event.creationDate).valueOf() < 1000 * 3600 * 24) ? <div className={styles.tagNew}>New Event</div> : null}
+                        {event.social ? <div className={styles.tagSocial}>Social Afterwards</div> : null}
                       </div>
-                    </Link>
-                  </div>) : null
+                    </div>
+                    <h4 style={{ marginTop: '-15px' }}>{prettyDate(new Date(Date.parse(event.date)))}, Duration: {event.duration} h</h4>
+
+                    <p className={styles.eventDescription} style={{ marginTop: '-15px' }}>{event.description}</p>
+                    <p style={{ float: 'right', marginTop: '-15px' }}><strong>{event.interested}</strong> interested</p>
+                    {/* {event.social ? null : <p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p>}
+                    <p>About: {event.description}</p>
+                    {event.social ? <div><p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p><p>Social event afterwards: {event.socialDescription}</p></div> : null} */}
+                  </div>
+                </Link>
+              </div>
               )}
             </div>
           </div>
@@ -332,6 +290,3 @@ export default function Home({ events }: any) {
     </div >
   )
 }
-
-//TODO: find a way to hide maps api key in .env file
-//POTENTIAL TODO: add id number to marker to link to card (using filter tool)
