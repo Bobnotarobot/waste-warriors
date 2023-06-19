@@ -35,6 +35,9 @@ model User {
   events          Event[] @relation("EventToUser")
   organisedEvents Event[] @relation("Owner")
   createdClan     Boolean @default(false)
+  lat             Float?
+  lng             Float?
+  storedAdress    Boolean @default(false)
 }
 
 model Clan {

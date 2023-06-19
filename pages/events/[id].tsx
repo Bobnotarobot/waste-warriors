@@ -37,10 +37,12 @@ export default function View({ props }: any) {
   const { status, data } = useSession();
   var loggedIn = false;
   var clan: Clan | null;
+  var user: User | null;
   if (data?.user !== undefined && data?.user.name !== undefined) {
     console.log("username: ", data?.user.name);
     loggedIn = true;
-    clan = users.find((user: User) => user.username === data?.user.name).clan
+    user = users.find((user: User) => user.username === data?.user.name);
+    clan = users.find((user: User) => user.username === data?.user.name).clan;
     if (clan === undefined) clan = null;
     // if (data?.user.clans !== undefined)
     //   clans = data?.user.clans;
@@ -51,6 +53,7 @@ export default function View({ props }: any) {
   else {
     loggedIn = false;
     clan = null;
+    user = null;
   }
   const usersByUsername: String[] = event.users.map((user: User) => user.username);
 
@@ -119,6 +122,24 @@ export default function View({ props }: any) {
     return moment(date).format('dddd MMMM Do, h:mm a');
   }
 
+  function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1); 
+    var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+      ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c; // Distance in km
+    return Math.round(d * 10) / 10;
+  }
+  
+  function deg2rad(deg: number) {
+    return deg * (Math.PI/180)
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -144,6 +165,7 @@ export default function View({ props }: any) {
               <h4>Organised by {event.orgKey}</h4>
               <Link href={`/events/edit/${encodeURIComponent(event.id)}`}><button className={styles.accountButton}>Edit Event</button></Link>
             </div> : <h4>Organised by {event.orgKey}</h4>}
+            {user?.storedAdress ? <h4>{getDistanceFromLatLonInKm(user.lat!, user.lng!, event.lat, event.lng)}km away</h4> : null}
             <p>{event.description}</p>
             {event.social ? <div><p>Social event afterwards:</p> <p>{event.socialDescription}</p></div> : null}
 

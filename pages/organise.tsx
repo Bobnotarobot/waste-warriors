@@ -92,10 +92,6 @@ export default function Organise() {
     });
   }
 
-  function enableSocial() {
-    setSocial(!social);
-  }
-
   return (
     <div>
       <Head>

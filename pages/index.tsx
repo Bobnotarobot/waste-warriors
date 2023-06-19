@@ -16,6 +16,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import moment from 'moment';
 import { useRouter } from 'next/router';
 import Header from './header';
+import { User } from '@prisma/client';
 
 export async function getServerSideProps() {
   const rawEvents = await prisma.event.findMany();
@@ -28,8 +29,10 @@ export async function getServerSideProps() {
     prisma.event.delete({ where: { id: event.id } });
     return false;
   });
+  const users = await prisma.user.findMany();
+  const props = { events, users }
   return {
-    props: { events }
+    props: { props }
   }
 }
 
@@ -105,18 +108,45 @@ export function generateMarkers(events: event[]) {
   });
 }
 
-export default function Home({ events }: any) {
+export default function Home({ props }: any) {
   const router = useRouter();
 
   const libraries = useMemo(() => ['places'], []);
   const { status, data } = useSession();
 
+  var loggedIn: Boolean;
+  const events = props.events;
+  const users = props.users;
+  var user: User | null;
+  if (data?.user !== undefined && data?.user.name !== undefined) {
+    console.log("username: ", data?.user.name);
+    loggedIn = true;
+    user = users.find((user: User) => user.username === data?.user.name);
+  }
+  else {
+    loggedIn = false;
+    user = null;
+  }
+
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
-  /*if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-    mapCenter = { lat: position.coords.latitude, lng: position.coords.longitude };
-    });
-  }*/
+
+  function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1); 
+    var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+      ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c; // Distance in km
+    return Math.round(d * 10) / 10;
+  }
+  
+  function deg2rad(deg: number) {
+    return deg * (Math.PI/180)
+  }
 
   const noMarkers = [
     {
@@ -151,7 +181,7 @@ export default function Home({ events }: any) {
 
   function refreshEvents(filters: any) {
     filters.preventDefault();
-    // const maxDist = filters.target.MaxDist.value;
+    setMaxDist(filters.target.MaxDist.value);
     setMinInterested(filters.target.MinInterested.value);
     setDateMin(filters.target.DateMin.value ? filters.target.DateMin.value.valueOf() : "0");
     setDateMax(filters.target.DateMax.value ? filters.target.DateMax.value.valueOf() : "5000-01-01T00:00");
@@ -163,7 +193,8 @@ export default function Home({ events }: any) {
     return (event.interested >= minInterested) &&
       (Date.parse(event.date).valueOf() >= Date.parse(dateMin).valueOf()) &&
       (Date.parse(event.date).valueOf() <= Date.parse(dateMax).valueOf()) &&
-      (social == event.social == true || social == false);
+      (social == event.social == true || social == false) &&
+      (loggedIn ? (user?.storedAdress ? getDistanceFromLatLonInKm(user!.lat!, user!.lng!, event.lat, event.lng) < maxDist : true) : true) ;
   }
 
   function notFilteredMarker(marker: marker) {
@@ -243,7 +274,7 @@ export default function Home({ events }: any) {
               <h3>Filters: </h3>
               <div className={styles.filterForm}>
                 <label form='MaxDist'>Maximum distance: </label>
-                <input name='MaxDist' id='MaxDist' type='number' min='0' className={styles.filterInput}></input>
+                <input name='MaxDist' id='MaxDist' type='number' min='0' step={0.1} className={styles.filterInput}></input>
               </div>
               <div className={styles.filterForm}>
                 <label form='MinInterested'>Minimum people interested: </label>
@@ -294,9 +325,7 @@ export default function Home({ events }: any) {
 
                         <p className={styles.eventDescription} style={{ marginTop: '-15px' }}>{event.description}</p>
                         <p style={{ float: 'right', marginTop: '-15px' }}><strong>{event.interested}</strong> interested</p>
-                        {/* {event.social ? null : <p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p>}
-                        <p>About: {event.description}</p>
-                        {event.social ? <div><p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p><p>Social event afterwards: {event.socialDescription}</p></div> : null} */}
+                        {user?.storedAdress ? <p style={{ float: 'left', marginTop: '-15px' }}><strong>{getDistanceFromLatLonInKm(user.lat!, user.lng!, event.lat, event.lng)}km</strong> away</p> : null}
                       </div>
                     </Link>
                   </div>) : null
