@@ -103,6 +103,10 @@ export default function Organise() {
     });
   }
 
+  if (status === "loading") {
+    return <p>Loading...</p>
+  }
+
   return (
     <div>
       <Head>
