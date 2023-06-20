@@ -49,6 +49,7 @@ export default function Organise() {
   const now = new Date().toISOString().slice(0, new Date().toISOString().lastIndexOf(":"));
 
   async function saveEvent(event: any) {
+    console.log(router.pathname);
     const organiser = data?.user.name;
     const mlng = marker.getPosition()?.lng();
     const mlat = marker.getPosition()?.lat();

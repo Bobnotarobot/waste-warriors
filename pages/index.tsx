@@ -15,21 +15,29 @@ import type { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import { signIn, signOut, useSession } from "next-auth/react";
 import moment from 'moment';
 import { useRouter } from 'next/router';
+// import { useRouter } from 'next/navigation';
 import Header from './header';
+import type { GetStaticProps } from 'next';
 
 export async function getServerSideProps() {
-  const rawEvents = await prisma.event.findMany();
-  const events = rawEvents?.filter((event: any) => {
-    const eventDate = new Date(event.date).getTime();
-    const todayDate = new Date().getTime();
-    if (eventDate >= todayDate) {
-      return true;
-    }
-    prisma.event.delete({ where: { id: event.id } });
-    return false;
-  });
+  // const rawEvents = await prisma.event.findMany();
+  // const events = rawEvents?.filter((event: any) => {
+  //   const eventDate = new Date(event.date).getTime();
+  //   const todayDate = new Date().getTime();
+  //   if (eventDate >= todayDate) {
+  //     return true;
+  //   }
+  //   prisma.event.delete({ where: { id: event.id } });
+  //   return false;
+  // });
+  const res = await fetch(process.env.URL + '/api/getEvents');
+  if (!res.ok) {
+    throw new Error('Failed to fetch data');
+  }
+  const events = await res.json();
+
   return {
-    props: { events }
+    props: { events },
   }
 }
 
@@ -106,10 +114,28 @@ export function generateMarkers(events: event[]) {
 }
 
 export default function Home({ events }: any) {
-  const router = useRouter();
+  const router = useRouter()
+
+  const refreshData = () => {
+    if (router.pathname === "/") {
+      router.replace(router.asPath);
+    }
+  }
+
+  const timer = setTimeout(() => {
+    if (typeof window === "undefined") return null;
+    if (router.pathname === "/") {
+      refreshData();
+    }
+  }, 5000);
 
   const libraries = useMemo(() => ['places'], []);
   const { status, data } = useSession();
+
+  var organisedByYouLink = '/myevents';
+  if (data?.user === undefined) {
+    organisedByYouLink = "/auth/signin";
+  }
 
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
   /*if (navigator.geolocation) {
@@ -265,18 +291,14 @@ export default function Home({ events }: any) {
             </form>
           </div>
           <div className={styles.listView}>
-            {data?.user === undefined ? <h3>Upcoming events:</h3> : <div style={{display: 'flex', alignItems: 'center', gap: '5%'}}>
+            {data?.user === undefined ? <h3>Upcoming events:</h3> : <div style={{ display: 'flex', alignItems: 'center', gap: '5%' }}>
               <h3>Upcoming events:</h3>
-              <button type="submit" onClick={() => {
-                if (data?.user === undefined) {
-                  router.push('/auth/signin')
-                }
-                else {
-                  router.push('/myevents')
-                }
-              }} className={styles.accountButton} style={{height: '20%'}}>Organised by you →</button>
+
+              <form action={organisedByYouLink}>
+                <input type="submit" value="Organised by you →" className={styles.accountButton} style={{ height: '20%' }} />
+              </form>
             </div>}
-          
+
             <div className={styles.eventList}>
               {events?.map((event: event) =>
                 notFilteredEvent(event) ?
