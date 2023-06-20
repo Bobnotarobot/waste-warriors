@@ -107,6 +107,15 @@
   border-radius: 5px;
 }
 
+.joinButton {
+  font-size: 100%;
+  background-color: #f5f3ac;
+  border: 2px solid #132a13;
+  background-color: #f5f3ac;
+  color: black;
+  border-radius: 5px;
+}
+
 .backButton {
   font-size: 100%;
   float: left;

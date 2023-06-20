@@ -179,7 +179,7 @@ export default function View({ props }: any) {
               <p>{interested} interested</p>
               {loggedIn && (clan !== null) ? <div className={styles.clanCard}>{event.users.filter((user: User) => user.clanKey === clan!.name).length} from {clan.name}</div> : null}
             </div>
-            <button onClick={interestedButton}>{status === "authenticated" ? buttonthing : "Log in to join"}</button>
+            <button className={styles.joinButton} onClick={interestedButton}>{status === "authenticated" ? buttonthing : "Log in to join"}</button>
             <GoogleMap
               id="map"
               options={mapOptions}
