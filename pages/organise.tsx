@@ -49,10 +49,17 @@ export default function Organise() {
   const now = new Date().toISOString().slice(0, new Date().toISOString().lastIndexOf(":"));
 
   async function saveEvent(event: any) {
+<<<<<<< HEAD
     console.log(router.pathname);
+=======
+    
+>>>>>>> 763b6d9ecb3a0aea64f3d64e49acf555ef54c92b
     const organiser = data?.user.name;
-    const mlng = marker.getPosition()?.lng();
-    const mlat = marker.getPosition()?.lat();
+    if(marker.getPosition() == null) {
+      marker.setPosition(mapCenter);
+    }
+    const mlng = marker.getPosition()!.lng();
+    const mlat = marker.getPosition()!.lat();
     const location = event.target.Address.value;
     const date = event.target.Date.value;
     const time = event.target.Time.value;
@@ -91,10 +98,6 @@ export default function Organise() {
       map.fitBounds(bounds);
       marker.setPosition(bounds.getCenter());
     });
-  }
-
-  function enableSocial() {
-    setSocial(!social);
   }
 
   return (

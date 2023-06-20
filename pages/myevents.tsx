@@ -15,7 +15,7 @@ import type { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import { signIn, signOut, useSession } from "next-auth/react";
 import moment from 'moment';
 import { useRouter } from 'next/router';
-import { Event } from '@prisma/client';
+import { Event, User } from '@prisma/client';
 import Header from './header';
 
 export async function getServerSideProps() {
@@ -29,8 +29,10 @@ export async function getServerSideProps() {
     prisma.event.delete({ where: { id: event.id } });
     return false;
   });
+  const users = await prisma.user.findMany();
+  const props = { events, users }
   return {
-    props: { events }
+    props: { props }
   }
 }
 
@@ -107,18 +109,45 @@ export function generateMarkers(events: event[]) {
   });
 }
 
-export default function Home({ events }: any) {
+export default function Home({ props }: any) {
   const router = useRouter();
 
   const libraries = useMemo(() => ['places'], []);
   const { status, data } = useSession();
 
+  var loggedIn: Boolean;
+  const events = props.events;
+  const users = props.users;
+  var user: User | null;
+  if (data?.user !== undefined && data?.user.name !== undefined) {
+    console.log("username: ", data?.user.name);
+    loggedIn = true;
+    user = users.find((user: User) => user.username === data?.user.name);
+  }
+  else {
+    loggedIn = false;
+    user = null;
+  }
+
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
-  /*if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-    mapCenter = { lat: position.coords.latitude, lng: position.coords.longitude };
-    });
-  }*/
+  
+  function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1); 
+    var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+      ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c; // Distance in km
+    return Math.round(d * 10) / 10;
+  }
+  
+  function deg2rad(deg: number) {
+    return deg * (Math.PI/180)
+  }
 
   const noMarkers = [
     {
@@ -257,9 +286,7 @@ export default function Home({ events }: any) {
 
                         <p className={styles.eventDescription} style={{ marginTop: '-15px' }}>{event.description}</p>
                         <p style={{ float: 'right', marginTop: '-15px' }}><strong>{event.interested}</strong> interested</p>
-                        {/* {event.social ? null : <p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p>}
-                        <p>About: {event.description}</p>
-                        {event.social ? <div><p style={{float: 'right'}}><strong>{event.interested}</strong> interested</p><p>Social event afterwards: {event.socialDescription}</p></div> : null} */}
+                        {user?.storedAdress ? <p style={{ float: 'left', marginTop: '-15px' }}><strong>{getDistanceFromLatLonInKm(user.lat!, user.lng!, event.lat, event.lng)}km</strong> away</p> : null}
                       </div>
                     </Link>
                   </div>) : null
