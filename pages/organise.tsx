@@ -49,9 +49,16 @@ export default function Organise() {
   const now = new Date().toISOString().slice(0, new Date().toISOString().lastIndexOf(":"));
 
   async function saveEvent(event: any) {
+
     const organiser = data?.user.name;
-    const mlng = marker.getPosition()?.lng();
-    const mlat = marker.getPosition()?.lat();
+    if (marker == null) {
+      initMap();
+    }
+    if (marker.getPosition() == null) {
+      marker.setPosition(mapCenter);
+    }
+    const mlng = marker.getPosition()!.lng();
+    const mlat = marker.getPosition()!.lat();
     const location = event.target.Address.value;
     const date = event.target.Date.value;
     const time = event.target.Time.value;
@@ -90,10 +97,6 @@ export default function Organise() {
       map.fitBounds(bounds);
       marker.setPosition(bounds.getCenter());
     });
-  }
-
-  function enableSocial() {
-    setSocial(!social);
   }
 
   return (

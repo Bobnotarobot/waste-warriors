@@ -32,6 +32,9 @@ model User {
   password        String
   clanKey         String?
   createdClan     Boolean @default(false)
+  lat             Float?
+  lng             Float?
+  storedAdress    Boolean @default(false)
   organisedEvents Event[] @relation("Owner")
   clan            Clan?   @relation("members", fields: [clanKey], references: [name])
   events          Event[] @relation("EventToUser")

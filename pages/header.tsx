@@ -6,6 +6,13 @@ export default function Header() {
   const { status, data } = useSession();
   const router = useRouter();
 
+  var yourEventsLink = "/myinterestedevents";
+  var organiseEventLink = "/organise";
+  if (data?.user === undefined) {
+    yourEventsLink = "/auth/signin";
+    organiseEventLink = "/auth/signin";
+  }
+
   return (
     <header className={styles.header}>
       <div className={styles.leftHeader}>
@@ -30,22 +37,12 @@ export default function Header() {
         <form action="/clans">
           <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
         </form>
-        <button type="submit" onClick={() => {
-          if (data?.user === undefined) {
-            router.push('/auth/signin')
-          }
-          else {
-            router.push('/myevents')
-          }
-        }} className={styles.organiseEventButton}>Your Events</button>
-        <button type="submit" onClick={() => {
-          if (data?.user === undefined) {
-            router.push('/auth/signin')
-          }
-          else {
-            router.push('/organise')
-          }
-        }} className={styles.organiseEventButton}>Organise an event! →</button>
+        <form action={yourEventsLink}>
+          <input type="submit" value="Your events!" className={styles.organiseEventButton} />
+        </form>
+        <form action={organiseEventLink}>
+          <input type="submit" value="Organise an event! →" className={styles.organiseEventButton} />
+        </form>
       </div>
     </header>
   )
