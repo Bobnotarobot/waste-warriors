@@ -24,7 +24,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                   username: name
                 }
               },
-              interested: {increment: 1}
+              interested: {increment: -1}
             },
           })
         }

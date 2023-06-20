@@ -26,7 +26,7 @@ export async function getServerSideProps(context: { query: { id: any; }; }) {
 
 export default function EditEvent({ event }: any) {
   const router = useRouter();
-  const { status, data } = useSession();
+  const { status, data } = useSession({required: true});
 
   if (data?.user === undefined || data?.user.name !== event.orgKey) {
     redirect('/')

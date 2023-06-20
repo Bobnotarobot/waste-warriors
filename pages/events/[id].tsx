@@ -59,9 +59,10 @@ export default function View({ props }: any) {
 
   const router = useRouter();
 
+  const initialInterested = usersByUsername.includes(data?.user.name);
   const [interested, setInterested] = React.useState(event.interested);
-  const [interestGiven, setInterestGiven] = React.useState(loggedIn ? usersByUsername.includes(data?.user.name) : false);
-  const [buttonthing, setButtonthing] = React.useState(loggedIn ? (usersByUsername.includes(data?.user.name) ? "Interested ✔" : "Interested") : "Log in to join");
+  const [interestGiven, setInterestGiven] = React.useState(loggedIn ? initialInterested : false);
+  const [buttonthing, setButtonthing] = React.useState(loggedIn ? (initialInterested ? "Interested ✔" : "Interested") : "Log in to join");
   var mapCenter = { lat: event.lat, lng: event.lng };
   const libraries = useMemo(() => ['places'], []);
 
@@ -110,7 +111,7 @@ export default function View({ props }: any) {
 
     const res = await response.json();
 
-    setInterested(interestGiven ? event.interested : event.interested + 1);
+    setInterested(interestGiven ? event.interested + (initialInterested ? -1 : 0) : event.interested + (initialInterested ? 0 : 1));
     setButtonthing(interestGiven ? "Interested" : "Interested ✔");
     setInterestGiven(!interestGiven);
 

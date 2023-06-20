@@ -26,7 +26,7 @@ export async function getServerSideProps(context: { query: { name: any; }; }) {
 
 export default function EditEvent({ oldclan }: any) {
   const router = useRouter();
-  const { status, data } = useSession();
+  const { status, data } = useSession({required: true});
 
   if (data?.user === undefined || data?.user.name !== oldclan.owner) {
     redirect('/')
