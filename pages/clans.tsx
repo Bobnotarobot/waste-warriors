@@ -52,7 +52,11 @@ export default function Home({ clans }: any) {
         <main className={styles.mainClans}>
           <div className={styles.clansDescription}>
             <p>
-              Clans are a way for cool kidz to do litter picking while fighting for the top spot on the clan leaderboards.
+              Clans are a great way to interact with the community. They allow you to see how many of your fellow clan members have joined any event, and allow you to compete against other clans on the clan leaderboard.<br /><br />There are many ways you can interact with clans:<ul>
+                <li>Join a clan based in your local neighbourhood to help keep your area clean</li>
+                <li>Join a clan with your friends</li>
+                <li>Join one of our community clans to be part of frequent high-quality events and meet new people</li>
+              </ul>
             </p>
             <button type="submit" onClick={() => {
               if (data?.user === undefined) {

@@ -51,6 +51,9 @@ export default function Organise() {
   async function saveEvent(event: any) {
 
     const organiser = data?.user.name;
+    if (marker == null) {
+      initMap();
+    }
     if (marker.getPosition() == null) {
       marker.setPosition(mapCenter);
     }
