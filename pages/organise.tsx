@@ -45,20 +45,14 @@ export default function Organise() {
   if (!isLoaded) {
     return <p>Loading...</p>;
   }
-  var marker: google.maps.Marker;
+
   const now = new Date().toISOString().slice(0, new Date().toISOString().lastIndexOf(":"));
 
   async function saveEvent(event: any) {
 
     const organiser = data?.user.name;
-    if (marker == null) {
-      initMap();
-    }
-    if (marker.getPosition() == null) {
-      marker.setPosition(mapCenter);
-    }
-    const mlng = marker.getPosition()!.lng();
-    const mlat = marker.getPosition()!.lat();
+    const mlng = lng;
+    const mlat = lat;
     const location = event.target.Address.value;
     const date = event.target.Date.value;
     const time = event.target.Time.value;
@@ -80,11 +74,18 @@ export default function Organise() {
 
   }
 
+  var marker: google.maps.Marker;
+  var lng: number;
+  var lat: number;
+  
   function initMap(): void {
     const map = new google.maps.Map(document.getElementById("map") as HTMLElement, { zoom: 14, center: mapCenter });
     map.setOptions(mapOptions);
 
     marker = new google.maps.Marker({ position: mapCenter, map: map, title: "drag this pointer to choose location", draggable: true });
+    lat = marker.getPosition()!.lat();
+    lng = marker.getPosition()!.lng();
+    console.log(lat, lng);
     const input = document.getElementById("Address") as HTMLInputElement;
     const searchBox = new google.maps.places.SearchBox(input);
     map.addListener("bounds_changed", () => { searchBox.setBounds(map.getBounds() as google.maps.LatLngBounds); });
@@ -96,6 +97,9 @@ export default function Organise() {
       else bounds.extend(places![0].geometry!.location!);
       map.fitBounds(bounds);
       marker.setPosition(bounds.getCenter());
+      lng = marker.getPosition()!.lng();
+      lat = marker.getPosition()!.lat();
+      console.log(lat, lng);
     });
   }
 
