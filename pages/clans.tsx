@@ -52,12 +52,16 @@ export default function Home({ clans }: any) {
         <main className={styles.mainClans}>
           <div className={styles.clansDescription}>
             <p>
-              Clans are a great way to interact with the community. They allow you to see how many of your fellow clan members have joined any event, and allow you to compete against other clans on the clan leaderboard.<br /><br />There are many ways you can interact with clans:<ul>
-                <li>Join a clan based in your local neighbourhood to help keep your area clean</li>
-                <li>Join a clan with your friends</li>
-                <li>Join one of our community clans to be part of frequent high-quality events and meet new people</li>
-              </ul>
+              Clans are a great way to interact with the community. They allow you to see how many of your fellow clan members have joined any event, and allow you to compete against other clans on the clan leaderboard.
+              <br />
+              <br />
+              There are many ways you can interact with clans:
             </p>
+            <ul>
+              <li>Join a clan based in your local neighbourhood to help keep your area clean</li>
+              <li>Join a clan with your friends</li>
+              <li>Join one of our community clans to be part of frequent high-quality events and meet new people</li>
+            </ul>
             <button type="submit" onClick={() => {
               if (data?.user === undefined) {
                 router.push('/auth/signin')
