@@ -6,6 +6,8 @@ import Head from 'next/head';
 import Link from 'next/link';
 import prisma from '../lib/prisma';
 import { signIn, signOut, useSession } from "next-auth/react";
+import Header from './header';
+import { useRouter } from 'next/router';
 
 export async function getServerSideProps() {
   const clans = (await prisma.clan.findMany()).sort((c1, c2) => {
@@ -36,6 +38,7 @@ interface clan {
 }
 
 export default function Home({ clans }: any) {
+  const router = useRouter();
   const { status, data } = useSession();
   return (
     <div>
@@ -44,57 +47,45 @@ export default function Home({ clans }: any) {
       </Head>
 
       <div className={styles.body}>
-        <header className={styles.header}>
-          <div className={styles.leftHeader}>
-            <form action="/">
-              <input type="submit" value="Home" className={styles.homeButton} />
-            </form>
-            <button className={styles.accountButton} onClick={() => {
-              signIn();
-            }}>Sign in</button>
-            <button className={styles.accountButton} onClick={() => {
-              signOut();
-            }}>Sign out</button>
-            <form action="/createAccount">
-              <input type="submit" value="Create account" className={styles.accountButton} />
-            </form>
-            {data?.user !== undefined ? <div className={styles.signedIn}> Signed in: {data?.user.name}</div> : <div className={styles.signedIn}> Not signed in</div>}
-          </div>
-          <div className={styles.rightHeader}>
-            <form action="/organise">
-              <input type="submit" value="Organise your own! →" className={styles.organiseEventButton} />
-            </form>
-            <form action="/clans">
-              <input type="submit" value="Join a Clan!" className={styles.organiseEventButton} />
-            </form>
-          </div>
-        </header>
-        <main>
-          <form action="/create_clan">
-            <input type="submit" value="Make your own!" className={styles.organiseEventButton} />
-          </form>
-          <div className={styles.listView}>
-            <h3>Clans:</h3>
+        <Header />
 
-            <div className={styles.eventList}>
-              {clans?.map((clan: clan) =>
-                <div key={clan.name}>
-                  <Link className={styles.linkNoUnderline} href={`/clans/${clan.name}`}>
-                    <div className={styles.event}>
-                      <div style={{ display: 'flex' }}>
-                        <h3 style={{ flex: 'auto' }}>{clan.name}</h3>
-                        {clan.logo ? <Image src={clan.logo} alt={clan.name} width={100} height={100} style={{ flex: 'initial' }} /> : null}
-                      </div>
-                      {clan.location ? <div>
-                        <h4 style={{ marginTop: '-55px' }}>Based in {clan.location}</h4>
-                        <p className={styles.eventDescription} style={{ marginTop: '55px' }}>{clan.description}</p>
-                      </div> :
-                        <p className={styles.eventDescription}>{clan.description}</p>}
+        <main className={styles.mainClans}>
+          <div className={styles.clansDescription}>
+            <p>
+              Clans are a great way to interact with the community. They allow you to see how many of your fellow clan members have joined any event, and allow you to compete against other clans on the clan leaderboard.<br /><br />There are many ways you can interact with clans:<ul>
+                <li>Join a clan based in your local neighbourhood to help keep your area clean</li>
+                <li>Join a clan with your friends</li>
+                <li>Join one of our community clans to be part of frequent high-quality events and meet new people</li>
+              </ul>
+            </p>
+            <button type="submit" onClick={() => {
+              if (data?.user === undefined) {
+                router.push('/auth/signin')
+              }
+              else {
+                router.push('/create_clan')
+              }
+            }} className={styles.createClanButton}>Make your own!</button>
+          </div>
+          <div className={styles.clansListView}>
+            <h3>Clans:</h3>
+            {clans?.map((clan: clan) =>
+              <div key={clan.name}>
+                <Link className={styles.linkNoUnderline} href={`/clans/${clan.name}`}>
+                  <div className={styles.event}>
+                    <div style={{ display: 'flex' }}>
+                      <h3 style={{ flex: 'auto' }}>{clan.name}</h3>
+                      {clan.logo ? <Image src={clan.logo} alt={clan.name} width={100} height={100} style={{ flex: 'initial' }} /> : null}
                     </div>
-                  </Link>
-                </div>
-              )}
-            </div>
+                    {clan.location ? <div>
+                      <h4 style={{ marginTop: '-55px' }}>Based in {clan.location}</h4>
+                      <p className={styles.eventDescription} style={{ marginTop: '55px' }}>{clan.description}</p>
+                    </div> :
+                      <p className={styles.eventDescription}>{clan.description}</p>}
+                  </div>
+                </Link>
+              </div>
+            )}
           </div>
         </main>
       </div>

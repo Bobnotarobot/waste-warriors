@@ -15,32 +15,24 @@ import type { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import { signIn, signOut, useSession } from "next-auth/react";
 import moment from 'moment';
 import { useRouter } from 'next/router';
-// import { useRouter } from 'next/navigation';
+import { Event, User } from '@prisma/client';
 import Header from './header';
-import type { GetStaticProps } from 'next';
-import { User } from '@prisma/client';
 
 export async function getServerSideProps() {
-  // const rawEvents = await prisma.event.findMany();
-  // const events = rawEvents?.filter((event: any) => {
-  //   const eventDate = new Date(event.date).getTime();
-  //   const todayDate = new Date().getTime();
-  //   if (eventDate >= todayDate) {
-  //     return true;
-  //   }
-  //   prisma.event.delete({ where: { id: event.id } });
-  //   return false;
-  // });
-  const res = await fetch(process.env.URL + '/api/getEvents');
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
-  const events = await res.json();
+  const rawEvents = await prisma.event.findMany();
+  const events = rawEvents?.filter((event: any) => {
+    const eventDate = new Date(event.date).getTime();
+    const todayDate = new Date().getTime();
+    if (eventDate >= todayDate) {
+      return true;
+    }
+    prisma.event.delete({ where: { id: event.id } });
+    return false;
+  });
   const users = await prisma.user.findMany();
   const props = { events, users }
-
   return {
-    props: { props },
+    props: { props }
   }
 }
 
@@ -56,6 +48,7 @@ interface event {
   interested: number;
   social: boolean;
   socialDescription: string;
+  orgKey: string;
 }
 
 interface marker {
@@ -117,26 +110,10 @@ export function generateMarkers(events: event[]) {
 }
 
 export default function Home({ props }: any) {
-  const router = useRouter()
-
-  useEffect(() => {
-    function refreshData() {
-      if (router.pathname === "/") {
-        router.replace(router.asPath);
-      }
-    }
-    const interval = setInterval(refreshData, 5000);
-
-    return () => clearInterval(interval);
-  }, [])
+  const router = useRouter();
 
   const libraries = useMemo(() => ['places'], []);
   const { status, data } = useSession();
-
-  var organisedByYouLink = '/myevents';
-  if (data?.user === undefined) {
-    organisedByYouLink = "/auth/signin";
-  }
 
   var loggedIn: Boolean;
   const events = props.events;
@@ -153,23 +130,23 @@ export default function Home({ props }: any) {
   }
 
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
-
+  
   function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
     var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2 - lat1);  // deg2rad below
-    var dLon = deg2rad(lon2 - lon1);
-    var a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2)
-      ;
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1); 
+    var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+      ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
     var d = R * c; // Distance in km
     return Math.round(d * 10) / 10;
   }
-
+  
   function deg2rad(deg: number) {
-    return deg * (Math.PI / 180)
+    return deg * (Math.PI/180)
   }
 
   const noMarkers = [
@@ -205,7 +182,7 @@ export default function Home({ props }: any) {
 
   function refreshEvents(filters: any) {
     filters.preventDefault();
-    setMaxDist(filters.target.MaxDist.value);
+    // const maxDist = filters.target.MaxDist.value;
     setMinInterested(filters.target.MinInterested.value);
     setDateMin(filters.target.DateMin.value ? filters.target.DateMin.value.valueOf() : "0");
     setDateMax(filters.target.DateMax.value ? filters.target.DateMax.value.valueOf() : "5000-01-01T00:00");
@@ -214,11 +191,7 @@ export default function Home({ props }: any) {
   }
 
   function notFilteredEvent(event: event) {
-    return (event.interested >= minInterested) &&
-      (Date.parse(event.date).valueOf() >= Date.parse(dateMin).valueOf()) &&
-      (Date.parse(event.date).valueOf() <= Date.parse(dateMax).valueOf()) &&
-      (social == event.social == true || social == false) &&
-      (loggedIn ? (user?.storedAdress ? getDistanceFromLatLonInKm(user!.lat!, user!.lng!, event.lat, event.lng) < maxDist : true) : true);
+    return event.orgKey === data?.user.name;
   }
 
   function notFilteredMarker(marker: marker) {
@@ -286,47 +259,15 @@ export default function Home({ props }: any) {
   return (
     <div className={styles.body}>
       <Head>
-        <title>Waste Warriors</title>
+        <title>My events</title>
       </Head>
 
       <body className={styles.body}>
         <Header />
 
         <main className={styles.mainIndex}>
-          <div className={styles.filtersWrapper}>
-            <form onSubmit={refreshEvents} className={styles.filters}>
-              <h3>Filters: </h3>
-              <div className={styles.filterForm}>
-                <label form='MaxDist'>Maximum distance: </label>
-                <input name='MaxDist' id='MaxDist' type='number' min='0' step={0.1} className={styles.filterInput}></input>
-              </div>
-              <div className={styles.filterForm}>
-                <label form='MinInterested'>Minimum people interested: </label>
-                <input name='MinInterested' id='MinInterested' type='number' min='0' className={styles.filterInput}></input>
-              </div>
-              <div className={styles.filterForm}>
-                <label form='DateMin'>Date from: </label>
-                <input name='DateMin' id='DateMin' type='datetime-local' className={styles.filterInput}></input>
-              </div>
-              <div className={styles.filterForm}>
-                <label form='DateMax'>To: </label>
-                <input name='DateMax' id='DateMax' type='datetime-local' className={styles.filterInput}></input>
-              </div>
-              <div className={styles.filterForm}>
-                <label form='HasSocial'>Has social: </label>
-                <input name='HasSocial' id='HasSocial' type='checkbox' className={styles.filterInput}></input>
-              </div>
-              <button type="submit">Refresh</button>
-            </form>
-          </div>
           <div className={styles.listView}>
-            {data?.user === undefined ? <h3>Upcoming events:</h3> : <div style={{ display: 'flex', alignItems: 'center', gap: '5%' }}>
-              <h3>Upcoming events:</h3>
-
-              <form action={organisedByYouLink}>
-                <input type="submit" value="Organised by you →" className={styles.accountButton} style={{ height: '20%' }} />
-              </form>
-            </div>}
+            <h3>Your events:</h3>
 
             <div className={styles.eventList}>
               {events?.map((event: event) =>
@@ -381,6 +322,3 @@ export default function Home({ props }: any) {
     </div >
   )
 }
-
-//TODO: find a way to hide maps api key in .env file
-//POTENTIAL TODO: add id number to marker to link to card (using filter tool)

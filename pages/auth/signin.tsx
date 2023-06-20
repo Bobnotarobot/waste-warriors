@@ -41,6 +41,7 @@ const SignIn: NextPage = (props): JSX.Element => {
         <button type="submit" id="submit">
           Sign in
         </button>
+        <p>Don&apos;t have an account? <Link href={"/createAccount"}>Create one!</Link></p>
       </form>
     </div >
   )

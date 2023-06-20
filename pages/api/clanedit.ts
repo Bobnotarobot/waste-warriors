@@ -8,15 +8,26 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
   
   const clanData = JSON.parse(req.body);
+  const oldName = clanData.oldName;
+  const name = clanData.name;
   const location = clanData.location;
   const lat = Number(clanData.lat);
   const lng = Number(clanData.lng);
-  const name = clanData.name;
   const logo = clanData.logo;
   const description = clanData.description;
-  const owner = clanData.owner;
-  const data = { location: location, lat: lat, lng: lng, name: name, logo: logo, description: description, points: 0, owner: owner };
-  const savedEvent = await prisma.clan.create({ data: data });
+  const savedEvent = await prisma.clan.update({
+    where: {
+      name: oldName
+    },
+    data: {
+      name: name,
+      location: location,
+      lat: lat,
+      lng: lng,
+      logo: logo,
+      description: description,
+    }
+  });
 
   res.json(savedEvent);
 };

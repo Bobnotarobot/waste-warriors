@@ -17,7 +17,7 @@ model Event {
   lat               Float
   lng               Float
   date              String
-  duration          Int
+  duration          Float
   creationDate      String
   description       String
   interested        Int     @default(0)
@@ -32,8 +32,12 @@ model User {
   username        String  @id
   password        String
   clanKey         String?
+  createdClan     Boolean @default(false)
+  lat             Float?
+  lng             Float?
+  storedAdress    Boolean @default(false)
   organisedEvents Event[] @relation("Owner")
-  clan            Clan?   @relation(fields: [clanKey], references: [name])
+  clan            Clan?   @relation("members", fields: [clanKey], references: [name])
   events          Event[] @relation("EventToUser")
 }
 
@@ -45,5 +49,6 @@ model Clan {
   lng         Float?
   logo        String?
   description String
-  members     User[]
+  owner       String?
+  members     User[]  @relation("members")
 }

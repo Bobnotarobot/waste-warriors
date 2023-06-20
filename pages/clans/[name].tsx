@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { useSession } from 'next-auth/react';
 import { User } from '@prisma/client';
 import { redirect } from 'next/navigation';
+import Header from '../header';
 
 export async function getServerSideProps(context: { query: { name: any; }; }) {
   const { name } = context.query;
@@ -69,22 +70,29 @@ export default function View({ clan }: any) {
         <title>{clan.id}</title>
       </Head>
 
-      <body>
+      <Header />
+
+      <div>
         <div className={styles.margin}>
-          <Link href="/clans">back</Link>
+          <button type="button" onClick={() => router.back()} className={styles.backButton}>
+              ←
+            </button>
         </div>
 
         <div className={styles.bodywithmargin}>
-          {data?.user !== undefined ? <p> User session: {data?.user.name}</p> : null}
           {clan.logo ? <Image src={clan.logo} alt={clan.name} width={300} height={300} style={{float: 'right'}}/> : null}
           <h1>{clan.name}</h1>        
           {clan.location ? <h3>Based in {clan.location}</h3> : null}
+          {clan.owner ? (loggedIn && clan.owner === data?.user.name ? <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
+          <h3>Owned by {clan.owner}</h3>
+              <Link href={`/clans/edit/${encodeURIComponent(clan.name)}`}><button className={styles.accountButton}>Edit Clan</button></Link>
+            </div> : <h3>Owned by {clan.owner}</h3>) : <h3>Default clan</h3>}
           <p>{clan.description}</p>
 
           <p>{members} members</p>
           <button onClick={joinClan}>{buttonthing}</button>
         </div>
-      </body>
+      </div>
     </div>
 
   );
