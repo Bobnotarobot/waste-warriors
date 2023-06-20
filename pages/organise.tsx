@@ -49,13 +49,9 @@ export default function Organise() {
   const now = new Date().toISOString().slice(0, new Date().toISOString().lastIndexOf(":"));
 
   async function saveEvent(event: any) {
-<<<<<<< HEAD
-    console.log(router.pathname);
-=======
-    
->>>>>>> 763b6d9ecb3a0aea64f3d64e49acf555ef54c92b
+
     const organiser = data?.user.name;
-    if(marker.getPosition() == null) {
+    if (marker.getPosition() == null) {
       marker.setPosition(mapCenter);
     }
     const mlng = marker.getPosition()!.lng();

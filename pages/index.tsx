@@ -36,9 +36,11 @@ export async function getServerSideProps() {
     throw new Error('Failed to fetch data');
   }
   const events = await res.json();
+  const users = await prisma.user.findMany();
+  const props = { events, users }
 
   return {
-    props: { events },
+    props: { props },
   }
 }
 
@@ -114,7 +116,7 @@ export function generateMarkers(events: event[]) {
   });
 }
 
-export default function Home({ events }: any) {
+export default function Home({ props }: any) {
   const router = useRouter()
 
   const refreshData = () => {

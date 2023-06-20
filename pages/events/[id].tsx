@@ -124,20 +124,20 @@ export default function View({ props }: any) {
 
   function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
     var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = deg2rad(lon2-lon1); 
-    var a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2)
-      ; 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2)
+      ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
     return Math.round(d * 10) / 10;
   }
-  
+
   function deg2rad(deg: number) {
-    return deg * (Math.PI/180)
+    return deg * (Math.PI / 180)
   }
 
   return (
@@ -161,7 +161,7 @@ export default function View({ props }: any) {
           <div className={styles.bodywithmargin}>
             <h1>{event.location}</h1>
             <h2>{prettyDate(new Date(Date.parse(event.date)))} (~{event.duration} hours)</h2>
-            {loggedIn && event.orgKey === data?.user.name ? <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
+            {loggedIn && event.orgKey === data?.user.name ? <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <h4>Organised by {event.orgKey}</h4>
               <Link href={`/events/edit/${encodeURIComponent(event.id)}`}><button className={styles.accountButton}>Edit Event</button></Link>
             </div> : <h4>Organised by {event.orgKey}</h4>}
