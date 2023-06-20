@@ -119,18 +119,16 @@ export function generateMarkers(events: event[]) {
 export default function Home({ props }: any) {
   const router = useRouter()
 
-  const refreshData = () => {
-    if (router.pathname === "/") {
-      router.replace(router.asPath);
+  useEffect(() => {
+    function refreshData() {
+      if (router.pathname === "/") {
+        router.replace(router.asPath);
+      }
     }
-  }
+    const interval = setInterval(refreshData, 5000);
 
-  const timer = setTimeout(() => {
-    if (typeof window === "undefined") return null;
-    if (router.pathname === "/") {
-      refreshData();
-    }
-  }, 5000);
+    return () => clearInterval(interval);
+  }, [])
 
   const libraries = useMemo(() => ['places'], []);
   const { status, data } = useSession();
