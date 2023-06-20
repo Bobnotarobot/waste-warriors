@@ -35,6 +35,7 @@ export default function View({ props }: any) {
   const event = props.event;
   const users = props.users;
   const { status, data } = useSession();
+
   var loggedIn = false;
   var clan: Clan | null;
   var user: User | null;
@@ -59,10 +60,10 @@ export default function View({ props }: any) {
 
   const router = useRouter();
 
-  const initialInterested = usersByUsername.includes(data?.user.name);
+  const initialInterested = loggedIn ? usersByUsername.includes(data?.user.name) : false;
   const [interested, setInterested] = React.useState(event.interested);
-  const [interestGiven, setInterestGiven] = React.useState(loggedIn ? initialInterested : false);
-  const [buttonthing, setButtonthing] = React.useState(loggedIn ? (initialInterested ? "Interested ✔" : "Interested") : "Log in to join");
+  const [interestGiven, setInterestGiven] = React.useState(initialInterested);
+  const [buttonthing, setButtonthing] = React.useState(initialInterested ? "Interested ✔" : "Interested");
   var mapCenter = { lat: event.lat, lng: event.lng };
   const libraries = useMemo(() => ['places'], []);
 
@@ -141,6 +142,10 @@ export default function View({ props }: any) {
     return deg * (Math.PI / 180)
   }
 
+  if (status === "loading") {
+    return <p>Loading...</p>
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -174,7 +179,7 @@ export default function View({ props }: any) {
               <p>{interested} interested</p>
               {loggedIn && (clan !== null) ? <div className={styles.clanCard}>{event.users.filter((user: User) => user.clanKey === clan!.name).length} from {clan.name}</div> : null}
             </div>
-            <button onClick={interestedButton}>{buttonthing}</button>
+            <button onClick={interestedButton}>{status === "authenticated" ? buttonthing : "Log in to join"}</button>
             <GoogleMap
               id="map"
               options={mapOptions}

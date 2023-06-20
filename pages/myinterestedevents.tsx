@@ -106,9 +106,6 @@ export default function Home({ users }: any) {
   const libraries = useMemo(() => ['places'], []);
   const { status, data } = useSession();
 
-  const user = users.find((user: User) => user.username === data?.user.name)
-  const events = user.events;
-
   var mapCenter = { lat: 51.5126, lng: -0.1448 };
   /*if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -185,8 +182,6 @@ export default function Home({ users }: any) {
     return <p>Loading...</p>;
   }
 
-  generateMarkers(events);
-
   var mostRecentlyOpenedInfoWindow: google.maps.InfoWindow;
 
   function initMap() {
@@ -230,6 +225,15 @@ export default function Home({ users }: any) {
       }
     });
   }
+
+  if (status === "loading") {
+    return <p>Loading...</p>
+  }
+
+  const user = users.find((user: User) => user.username === data?.user.name)
+  const events = user.events;
+
+  generateMarkers(events);
 
   return (
     <div className={styles.body}>
