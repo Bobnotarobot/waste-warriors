@@ -205,7 +205,7 @@ export default function Home({ props }: any) {
 
   function refreshEvents(filters: any) {
     filters.preventDefault();
-    setMaxDist(filters.target.MaxDist.value);
+    setMaxDist(filters.target.MaxDist.value ? filters.target.MaxDist.value : Number.MAX_VALUE);
     setMinInterested(filters.target.MinInterested.value);
     setDateMin(filters.target.DateMin.value ? filters.target.DateMin.value.valueOf() : "0");
     setDateMax(filters.target.DateMax.value ? filters.target.DateMax.value.valueOf() : "5000-01-01T00:00");
