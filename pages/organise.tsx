@@ -51,8 +51,8 @@ export default function Organise() {
   async function saveEvent(event: any) {
 
     const organiser = data?.user.name;
-    const mlng = marker.getPosition()?.lng();
-    const mlat = marker.getPosition()?.lat();
+    const mlng = (marker === undefined) ? -0.1967596 : marker.getPosition()?.lng();
+    const mlat = (marker === undefined) ? 51.5090388 : marker.getPosition()?.lat();
     const location = event.target.Address.value;
     const date = event.target.Date.value;
     const time = event.target.Time.value;
