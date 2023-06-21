@@ -40,9 +40,10 @@ export default function View({ clan }: any) {
 
   const router = useRouter();
 
+  const initialMember = loggedIn ? membersByUsername.includes(data?.user.name) : false
   const [members, setMembers] = React.useState(clan.members.length);
-  const [joined, setJoined] = React.useState(loggedIn ? membersByUsername.includes(data?.user.name) : false);
-  const [buttonthing, setButtonthing] = React.useState(loggedIn ? (membersByUsername.includes(data?.user.name) ? "Joined" : "Join") : "Log in to join");
+  const [joined, setJoined] = React.useState(initialMember);
+  const [buttonthing, setButtonthing] = React.useState(initialMember ? "Joined" : "Join");
 
   async function joinClan() {
     if (!loggedIn) {
@@ -58,12 +59,17 @@ export default function View({ clan }: any) {
 
     const res = await response.json();
 
-    setMembers(members + (!joined ? 1 : -1))
+    setMembers(joined ? clan.members + (initialMember ? -1 : 0) : clan.members + (initialMember ? 0 : 1));
     setButtonthing(!joined ? "Joined" : "Join");
     setJoined(!joined)
 
     return res;
   }
+
+  if (status === "loading") {
+    return <p>Loading...</p>
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -90,7 +96,7 @@ export default function View({ clan }: any) {
           <p>{clan.description}</p>
 
           <p>{members} members</p>
-          <button onClick={joinClan}>{buttonthing}</button>
+          <button className={styles.joinButton} onClick={joinClan}>{status === "authenticated" ? buttonthing : "Log in to join"}</button>
         </div>
       </div>
     </div>
