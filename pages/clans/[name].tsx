@@ -40,11 +40,6 @@ export default function View({ clan }: any) {
 
   const router = useRouter();
 
-  const initialMember = loggedIn ? membersByUsername.includes(data?.user.name) : false
-  const [members, setMembers] = React.useState(clan.members.length);
-  const [joined, setJoined] = React.useState(initialMember);
-  const [buttonthing, setButtonthing] = React.useState(initialMember ? "Joined" : "Join");
-
   async function joinClan() {
     if (!loggedIn) {
       router.push('/auth/signin');
@@ -59,12 +54,17 @@ export default function View({ clan }: any) {
 
     const res = await response.json();
 
-    setMembers(joined ? clan.members + (initialMember ? -1 : 0) : clan.members + (initialMember ? 0 : 1));
+    setMembers(joined ? clan.members.length + (initialMember ? -1 : 0) : clan.members.length + (initialMember ? 0 : 1));
     setButtonthing(!joined ? "Joined" : "Join");
     setJoined(!joined)
 
     return res;
   }
+
+  const initialMember = loggedIn ? membersByUsername.includes(data?.user.name) : false
+  const [members, setMembers] = React.useState(clan.members.length);
+  const [joined, setJoined] = React.useState(initialMember);
+  const [buttonthing, setButtonthing] = React.useState(initialMember ? "Joined" : "Join");
 
   if (status === "loading") {
     return <p>Loading...</p>
